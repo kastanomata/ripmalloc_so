@@ -1,28 +1,38 @@
 CC = gcc
-CFLAGS = -Wall -Wextra 
+CFLAGS = -Wall -Wextra -g
 # TARGET
 SRCDIR = src
-BLDDIR = build
+HEADDIR = header
+BUILDDIR = build
 BINDIR = bin
 
 # SOURCES = main.c
 # OBJECTS = main.o
 
-BINS = ./bin/main
+BINS = $(BINDIR)/main
+OBJECTS = $(BUILDDIR)/main.o $(BUILDDIR)/allocator.o
 
 .phony: clean all
 
 all: $(BINDIR)/main
 	./$(BINDIR)/main
 
-$(BINDIR)/main: $(BLDDIR)/main.o
-	# Compiling binaries
-	$(CC) $(CCOPTS) -o $@ $<
+valgrind: $(BINDIR)/main
+	valgrind ./$(BINDIR)/main
 
-$(BLDDIR)/main.o:	$(SRCDIR)/main.c
+$(BINDIR)/main: $(OBJECTS)
+	# Compiling binaries
+	$(CC) $(CCOPTS) -o $@ $(OBJECTS)
+
+$(BUILDDIR)/main.o:	$(SRCDIR)/main.c
 	# Compiling object files
 	$(CC) $(CCOPTS) -c -o $@  $<
 
+$(BUILDDIR)/allocator.o: $(SRCDIR)/allocator.c
+	# Compiling object files
+	$(CC) $(CCOPTS) -c -o $@  $<
+
+
 clean:
-	rm -rf $(BLDDIR)/*.o
+	rm -rf $(BUILDDIR)/*.o
 	rm -rf $(BINDIR)/*
