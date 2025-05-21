@@ -9,7 +9,7 @@ BINDIR = bin
 BINS = $(BINDIR)/main
 OBJECTS = $(BUILDDIR)/main.o $(BUILDDIR)/allocator.o $(BUILDDIR)/test_allocator.o
 
-.phony: clean all
+.phony: clean all valgrind
 
 all: $(BINDIR)/main
 	./$(BINDIR)/main

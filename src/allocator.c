@@ -20,7 +20,7 @@ Allocator* Allocator_init(uint32_t memory_size) {
     Allocator *a = (Allocator*) memory;
     a->managed_memory = mapped_mem;
     a->memory_size = memory_size;
-    a->vtable.std.destructor = (Func_ptr) (Allocator_destroy);
+    a->vtable.destructor = (DestructorFunc) (Allocator_destroy);
 
     return a;
 }

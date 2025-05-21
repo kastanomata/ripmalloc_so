@@ -1,28 +1,25 @@
 // allocator.h
-#define _GNU_SOURCE // for MAP_ANON
+#define _GNU_SOURCE
 #include "commons.h"
 #pragma once
 
-// Function pointer type for virtual table methods
-typedef void* Func_ptr;
+// First forward declare the struct
+typedef struct Allocator Allocator;
 
-// Virtual table structure containing constructor and destructor pointers
+// Then define the function pointer type using the forward declared type
+typedef uint8_t (*DestructorFunc)(Allocator*);
+
+// Now define the Vtable structure
 typedef struct {
-    Func_ptr constructor;
-    Func_ptr destructor;
+    DestructorFunc destructor;
 } Vtable;
 
-// Allocator's virtual table structure
-typedef struct {
-    Vtable std;
-} AllocatorVtable;
-
-// Main allocator structure
-typedef struct {
-    AllocatorVtable vtable;  // Virtual table
-    uint8_t * managed_memory; // Pointer to managed memory block
-    uint32_t memory_size;     // Size of managed memory block
-} Allocator;
+// Finally define the Allocator structure
+struct Allocator {
+    Vtable vtable;
+    uint8_t *managed_memory;
+    uint32_t memory_size;
+};
 
 // Initialize allocator with specified memory size
 Allocator* Allocator_init(uint32_t memory_size);

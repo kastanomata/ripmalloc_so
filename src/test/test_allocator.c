@@ -23,7 +23,7 @@ int test_allocator_destroy() {
         fprintf(stderr, "Allocator initialization failed\n");
         return -1;
     }
-    if (Allocator_destroy(a) != 0) {
+    if ( a->vtable.destructor(a) != 0) {
         fprintf(stderr, "Allocator destruction failed\n");
         return -1;
     }
@@ -43,18 +43,18 @@ int test_allocator_invalid_size() {
 int test_allocator() {
     printf("Allocator Class Test Program\n");
     printf("Running tests...\n");
+    int c = 3;
     if (test_allocator_init() != 0) {
         fprintf(stderr, "Allocator initialization test failed\n");
-        return -1;
+        c--;
     }
     if (test_allocator_destroy() != 0) {
         fprintf(stderr, "Allocator destruction test failed\n");
-        return -1;
+        c--;
     }
     if (test_allocator_invalid_size() != 0) {
         fprintf(stderr, "Allocator invalid size test failed\n");
-        return -1;
+        c--;
     }
-    printf("All tests passed!\n");
-    return 0;
+    return c;
 }

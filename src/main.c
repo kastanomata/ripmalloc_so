@@ -5,7 +5,7 @@
 
 // Test program for allocator functionality
 int main() {
-    test_allocator();
-    printf("All test completed successfully.\n");
+    int t = test_allocator();
+    printf("ALLOCATOR - %i test completed successfully.\n", t);
     return 0;
 }
