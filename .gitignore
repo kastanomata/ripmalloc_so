@@ -4,6 +4,10 @@
 | |___ 
  \____|
        
+# Folders 
+./bin/*
+./build/*
+
 # Prerequisites
 *.d
 
@@ -56,3 +60,8 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# My notes
+*.txt
+
+
