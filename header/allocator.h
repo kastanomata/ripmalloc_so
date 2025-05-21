@@ -1,6 +1,7 @@
 // allocator.h
 #define _GNU_SOURCE // for MAP_ANON
 #include "commons.h"
+#pragma once
 
 // Function pointer type for virtual table methods
 typedef void* Func_ptr;

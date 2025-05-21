@@ -6,7 +6,7 @@
        
 # Folders 
 ./bin/*
-./build/*
+./build/*q
 
 # Prerequisites
 *.d
