@@ -1,4 +1,4 @@
-// allocator.h
+// header/allocator.h
 #define _GNU_SOURCE
 #include "commons.h"
 #pragma once
@@ -6,15 +6,17 @@
 // First forward declare the struct
 typedef struct Allocator Allocator;
 
-// Then define the function pointer type using the forward declared type
+// Define function pointer types
+typedef uint8_t (*ConstructorFunc)(Allocator*, uint32_t);
 typedef uint8_t (*DestructorFunc)(Allocator*);
 
-// Now define the Vtable structure
+// Vtable structure
 typedef struct {
+    ConstructorFunc constructor; // TODO I want to be able to call with this pointer Allocator_init after doing Allocator a; 
     DestructorFunc destructor;
 } Vtable;
 
-// Finally define the Allocator structure
+// Allocator structure
 struct Allocator {
     Vtable vtable;
     uint8_t *managed_memory;
@@ -22,7 +24,7 @@ struct Allocator {
 };
 
 // Initialize allocator with specified memory size
-Allocator* Allocator_init(uint32_t memory_size);
+uint8_t Allocator_init(Allocator* a, uint32_t memory_size);
 
 // Destroy allocator and free all resources
 uint8_t Allocator_destroy(Allocator *a);

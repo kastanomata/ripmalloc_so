@@ -1,39 +1,34 @@
+// src/allocator.c
 #include "../header/allocator.h"
 
-// Initialize allocator with specified memory size
-Allocator* Allocator_init(uint32_t memory_size) {
+uint8_t Allocator_init(Allocator* a, uint32_t memory_size) {
     if (memory_size == 0) {
         fprintf(stderr, "Error: memory_size cannot be 0\n");
-        return NULL;
+        return -1;
     }
 
-    // memory for Allocator + memory that Allocator will manage
-    uint8_t *memory = mmap(NULL, sizeof(Allocator) + memory_size, 
+    uint8_t *memory = mmap(NULL, memory_size, 
                         PROT_READ | PROT_WRITE, MAP_ANON | MAP_SHARED, -1, 0);
     if (memory == MAP_FAILED) {
         perror("mmap failed");
-        return NULL;
+        return -1;
     }
 
-    uint8_t *mapped_mem = memory + sizeof(Allocator);
-
-    Allocator *a = (Allocator*) memory;
-    a->managed_memory = mapped_mem;
+    a->managed_memory = memory;
     a->memory_size = memory_size;
-    a->vtable.destructor = (DestructorFunc) (Allocator_destroy);
+    a->vtable.constructor = Allocator_init;
+    a->vtable.destructor = Allocator_destroy;
 
-    return a;
+    return 0;
 }
 
-// Destroy allocator and free all resources
 uint8_t Allocator_destroy(Allocator *a) {
     if (a == NULL) {
         fprintf(stderr, "Error: allocator is NULL\n");
         return -1;
     }
 
-    uint8_t *memory = a->managed_memory - sizeof(Allocator);
-    int err = munmap(memory, a->memory_size + sizeof(Allocator));
+    int err = munmap(a->managed_memory, a->memory_size);
     if (err != 0) {
         perror("munmap failed");
         return err;
