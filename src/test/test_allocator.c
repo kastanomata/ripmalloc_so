@@ -2,7 +2,7 @@
 
 int test_allocator_init() {
     Allocator a;  // Stack-allocated allocator
-    int ret = a.vtable.constructor(&a, 1024);
+    int ret = Allocator_init(&a, 1024);
     if (ret != 0) {
         fprintf(stderr, "Allocator initialization failed\n");
         return -1;
@@ -25,7 +25,7 @@ int test_allocator_init() {
 
 int test_allocator_destroy() {
     Allocator a;
-    if (a.vtable.constructor(&a, 1024) != 0) {
+    if (Allocator_init(&a, 1024) != 0) {
         fprintf(stderr, "Allocator initialization failed\n");
         return -1;
     }
@@ -38,7 +38,7 @@ int test_allocator_destroy() {
 
 int test_allocator_invalid_size() {
     Allocator a;
-    int ret = a.vtable.constructor(&a, 1024);
+    int ret = Allocator_init(&a, 0);
     if (ret == 0) {  // Should fail
         fprintf(stderr, "Allocator should not be created with size 0\n");
         a.vtable.destructor(&a);

@@ -7,7 +7,9 @@ BUILDDIR = build
 BINDIR = bin
 
 BINS = $(BINDIR)/main
-OBJECTS = $(BUILDDIR)/main.o $(BUILDDIR)/allocator.o $(BUILDDIR)/test_allocator.o
+OBJECTS = $(BUILDDIR)/main.o $(BUILDDIR)/allocator.o \
+          $(BUILDDIR)/test_allocator.o $(BUILDDIR)/double_linked_list.o \
+          $(BUILDDIR)/test_double_linked_list.o
 
 .phony: clean all valgrind
 
@@ -33,6 +35,14 @@ $(BUILDDIR)/test_allocator.o: $(SRCDIR)/test/test_allocator.c
 	# Compiling test object files
 	$(CC) $(CFLAGS) -c -o $@ $<
 
+$(BUILDDIR)/double_linked_list.o: $(SRCDIR)/data_structures/double_linked_list.c
+	# Compiling double linked list
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+$(BUILDDIR)/test_double_linked_list.o: $(SRCDIR)/test/test_double_linked_list.c
+	# Compiling double linked list tests
+	$(CC) $(CFLAGS) -c -o $@ $<
+	
 clean:
 	rm -rf $(BUILDDIR)/*.o
 	rm -rf $(BINDIR)/*

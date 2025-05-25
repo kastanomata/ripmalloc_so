@@ -2,10 +2,14 @@
 #include "../header/commons.h"
 #include "../header/allocator.h"
 #include "../header/test/test_allocator.h"
+#include "../header/test/test_double_linked_list.h"
 
-// Test program for allocator functionality
 int main() {
-    int t = test_allocator();
-    printf("ALLOCATOR - %i test completed successfully.\n", t);
+    int alloc_tests = test_allocator();
+    printf("ALLOCATOR - %d tests completed successfully.\n", alloc_tests);
+    
+    int list_tests = test_double_linked_list();
+    printf("LINKED LIST - %d tests completed successfully.\n", list_tests);
+    
     return 0;
 }

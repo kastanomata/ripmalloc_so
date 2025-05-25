@@ -4,6 +4,7 @@
         "commons.h": "c",
         "allocator_test.h": "c",
         "stdio.h": "c",
-        "test_allocator.h": "c"
+        "test_allocator.h": "c",
+        "double_linked_list.h": "c"
     }
 }
