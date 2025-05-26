@@ -28,10 +28,23 @@ Allocator (Interface)
 ```
 
 ### Allocator
-TODO 
+**Allocator** è un'interfaccia base (struttura in C) che definisce il contratto per i diversi tipi di allocatori di memoria. Viene estesa da implementazioni concrete. La struttura contiene quattro puntatori a funzione essenziali:
+init: Funzione di inizializzazione dell'allocatore
+dest: Funzione di distruzione/pulizia dell'allocatore
+malloc: Funzione per l'allocazione di memoria
+free: Funzione per la liberazione della memoria
+Questa interfaccia permette di implementare diversi tipi di allocatori mantenendo un'API consistente.
 
 ### SlabAllocator
-TODO
+**SlabAllocator** è un'implementazione dell'interfaccia Allocator che gestisce la memoria utilizzando il metodo "slab allocation". Questo allocatore:
+- Utilizza mmap per allocare la memoria fisica sottostante
+- Gestisce la memoria in "slab" di dimensione fissa stabilita alla creazione
+- Mantiene una lista di slab liberi utilizzando una struttura DoubleLinkedList
+Include funzionalità per:
+- Richiesta di utilizzo per uno slab libero (SlabAllocator_alloc)
+- Liberazione di slab esistenti (SlabAllocator_release)
+- Monitoraggio dell'utilizzo della memoria (SlabAllocator_info)
+- Visualizzazione della memorya (SlabAllocator_print_memory_map)
 
 ### LinearAllocator
 WIP

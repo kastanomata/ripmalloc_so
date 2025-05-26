@@ -26,10 +26,10 @@ static int verify_memory_pattern(void* ptr, size_t size, unsigned char pattern) 
             printf("Memory corruption at offset %zu: expected 0x%02x, got 0x%02x\n", 
                    i, pattern, bytes[i]);
             #endif
-            return 0;
+            return -1;
         }
     }
-    return 1;
+    return 0;
 }
 
 // Test creation with invalid parameters
@@ -107,7 +107,7 @@ static int test_slab_alloc_pattern() {
     printf("Verifying patterns...\n");
     #endif
     for (size_t i = 0; i < NUM_SLABS; i++) {
-        assert(verify_memory_pattern(ptrs[i], SLAB_SIZE, TEST_PATTERN));
+        assert(!verify_memory_pattern(ptrs[i], SLAB_SIZE, TEST_PATTERN));
     }
     
     #ifdef VERBOSE
@@ -128,7 +128,7 @@ static int test_slab_alloc_pattern() {
 
         // Memory should be undefined, but we can write to it
         fill_memory_pattern(ptrs[i], SLAB_SIZE, ~TEST_PATTERN);
-        assert(verify_memory_pattern(ptrs[i], SLAB_SIZE, ~TEST_PATTERN));
+        assert(!verify_memory_pattern(ptrs[i], SLAB_SIZE, ~TEST_PATTERN));
     }
     
     #ifdef VERBOSE
