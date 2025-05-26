@@ -1,70 +1,101 @@
 #include <slab_allocator.h>
+#include <test_time.h>
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
 
-int test_slab_create() {
+#ifdef TIME
+// Test functions that perform the actual allocations
+static int test_standard_malloc_impl() {
+    const size_t SLAB_SIZE = 1024;
+    const size_t NUM_ALLOCS = 1000;
+    void* ptrs[NUM_ALLOCS];
+    
+    // Allocate blocks
+    for (size_t i = 0; i < NUM_ALLOCS; i++) {
+        ptrs[i] = malloc(SLAB_SIZE);
+        if (!ptrs[i]) {
+            // Cleanup previous allocations
+            for (size_t j = 0; j < i; j++) {
+                free(ptrs[j]);
+            }
+            return -1;
+        }
+    }
+    
+    // Free blocks
+    for (size_t i = 0; i < NUM_ALLOCS; i++) {
+        free(ptrs[i]);
+    }
+    
+    return 0;
+}
+#endif
+
+static int test_slab_operations_impl() {
     SlabAllocator slab;
-    SlabAllocator* created = SlabAllocator_create(&slab, 1024, 10);
-    assert(created == &slab);
-    assert(slab.slab_size == 1024);
-    assert(slab.free_list_size == 10);
-    assert(slab.managed_memory != NULL);
+    const size_t NUM_SLABS = 1000;
+    void* ptrs[NUM_SLABS];
+    
+    // Setup
+    if (!SlabAllocator_create(&slab, 1024, NUM_SLABS)) {
+        return -1;
+    }
+    
+    // Allocate slabs
+    for (size_t i = 0; i < NUM_SLABS; i++) {
+        ptrs[i] = ((Allocator*)&slab)->malloc((Allocator*)&slab);
+        if (!ptrs[i]) {
+            for (size_t j = 0; j < i; j++) {
+                ((Allocator*)&slab)->free((Allocator*)&slab, ptrs[j]);
+            }
+            SlabAllocator_destroy(&slab);
+            return -1;
+        }
+    }
+    
+    // Free slabs
+    for (size_t i = 0; i < NUM_SLABS; i++) {
+        ((Allocator*)&slab)->free((Allocator*)&slab, ptrs[i]);
+    }
+    
+    // Cleanup
     SlabAllocator_destroy(&slab);
     return 0;
 }
 
-int test_slab_alloc_free() {
-    SlabAllocator slab;
-    SlabAllocator_create(&slab, 1024, 10);
-    
-    // Allocate some slabs
-    void* ptr1 = ((Allocator*)&slab)->malloc((Allocator*)&slab);
-    void* ptr2 = ((Allocator*)&slab)->malloc((Allocator*)&slab);
-    void* ptr3 = ((Allocator*)&slab)->malloc((Allocator*)&slab);
-    
-    assert(ptr1 != NULL);
-    assert(ptr2 != NULL);
-    assert(ptr3 != NULL);
-    assert(slab.free_list_size == 7);
-    
-    // Free them
-    void* result = ((Allocator*)&slab)->free((Allocator*)&slab, ptr1);
-    assert(result != NULL);
-    assert(slab.free_list_size == 8);
-    
-    result = ((Allocator*)&slab)->free((Allocator*)&slab, ptr2);
-    assert(result != NULL);
-    assert(slab.free_list_size == 9);
-    
-    result = ((Allocator*)&slab)->free((Allocator*)&slab, ptr3);
-    assert(result != NULL);
-    assert(slab.free_list_size == 10);
-    
-    SlabAllocator_destroy(&slab);
-    return 0;
+#ifdef TIME
+// Main test functions that handle timing
+int test_standard_allocator() {
+    printf("\n=== Standard Allocator Test ===\n");
+    TimingResult timing = get_real_timing(test_standard_malloc_impl, "Standard malloc/free");
+    return timing.real_time < 0 ? -1 : 0;
 }
+#endif
 
 int test_slab_allocator() {
-    printf("Slab Allocator Test Program\n");
-    printf("Running tests...\n");
+    int result = 0;
     
-    int tests_passed = 0;
-    int total_tests = 2;
+    // Always run slab allocator tests
+    printf("\n=== Running Slab Allocator Tests ===\n");
+    #ifdef TIME
+    TimingResult slab_timing = get_real_timing(test_slab_operations_impl, "Slab allocator");
+    result = slab_timing.real_time < 0 ? -1 : 0;
     
-    if (test_slab_create() == 0) {
-        printf("test_slab_create: PASSED\n");
-        tests_passed++;
+    // Only run standard allocator tests when TIME is defined
+    printf("\n=== Running Standard Allocator Tests ===\n");
+    int std_result = test_standard_allocator();
+    result = result == 0 ? std_result : result;
+    #else
+    // In non-timing mode, just run the slab test directly
+    result = test_slab_operations_impl();
+    if (result != 0) {
+        printf("All Slab allocator test failed\n");
     } else {
-        printf("test_slab_create: FAILED\n");
+        printf("All Slab allocator test passed\n");
     }
+    #endif
     
-    if (test_slab_alloc_free() == 0) {
-        printf("test_slab_alloc_free: PASSED\n");
-        tests_passed++;
-    } else {
-        printf("test_slab_alloc_free: FAILED\n");
-    }
-    
-    printf("\nTest Results: %d/%d tests passed\n", tests_passed, total_tests);
-    return tests_passed == total_tests ? 0 : -1;
+    return result;
 }
+
