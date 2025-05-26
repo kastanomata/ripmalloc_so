@@ -10,11 +10,12 @@ BINDIR = bin
 # Targets
 BINS = $(BINDIR)/main
 OBJECTS = $(BUILDDIR)/main.o \
-          $(BUILDDIR)/slab_allocator.o \
           $(BUILDDIR)/double_linked_list.o \
+          $(BUILDDIR)/buddy_allocator.o \
+          $(BUILDDIR)/slab_allocator.o \
+          $(BUILDDIR)/test_buddy_allocator.o \
           $(BUILDDIR)/test_slab_allocator.o \
-          $(BUILDDIR)/test_time.o
-        #   $(BUILDDIR)/allocator.o \
+          $(BUILDDIR)/test_time.o \
           $(BUILDDIR)/test_double_linked_list.o \
 
 .PHONY: clean all valgrind verbose time
@@ -49,6 +50,9 @@ $(BUILDDIR)/allocator.o: $(SRCDIR)/allocator.c $(HEADDIR)/allocator.h
 $(BUILDDIR)/slab_allocator.o: $(SRCDIR)/slab_allocator.c $(HEADDIR)/slab_allocator.h $(HEADDIR)/allocator.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
+$(BUILDDIR)/buddy_allocator.o: $(SRCDIR)/buddy_allocator.c $(HEADDIR)/buddy_allocator.h $(HEADDIR)/allocator.h
+	$(CC) $(CFLAGS) -c -o $@ $<
+
 $(BUILDDIR)/double_linked_list.o: $(SRCDIR)/data_structures/double_linked_list.c $(HEADDIR)/data_structures/double_linked_list.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
@@ -63,6 +67,9 @@ $(BUILDDIR)/test_slab_allocator.o: $(SRCDIR)/test/test_slab_allocator.c $(HEADDI
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(BUILDDIR)/test_time.o: $(SRCDIR)/test/test_time.c $(HEADDIR)/test/test_time.h
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+$(BUILDDIR)/test_buddy_allocator.o: $(SRCDIR)/test/test_buddy_allocator.c $(HEADDIR)/test/test_buddy_allocator.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:

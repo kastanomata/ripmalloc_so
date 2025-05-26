@@ -6,8 +6,11 @@
 #include <sys/mman.h>
 #include <string.h>
 
+#include <test/test_double_linked_list.h>
+
 #include <allocator.h>
 // #include <test/test_allocator.h>
 #include <slab_allocator.h>
 #include <test/test_slab_allocator.h>
-#include <test/test_double_linked_list.h>
+#include <buddy_allocator.h>
+#include <test/test_buddy_allocator.h>

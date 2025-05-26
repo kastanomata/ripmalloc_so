@@ -326,9 +326,9 @@ int test_slab_allocator() {
     #endif
     
     if (result != 0) {
-        printf("Some slab allocator tests failed!\n");
+        printf("Some Slab Allocator tests failed!\n");
     } else {
-        printf("All slab allocator tests passed!\n");
+        printf("All Slab Allocator tests passed!\n");
     }
     
     return result;
