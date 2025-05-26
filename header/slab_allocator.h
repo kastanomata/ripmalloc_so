@@ -15,8 +15,9 @@ struct SlabAllocator {
     Allocator base;
     char* managed_memory;
     unsigned int buffer_size;
-    size_t slab_size;    // Size of each slab
-    DoubleLinkedList* free_list;    // Linked list of free blocks
+    size_t slab_size;   
+    size_t user_size;
+    DoubleLinkedList* free_list;   
     unsigned int free_list_size;
     unsigned int free_list_size_max;
 };
@@ -30,7 +31,10 @@ void *SlabAllocator_malloc(Allocator* alloc, ...);
 void *SlabAllocator_free(Allocator* alloc, ...);    
 
 // Helper to initialize a SlabAllocator
-SlabAllocator* SlabAllocator_create(SlabAllocator* slab, size_t slab_size, size_t initial_slabs);
-void SlabAllocator_destroy(SlabAllocator* slab);
-void* SlabAllocator_alloc(SlabAllocator* slab);
-void SlabAllocator_release(SlabAllocator* slab, void* ptr);
+SlabAllocator* SlabAllocator_create(SlabAllocator* a, size_t slab_size, size_t initial_slabs);
+void SlabAllocator_destroy(SlabAllocator* a);
+void* SlabAllocator_alloc(SlabAllocator* a);
+void SlabAllocator_release(SlabAllocator* a, void* ptr);
+void SlabAllocator_info(SlabAllocator* a);
+void SlabAllocator_print_memory_map(SlabAllocator* a);
+void print_slab_info(SlabAllocator* a, unsigned int slab_index);
