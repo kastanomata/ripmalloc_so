@@ -7,5 +7,6 @@
 #include <string.h>
 
 #include <allocator.h>
-#include <test/test_allocator.h>
+// #include <test/test_allocator.h>
+#include <slab_allocator.h>
 #include <test/test_double_linked_list.h>

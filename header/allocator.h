@@ -6,19 +6,19 @@
 #include <sys/mman.h>
 #include <stdarg.h>
 
-// First forward declare the struct
+// Forward declaration
 typedef struct Allocator Allocator;
 
 // Define function pointer types
-typedef uint8_t (*ConstructorFunc)(Allocator*, ...);
-typedef uint8_t (*DestructorFunc)(Allocator*, ...);
-typedef uint8_t (*AllocatorFunc)(Allocator*, ...);  
-typedef uint8_t (*FreeFunc)(Allocator*, ...);       
+typedef void* (*InitFunc)(Allocator*, ...);
+typedef void* (*DestructorFunc)(Allocator*, ...);
+typedef void* (*MallocFunc)(Allocator*, ...);  
+typedef void* (*FreeFunc)(Allocator*, ...);       
 
 // Allocator structure
 struct Allocator {
-    ConstructorFunc constructor; 
-    DestructorFunc destructor;
-    AllocatorFunc malloc;
+    InitFunc init; 
+    DestructorFunc dest;
+    MallocFunc malloc;
     FreeFunc free; 
 };

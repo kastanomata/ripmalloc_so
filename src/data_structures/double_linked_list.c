@@ -2,7 +2,6 @@
 
 DoubleLinkedList* list_create(DoubleLinkedList* list) {
     if (!list) {
-        // list = malloc(sizeof(DoubleLinkedList));
         return NULL;
     }
     
@@ -13,19 +12,12 @@ DoubleLinkedList* list_create(DoubleLinkedList* list) {
 }
 
 void list_destroy(DoubleLinkedList *list) {
-  // Free the list iff dinamically allocated?
     if (!list) return;
     
-    Node* current = list->head;
-    while (current) {
-        Node* next = current->next;
-        free(current);
-        current = next;
-    }
-    
-    if (list->size == 0 || list->head == NULL) {
-        free(list);
-    }
+    // Just reset the list state since nodes are managed by caller
+    list->head = NULL;
+    list->tail = NULL;
+    list->size = 0;
 }
 
 Node* list_find(DoubleLinkedList* list, Node* item) {
