@@ -16,13 +16,18 @@ OBJECTS = $(BUILDDIR)/main.o \
         #   $(BUILDDIR)/allocator.o \
           $(BUILDDIR)/test_double_linked_list.o \
 
-.PHONY: clean all valgrind
+.PHONY: clean all valgrind verbose
 
 all: $(BINDIR)/main
 	./$(BINDIR)/main
 
 valgrind: $(BINDIR)/main
 	valgrind --leak-check=full ./$(BINDIR)/main
+	
+verbose: $(BINDIR)/main
+	$(CC) $(CFLAGS) -DVERBOSE -c $(SRCDIR)/slab_allocator.c -o $(BUILDDIR)/slab_allocator.o
+	$(CC) $(CFLAGS) -o $@ $(OBJECTS)
+	./$(BINDIR)/main
 
 $(BINDIR)/main: $(OBJECTS)
 	@mkdir -p $(BINDIR)
