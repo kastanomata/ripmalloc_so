@@ -1,4 +1,4 @@
-#include "../header/test/test_allocator.h"
+#include <test/test_allocator.h>
 
 int test_allocator_init() {
     Allocator a;  // Stack-allocated allocator
@@ -63,6 +63,5 @@ int test_allocator() {
         fprintf(stderr, "Allocator invalid size test failed\n");
         c--;
     }
-    printf("%d/%d tests passed\n", c, 3);
     return c;
 }

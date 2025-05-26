@@ -1,6 +1,8 @@
 #pragma once
 #include <stdlib.h>
+#include <stdio.h>
 #include <stdbool.h>
+
 
 // Generics list 
 typedef struct Node {

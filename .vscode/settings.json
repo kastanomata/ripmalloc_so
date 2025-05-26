@@ -5,6 +5,12 @@
         "allocator_test.h": "c",
         "stdio.h": "c",
         "test_allocator.h": "c",
-        "double_linked_list.h": "c"
+        "double_linked_list.h": "c",
+        "main.h": "c",
+        "test_double_linked_list.h": "c",
+        "stdlib.h": "c",
+        "stdbool.h": "c",
+        "string.h": "c",
+        "stdint.h": "c"
     }
 }

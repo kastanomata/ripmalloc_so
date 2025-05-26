@@ -1,4 +1,4 @@
-#include "../header/allocator.h"
+#include <allocator.h>
 
 uint8_t Allocator_init(Allocator* a, uint32_t memory_size) {
     if (memory_size == 0) {

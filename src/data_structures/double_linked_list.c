@@ -1,4 +1,4 @@
-#include "../header/data_structures/double_linked_list.h"
+#include <data_structures/double_linked_list.h>
 
 DoubleLinkedList* list_create(DoubleLinkedList* list) {
     if (!list) {

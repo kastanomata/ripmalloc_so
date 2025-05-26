@@ -1,8 +1,4 @@
-#include <stdio.h>
-#include "../header/commons.h"
-#include "../header/allocator.h"
-#include "../header/test/test_allocator.h"
-#include "../header/test/test_double_linked_list.h"
+#include <main.h>
 
 int main() {
     int alloc_tests = test_allocator();

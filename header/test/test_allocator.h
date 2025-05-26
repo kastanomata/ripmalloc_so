@@ -1,5 +1,6 @@
 #pragma once
-#include "../../header/allocator.h"
+#include <assert.h>
+#include <allocator.h>
 
 int test_allocator_init();
 int test_allocator_destroy();

@@ -1,6 +1,10 @@
 #pragma once
 #define _GNU_SOURCE
-#include "commons.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <sys/mman.h>
+
 // First forward declare the struct
 typedef struct Allocator Allocator;
 
