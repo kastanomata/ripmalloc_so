@@ -12,10 +12,9 @@ BINS = $(BINDIR)/main
 OBJECTS = $(BUILDDIR)/main.o \
           $(BUILDDIR)/slab_allocator.o \
           $(BUILDDIR)/double_linked_list.o \
-          # $(BUILDDIR)/test_allocator.o \
-          $(BUILDDIR)/allocator.o \
-          $(BUILDDIR)/test_double_linked_list.o \
           $(BUILDDIR)/test_slab_allocator.o
+        #   $(BUILDDIR)/allocator.o \
+          $(BUILDDIR)/test_double_linked_list.o \
 
 .PHONY: clean all valgrind
 
