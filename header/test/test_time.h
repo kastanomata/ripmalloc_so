@@ -11,7 +11,7 @@ typedef struct {
 } TimingResult;
 
 // Get timing measurements for a test function
-TimingResult get_real_timing(TestFunction test_fn, const char* test_name);
+TimingResult get_real_timing(TestFunction test_fn, const char* test_name, int num_runs);
 
 // Start timing both program and system time
 void start_timing();

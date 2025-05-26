@@ -12,22 +12,27 @@ BINS = $(BINDIR)/main
 OBJECTS = $(BUILDDIR)/main.o \
           $(BUILDDIR)/slab_allocator.o \
           $(BUILDDIR)/double_linked_list.o \
-          $(BUILDDIR)/test_slab_allocator.o
+          $(BUILDDIR)/test_slab_allocator.o \
+          $(BUILDDIR)/test_time.o
         #   $(BUILDDIR)/allocator.o \
           $(BUILDDIR)/test_double_linked_list.o \
 
-.PHONY: clean all valgrind verbose
+.PHONY: clean all valgrind verbose time
 
 all: $(BINDIR)/main
 	./$(BINDIR)/main
 
 valgrind: $(BINDIR)/main
 	valgrind --leak-check=full ./$(BINDIR)/main
-	
+
+verbose: CFLAGS += -DVERBOSE
 verbose: $(BINDIR)/main
-	$(CC) $(CFLAGS) -DVERBOSE -c $(SRCDIR)/slab_allocator.c -o $(BUILDDIR)/slab_allocator.o
-	$(CC) $(CFLAGS) -o $@ $(OBJECTS)
 	./$(BINDIR)/main
+
+time: CFLAGS += -DTIME
+time: $(BINDIR)/main
+	./$(BINDIR)/main
+
 
 $(BINDIR)/main: $(OBJECTS)
 	@mkdir -p $(BINDIR)
@@ -55,6 +60,9 @@ $(BUILDDIR)/test_double_linked_list.o: $(SRCDIR)/test/test_double_linked_list.c 
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(BUILDDIR)/test_slab_allocator.o: $(SRCDIR)/test/test_slab_allocator.c $(HEADDIR)/test/test_slab_allocator.h
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+$(BUILDDIR)/test_time.o: $(SRCDIR)/test/test_time.c $(HEADDIR)/test/test_time.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:

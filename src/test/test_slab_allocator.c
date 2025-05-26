@@ -1,8 +1,11 @@
 #include <slab_allocator.h>
-#include <test_time.h>
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#ifdef TIME
+#include <test_time.h>
+#define NUM_RUNS 100
+#endif
 
 #ifdef TIME
 // Test functions that perform the actual allocations
@@ -68,7 +71,7 @@ static int test_slab_operations_impl() {
 // Main test functions that handle timing
 int test_standard_allocator() {
     printf("\n=== Standard Allocator Test ===\n");
-    TimingResult timing = get_real_timing(test_standard_malloc_impl, "Standard malloc/free");
+    TimingResult timing = get_real_timing(test_standard_malloc_impl, "Standard malloc/free", NUM_RUNS);
     return timing.real_time < 0 ? -1 : 0;
 }
 #endif
@@ -79,7 +82,7 @@ int test_slab_allocator() {
     // Always run slab allocator tests
     printf("\n=== Running Slab Allocator Tests ===\n");
     #ifdef TIME
-    TimingResult slab_timing = get_real_timing(test_slab_operations_impl, "Slab allocator");
+    TimingResult slab_timing = get_real_timing(test_slab_operations_impl, "Slab allocator", NUM_RUNS);
     result = slab_timing.real_time < 0 ? -1 : 0;
     
     // Only run standard allocator tests when TIME is defined
@@ -87,10 +90,10 @@ int test_slab_allocator() {
     int std_result = test_standard_allocator();
     result = result == 0 ? std_result : result;
     #else
-    // In non-timing mode, just run the slab test directly
+    // In non-timing mode, run the slab test directly
     result = test_slab_operations_impl();
     if (result != 0) {
-        printf("All Slab allocator test failed\n");
+        printf("Slab allocator test failed\n");
     } else {
         printf("All Slab allocator test passed\n");
     }
