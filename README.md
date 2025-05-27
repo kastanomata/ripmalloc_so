@@ -8,7 +8,7 @@ This is a malloc replacement. The system relies on mmap for the physical allocat
 
 ## Project Management
 - [ ] Impostare e configurare un sistema di gestione della memoria tramite mmap per le allocazioni di grandi dimensioni
-- [ ] Implementare un buddy allocator, utilizzando una bitmap per gestire un'area di memoria di 1 MB dedicata alle piccole allocazioni
+- [x] Implementare un buddy allocator, utilizzando una bitmap per gestire un'area di memoria di 1 MB dedicata alle piccole allocazioni
 - [ ]  Gestire le richieste di memoria uguali o superiori a un quarto della pagina tramite mmap
 - [ ]  Gestire le richieste di memoria inferiori a un quarto della dimensione di pagina tramite il buddy allocator
 - [ ]  Testare e verificare il corretto funzionamento delle allocazioni per richieste di diverse dimensioni
@@ -50,7 +50,7 @@ Include funzionalità per:
 WIP
 
 ### BuddyAllocator
-WIP
+**BuddyAllocator** è una classe astratta che implementa l'interfaccia Allocator e fornisce una primitiva per l'allocazione di blocchi di memoria più grandi di un quarto della page size. Le primitive di allocazione per blocchi più piccoli sono delegate alle classi figlie TreeBuddyAllocator e BitmapBuddyAllocator. 
 
 #### TreeBuddyAllocator
 WIP

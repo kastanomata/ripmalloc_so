@@ -167,7 +167,7 @@ int BuddyAllocator_release(BuddyAllocator* allocator, void* ptr, size_t size) {
         return -1;
     }
     void* result = BuddyAllocator_free((Allocator*)allocator, ptr, size);
-    if (result == NULL) {
+    if (result == (void*) -1) {
         #ifdef VERBOSE
         printf("\tFailed to free memory\n");
         #endif
