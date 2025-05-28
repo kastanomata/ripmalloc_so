@@ -27,4 +27,5 @@ void test_buddy_allocator() {
     BuddyAllocator_destroy(&a);
     printf(result == 0 ? "All Buddy Allocator tests passed!\n" : 
                         "Some Buddy Allocator tests failed\n");
+    return;
 }

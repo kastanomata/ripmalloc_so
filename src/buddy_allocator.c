@@ -75,7 +75,7 @@ void *BuddyAllocator_free(Allocator* alloc, ...) {
     void* ptr = va_arg(args, void*);
     size_t size = va_arg(args, size_t);
     va_end(args);
-    BuddyAllocator* buddy = (BuddyAllocator *)alloc;
+    // BuddyAllocator* buddy = (BuddyAllocator *)alloc;
     #ifdef VERBOSE
     printf("\tFreeing memory of size %zu at address %p\n", size, ptr);
     #endif

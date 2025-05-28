@@ -1,10 +1,13 @@
 #pragma once
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <sys/mman.h>
 #include <string.h>
+#include <unistd.h>
+
 
 #include <test/test_double_linked_list.h>
 

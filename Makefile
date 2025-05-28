@@ -24,7 +24,17 @@ all: $(BINDIR)/main
 	./$(BINDIR)/main
 
 valgrind: $(BINDIR)/main
-	valgrind --leak-check=full ./$(BINDIR)/main
+	valgrind  --track-origins=yes --show-leak-kinds=all --leak-check=full ./$(BINDIR)/main
+
+massif: $(BINDIR)/main
+	rm -f massif.out.*
+	valgrind --tool=massif ./$(BINDIR)/main
+	@msf_file=$$(ls massif.out.* | head -n 1); \
+	if [ -f "$$msf_file" ]; then \
+		ms_print "$$msf_file"; \
+	else \
+		echo "No massif output file found."; \
+	fi
 
 verbose: CFLAGS += -DVERBOSE
 verbose: $(BINDIR)/main

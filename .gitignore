@@ -67,4 +67,7 @@ dkms.conf
 *.txt
 .vscode
 
+# Massif output files
+massif.out.[0-9]*
+
 
