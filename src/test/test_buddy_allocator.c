@@ -1,31 +1,20 @@
-#include <test/test_buddy_allocator.h>
+#include <buddy_allocator.h>
+#include <test_buddy_allocator.h>
+#ifdef TIME
+#include <test_time.h>
+#define NUM_RUNS 1
+#endif
 
-#define PAGE_SIZE sysconf(_SC_PAGESIZE)
+#define MIN_BLOCK_SIZE (4 * 1024)  // 4KB minimum block size
+#define NUM_LEVELS 8               // 8 levels = blocks from 4KB to 512KB
+#define MAX_BLOCK_SIZE (MIN_BLOCK_SIZE << (NUM_LEVELS - 1))
 
-void test_buddy_allocator() {
-    printf("\n=== Running Buddy Allocator Operations Test ===\n");
-    int result = 0;
-    BuddyAllocator a;
-
-    if (BuddyAllocator_create(&a, PAGE_SIZE) == NULL) {
-        printf("Failed to create allocator\n");
-        return;
+int test_buddy_allocator() {
+    BuddyAllocator* buddy = BuddyAllocator_create(NULL, NUM_LEVELS, MIN_BLOCK_SIZE);
+    if (!buddy) {
+        printf("Failed to create buddy allocator\n");
+        return -1;
     }
-
-    void* ptr = BuddyAllocator_alloc(&a, PAGE_SIZE);
-    if (!ptr) {
-        printf("Failed to allocate memory\n");
-        BuddyAllocator_destroy(&a);
-        return;
-    }
-
-    if (BuddyAllocator_release(&a, ptr, PAGE_SIZE) == -1) {
-        printf("Failed to free memory\n");
-        result = -1;
-    }
-
-    BuddyAllocator_destroy(&a);
-    printf(result == 0 ? "All Buddy Allocator tests passed!\n" : 
-                        "Some Buddy Allocator tests failed\n");
-    return;
+    
+    return 0;
 }

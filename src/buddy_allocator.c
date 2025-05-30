@@ -1,198 +1,177 @@
 #include <buddy_allocator.h>
+#include <math.h>
+#include <sys/mman.h>
+#include <string.h>
 
-void *BuddyAllocator_init(Allocator* alloc, ...) {
+void* BuddyAllocator_init(Allocator* alloc, ...) {
     va_list args;
     va_start(args, alloc);
-    BuddyAllocator* allocator = va_arg(args, BuddyAllocator*);
-    size_t block_size = va_arg(args, size_t);
+    
+    BuddyAllocator* buddy = (BuddyAllocator*)alloc;
+    int num_levels = va_arg(args, int);
+    int buffer_size = va_arg(args, int);
+    
     va_end(args);
-    BuddyAllocator* buddy = (BuddyAllocator *)alloc;
-    if (!allocator) return NULL;
-    #ifdef VERBOSE
-    printf("\tInitializing buddy allocator with block size %zu\n", block_size);
-    #endif
+    
+    buddy->num_levels = num_levels;
+    buddy->total_size = buffer_size;
+    buddy->min_block_size = buffer_size / (1 << (num_levels - 1));
 
-    // Initialize base allocator fields
-    buddy->base.init = BuddyAllocator_init;
-    buddy->base.dest =  BuddyAllocator_destructor;
-    buddy->base.malloc = BuddyAllocator_malloc;
-    buddy->base.free = BuddyAllocator_free;
+    // Initialize slab allocators for each level
+    for (int i = 0; i < num_levels; i++) {
+        size_t slab_size = buddy->min_block_size * (1 << i);
+        size_t num_slabs = buddy->total_size / slab_size;
+        
+        if (!SlabAllocator_create(&buddy->slabs[i], slab_size, num_slabs)) {
+            // Cleanup previously created slab allocators
+            for (int j = 0; j < i; j++) {
+                SlabAllocator_destroy(&buddy->slabs[j]);
+            }
+            return NULL;
+        }
+    }
 
-    // Initialize buddy allocator specific fields
-    buddy->block_size = block_size;
-    buddy->max_size = sysconf(_SC_PAGESIZE) / 4;
+    // Setup interface methods
+    alloc->init = BuddyAllocator_init;
+    alloc->dest = BuddyAllocator_destructor;
+    alloc->malloc = BuddyAllocator_malloc;
+    alloc->free = BuddyAllocator_free;
 
-    #ifdef VERBOSE
-    printf("\tBuddy allocator initialized with max size %zu\n", buddy->max_size);
-    #endif
-
-    return (void*) allocator;
-
-}
-void *BuddyAllocator_destructor(Allocator* alloc, ...) {
-    // BuddyAllocator* buddy = (BuddyAllocator *)alloc;
-    (void)alloc;  // Suppress unused parameter warning
-    #ifdef VERBOSE
-    printf("\tDestroying buddy allocator\n");
-    #endif
-    // TODO: Implement actual buddy deallocation logic
-    return (void*) 0;
-
+    return buddy;
 }
 
-void *BuddyAllocator_malloc(Allocator* alloc, ...) {
+void* BuddyAllocator_destructor(Allocator* alloc, ...) {
+    if (!alloc) return NULL;
+
+    BuddyAllocator* buddy = (BuddyAllocator*)alloc;
+    
+    // Destroy all slab allocators
+    for (int i = 0; i < buddy->num_levels; i++) {
+        SlabAllocator_destroy(&buddy->slabs[i]);
+    }
+
+    return (void*)1;
+}
+
+void* BuddyAllocator_malloc(Allocator* alloc, ...) {
+    if (!alloc) return NULL;
+
     va_list args;
     va_start(args, alloc);
     size_t size = va_arg(args, size_t);
     va_end(args);
-    // BuddyAllocator* buddy = (BuddyAllocator *)alloc;
-    #ifdef VERBOSE
-    printf("\tAllocating memory of size %zu\n", size);
-    #endif
-    // Allocate memory using mmap
-    void* ptr = mmap(NULL, size, 
-                    PROT_READ | PROT_WRITE,
-                    MAP_PRIVATE | MAP_ANONYMOUS,
-                    -1, 0);
-    
-    if (ptr == MAP_FAILED) {
-        #ifdef VERBOSE
-        printf("\tMemory allocation failed\n");
-        #endif
-        return NULL;
-    }
-    
-    #ifdef VERBOSE
-    printf("\tMemory allocated at address %p\n", ptr);
-    #endif
-    return ptr;
 
+    BuddyAllocator* buddy = (BuddyAllocator*)alloc;
+
+    // Find the appropriate level for this size
+    int level = 0;
+    size_t block_size = buddy->min_block_size;
+    
+    while (level < buddy->num_levels && block_size < size) {
+        block_size *= 2;
+        level++;
+    }
+
+    if (level >= buddy->num_levels) {
+        return NULL; // Request too large
+    }
+
+    // Try to allocate from the appropriate level
+    void* ptr = SlabAllocator_alloc(&buddy->slabs[level]);
+    if (ptr) return ptr;
+
+    // If allocation failed, try to split a block from a higher level
+    for (int i = level + 1; i < buddy->num_levels; i++) {
+        ptr = SlabAllocator_alloc(&buddy->slabs[i]);
+        if (!ptr) continue;
+
+        // Split the block and add to appropriate levels
+        char* block = (char*)ptr;
+        size_t curr_size = buddy->min_block_size * (1 << i);
+        
+        while (i > level) {
+            curr_size /= 2;
+            i--;
+            
+            // Add the buddy block to the free list
+            char* buddy_block = block + curr_size;
+            SlabAllocator_release(&buddy->slabs[i], buddy_block);
+        }
+
+        return block;
+    }
+
+    return NULL; // No suitable block found
 }
 
-void *BuddyAllocator_free(Allocator* alloc, ...) {
+void* BuddyAllocator_free(Allocator* alloc, ...) {
+    if (!alloc) return NULL;
+
     va_list args;
     va_start(args, alloc);
     void* ptr = va_arg(args, void*);
-    size_t size = va_arg(args, size_t);
     va_end(args);
-    // BuddyAllocator* buddy = (BuddyAllocator *)alloc;
-    #ifdef VERBOSE
-    printf("\tFreeing memory of size %zu at address %p\n", size, ptr);
-    #endif
+
+    if (!ptr) return NULL;
+
+    BuddyAllocator* buddy = (BuddyAllocator*)alloc;
+
+    // Find which level this block belongs to
+    char* block = (char*)ptr;
+    size_t offset = block - buddy->managed_memory;
     
-    int result = munmap(ptr, size);
-    if (result == -1) {
-        #ifdef VERBOSE
-        printf("\tFailed to free memory\n");
-        #endif
-        return (void*) -1;
-    }
-    #ifdef VERBOSE
-    printf("\tMemory freed successfully\n");
-    #endif
-    return (void*) 0;
-} 
-
-
-BuddyAllocator* BuddyAllocator_create(BuddyAllocator* allocator, size_t block_size) {  
-    #ifdef VERBOSE
-    printf("\tCreating buddy allocator with block size %zu\n", block_size);
-    #endif
-
-    if (!allocator || !block_size) {
-        #ifdef VERBOSE
-        printf("\tInvalid parameters for buddy allocator creation\n");
-        #endif
-        return NULL;
-    }
-    BuddyAllocator* buddy_allocator = (BuddyAllocator*) BuddyAllocator_init((Allocator*)allocator, block_size);
-    if (!buddy_allocator) {
-        #ifdef VERBOSE
-        printf("\tFailed to initialize buddy allocator\n");
-        #endif
-        return NULL;
+    // Find the level based on block alignment
+    int level = 0;
+    while (level < buddy->num_levels) {
+        size_t block_size = buddy->min_block_size * (1 << level);
+        if (offset % block_size == 0) break;
+        level++;
     }
 
-    #ifdef VERBOSE
-    printf("\tBuddy allocator created successfully\n");
-    #endif
-    return buddy_allocator;
+    if (level >= buddy->num_levels) return NULL; // Invalid pointer
 
+    // Free the block at this level
+    SlabAllocator_release(&buddy->slabs[level], ptr);
+
+    // Try to merge with buddy blocks
+    while (level < buddy->num_levels - 1) {
+        size_t block_size = buddy->min_block_size * (1 << level);
+        char* buddy_block;
+        
+        // Calculate buddy block address
+        if (offset % (block_size * 2) == 0) {
+            buddy_block = block + block_size;
+        } else {
+            buddy_block = block - block_size;
+        }
+
+        // Check if buddy is free
+        void* buddy_ptr = SlabAllocator_alloc(&buddy->slabs[level]);
+        if (!buddy_ptr || buddy_ptr != buddy_block) {
+            if (buddy_ptr) {
+                SlabAllocator_release(&buddy->slabs[level], buddy_ptr);
+            }
+            break;
+        }
+
+        // Merge blocks
+        SlabAllocator_release(&buddy->slabs[level], block);
+        level++;
+        block = (block < buddy_block) ? block : buddy_block;
+        offset = block - buddy->managed_memory;
+    }
+
+    return (void*)1;
 }
 
-void BuddyAllocator_destroy(BuddyAllocator* allocator) {
-    #ifdef VERBOSE
-    printf("\tDestroying buddy allocator at address %p\n", (void*)allocator);
-    #endif
-    if (!allocator) {
-        #ifdef VERBOSE
-        printf("\tNull allocator provided, nothing to destroy\n");
-        #endif
-        return;
-    }
-    BuddyAllocator_destructor((Allocator*)allocator);
-}
-
-void* BuddyAllocator_alloc(BuddyAllocator* allocator, size_t size) {
-    #ifdef VERBOSE
-    printf("\tRequesting allocation of size %zu\n", size);
-    #endif
-    if (!allocator || size == 0 ||size <= allocator->max_size) {
-        #ifdef VERBOSE
-        printf("\tInvalid allocation parameters\n");
-        #endif
+BuddyAllocator* BuddyAllocator_create(BuddyAllocator* a, size_t num_levels, int buffer_size) {
+    if (!a || buffer_size == 0 || num_levels == 0 || num_levels > MAX_LEVELS) {
         return NULL;
     }
-    void* ptr = BuddyAllocator_malloc((Allocator*)allocator, size);
-    if (!ptr) {
-        #ifdef VERBOSE
-        printf("\tAllocation failed\n");
-        #endif
+
+    if (!BuddyAllocator_init((Allocator*)a, num_levels, buffer_size)) {
         return NULL;
     }
-    #ifdef VERBOSE
-    printf("\tAllocation successful at address %p\n", ptr);
-    #endif
-    return ptr;
-}
 
-int BuddyAllocator_release(BuddyAllocator* allocator, void* ptr, size_t size) {
-    #ifdef VERBOSE
-    printf("\tAttempting to release memory at address %p\n", ptr);
-    #endif
-    if (!allocator || !ptr) {
-        #ifdef VERBOSE
-        printf("\tInvalid release parameters\n");
-        #endif
-        return -1;
-    }
-    void* result = BuddyAllocator_free((Allocator*)allocator, ptr, size);
-    if (result == (void*) -1) {
-        #ifdef VERBOSE
-        printf("\tFailed to free memory\n");
-        #endif
-        return -1;
-    }
-    #ifdef VERBOSE
-    printf("\tMemory released successfully\n");
-    #endif
-    return 0;
-}
-
-void BuddyAllocator_info(BuddyAllocator* allocator) {
-    if (!allocator) {
-        printf("Error: Null allocator provided\n");
-        return;
-    }
-    
-    // Validate allocator fields before accessing
-    if (allocator->block_size == 0 || allocator->max_size == 0) {
-        printf("Error: Invalid allocator state\n");
-        return;
-    }
-
-    // Print info with additional error checking
-    printf("Buddy Allocator Info:\n");
-    printf("Block Size: %zu bytes\n", allocator->block_size);
-    printf("Max Size: %zu bytes\n", allocator->max_size);
+    return a;
 }

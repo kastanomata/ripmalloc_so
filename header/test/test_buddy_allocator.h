@@ -2,5 +2,5 @@
 #include <unistd.h>
 #include <stddef.h>
 
-void test_buddy_allocator();
+int test_buddy_allocator();
 
