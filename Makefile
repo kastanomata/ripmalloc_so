@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -g -I$(HEADDIR) -I$(HEADDIR)/data_structures -I$(HEADDIR)/test
+CFLAGS = -Wall -Wextra -g -I$(HEADDIR) -I$(HEADDIR)/data_structures -I$(HEADDIR)/test -I$(HEADDIR)/helpers
 
 # Directories
 SRCDIR = src
@@ -9,14 +9,21 @@ BINDIR = bin
 
 # Targets
 BINS = $(BINDIR)/main
+
+DATA_STRUCTURES = $(BUILDDIR)/double_linked_list.o \
+
+HELPERS = $(BUILDDIR)/memory_manipulation.o \
+					$(BUILDDIR)/time.o \
+
+TESTS = $(BUILDDIR)/test_buddy_allocator.o \
+				$(BUILDDIR)/test_slab_allocator.o \
+
 OBJECTS = $(BUILDDIR)/main.o \
-          $(BUILDDIR)/double_linked_list.o \
           $(BUILDDIR)/buddy_allocator.o \
           $(BUILDDIR)/slab_allocator.o \
-          $(BUILDDIR)/test_buddy_allocator.o \
-          $(BUILDDIR)/test_slab_allocator.o \
-          $(BUILDDIR)/test_time.o \
-          $(BUILDDIR)/test_double_linked_list.o \
+
+					
+          
 
 .PHONY: clean all valgrind verbose time
 
@@ -45,9 +52,9 @@ time: $(BINDIR)/main
 	./$(BINDIR)/main
 
 
-$(BINDIR)/main: $(OBJECTS)
+$(BINDIR)/main: $(HELPERS) $(DATA_STRUCTURES) $(OBJECTS) $(TESTS) 
 	@mkdir -p $(BINDIR)
-	$(CC) $(CFLAGS) -o $@ $(OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $(HELPERS) $(DATA_STRUCTURES) $(OBJECTS) $(TESTS) 
 
 # Main and core components
 $(BUILDDIR)/main.o: $(SRCDIR)/main.c $(HEADDIR)/main.h
@@ -76,10 +83,14 @@ $(BUILDDIR)/test_double_linked_list.o: $(SRCDIR)/test/test_double_linked_list.c 
 $(BUILDDIR)/test_slab_allocator.o: $(SRCDIR)/test/test_slab_allocator.c $(HEADDIR)/test/test_slab_allocator.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-$(BUILDDIR)/test_time.o: $(SRCDIR)/test/test_time.c $(HEADDIR)/test/test_time.h
+$(BUILDDIR)/test_buddy_allocator.o: $(SRCDIR)/test/test_buddy_allocator.c $(HEADDIR)/test/test_buddy_allocator.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-$(BUILDDIR)/test_buddy_allocator.o: $(SRCDIR)/test/test_buddy_allocator.c $(HEADDIR)/test/test_buddy_allocator.h
+# Helpers 
+$(BUILDDIR)/time.o: $(SRCDIR)/helpers/time.c $(HEADDIR)/helpers/time.h
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+$(BUILDDIR)/memory_manipulation.o: $(SRCDIR)/helpers/memory_manipulation.c $(HEADDIR)/helpers/memory_manipulation.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:

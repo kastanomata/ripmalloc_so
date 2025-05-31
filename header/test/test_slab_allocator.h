@@ -1,4 +1,15 @@
 #pragma once
+#include <slab_allocator.h>
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <helpers/memory_manipulation.h>
+#ifdef TIME
+#include <helpers/time.h>
+#define NUM_RUNS 1
+#endif
+
+
 
 typedef struct {
     int passed;

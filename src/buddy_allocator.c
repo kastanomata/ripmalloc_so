@@ -67,7 +67,7 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
         max_nodes += level_nodes;
         level_nodes *= 2;
     }
-
+    #ifdef VERBOSE
     printf("Buddy Allocator initialized with:\n");
     printf("  Total size: %zu bytes\n", total_size);
     printf("  Number of levels: %d\n", num_levels);
@@ -79,6 +79,7 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
         printf("  Level %d: %zu bytes\n", i, level_size);
         level_size /= 2;
     }
+    #endif
 
     // Initialize the allocator fields
     buddy->memory_start = mmap(NULL, total_size, PROT_READ | PROT_WRITE, 
@@ -186,8 +187,9 @@ void* BuddyAllocator_destructor(Allocator* alloc, ...) {
         printf("Error: Failed to destroy node allocator\n"); 
         return (void*)-1;
     }
-
+    #ifdef VERBOSE
     printf("buddy allocator destroyed\n");
+    #endif
     return (void*)0;
 }
 
@@ -206,8 +208,9 @@ void* BuddyAllocator_malloc(Allocator* alloc, ...) {
     BuddyAllocator* buddy = (BuddyAllocator*)alloc;
     int level = va_arg(args, int);
     va_end(args);
-
+    #ifdef VERBOSE
     printf("Allocating at level %d\n", level);
+    #endif
     // Check if there's a free block at this level
     if (!buddy->free_lists[level]) {
         printf("No free list at level %d\n", level);
@@ -215,19 +218,27 @@ void* BuddyAllocator_malloc(Allocator* alloc, ...) {
     }
 
     BuddyNode* free_block = (BuddyNode*) list_pop_front(buddy->free_lists[level]);
+    #ifdef VERBOSE
     if(!free_block) {
         printf("No block found at level %d\n", level);
+    } else {
+        printf("Found block at level %d: %p\n", level, (void*)free_block);
     }
+    #endif
     
     int current_level = level;
     
     // If no block at requested level, look for larger blocks
     while (!free_block && current_level > 0) {
         current_level--;
+        #ifdef VERBOSE
         printf("Looking for block at level %d\n", current_level);
+        #endif
         free_block = (BuddyNode*) list_pop_front(buddy->free_lists[current_level]);
         if (free_block) {
+            #ifdef VERBOSE
             printf("Found block at level %d, splitting...\n", current_level);
+            #endif
             
             // Split block until we reach desired level
             while (current_level < level) {
@@ -253,7 +264,9 @@ void* BuddyAllocator_malloc(Allocator* alloc, ...) {
         return NULL;
     }
 
+    #ifdef VERBOSE
     printf("Found free block at level %d: %p\n", level, (void*)free_block);
+    #endif
     return free_block;
 
 }
@@ -279,7 +292,9 @@ void* BuddyAllocator_alloc(BuddyAllocator* a, size_t size) {
         block_size /= 2;
         level++;
     }
+    #ifdef VERBOSE
     printf("Level required for size %zu: %d (block size: %zu)\n", size, level, block_size);
+    #endif
 
     if (block_size < a->min_block_size) {
         printf("Error: Requested size too small for minimum block size\n");
@@ -314,8 +329,10 @@ void *BuddyAllocator_free(Allocator* alloc, ...) {
         list_detach(a->free_lists[node->level], (Node*)&node->buddy->node);
         // Remove this node from free list if present
         list_detach(a->free_lists[node->level], (Node*)&node->node);
-
+        
+        #ifdef VERBOSE
         printf("\t Reunifying nodes! \n");
+        #endif
 
         // Merge nodes: parent becomes the merged free block
         node = BuddyAllocator_merge_blocks(a, node < node->buddy ? node : node->buddy,
@@ -328,7 +345,6 @@ void *BuddyAllocator_free(Allocator* alloc, ...) {
     }
     // Add the (possibly merged) node to the free list at its level
     list_push_front(a->free_lists[node->level], (Node*)&node->node);
-
     return (void*) 0;
 
 }
@@ -344,10 +360,16 @@ void BuddyAllocator_release(BuddyAllocator* a, void* ptr) {
         printf("Error: NULL node in release\n");
         return;
     }
+    #ifdef VERBOSE
     printf("Releasing block at %p, size %zu, level %d\n", (void*)node->data, node->size, node->level);
-
-    (Allocator*)a->base.free((Allocator*)a, node);
+    #endif
+    uint64_t r = (uint64_t)((Allocator*)a->base.free((Allocator*)a, node));
+    if (r != 0) {
+        printf("Error: Failed to release block\n");
+    }
+    #ifdef VERBOSE
     printf("Block released and merged if possible\n");
+    #endif
 }
 
 int BuddyAllocator_print_state(BuddyAllocator* a) {

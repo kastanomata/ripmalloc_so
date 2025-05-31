@@ -1,36 +1,7 @@
-#include <slab_allocator.h>
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#ifdef TIME
-#include <test_time.h>
-#define NUM_RUNS 1
-#endif
-
+#include <test_slab_allocator.h>
 #define SLAB_SIZE 1024
 #define NUM_SLABS 10
 #define NUM_ALLOCS NUM_SLABS
-
-// Test helper functions
-static void fill_memory_pattern(void* ptr, size_t size, unsigned char pattern) {
-    if (!ptr) return;
-    memset(ptr, pattern, size);
-}
-
-static int verify_memory_pattern(void* ptr, size_t size, unsigned char pattern) {
-    unsigned char* bytes = (unsigned char*)ptr;
-    for (size_t i = 0; i < size; i++) {
-        if (bytes[i] != pattern) {
-            #ifdef VERBOSE
-            printf("Memory corruption at offset %zu: expected 0x%02x, got 0x%02x\n", 
-                   i, pattern, bytes[i]);
-            #endif
-            return -1;
-        }
-    }
-    return 0;
-}
 
 // Test creation with invalid parameters
 static int test_slab_creation_invalid() {

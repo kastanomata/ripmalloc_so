@@ -1,5 +1,6 @@
 #pragma once
 #include <allocator.h>
+
 #include <data_structures/double_linked_list.h>
 
 typedef struct {

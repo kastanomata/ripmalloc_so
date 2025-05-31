@@ -1,5 +1,6 @@
 #pragma once
-
+#include <stddef.h>
+#include <sys/time.h>
 // Function pointer type for allocation test functions
 typedef int (*TestFunction)();
 
