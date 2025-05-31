@@ -236,9 +236,9 @@ int test_buddy_allocator() {
     
     printf("=== Starting BuddyAllocator Tests ===\n\n");
     
-    // result |= test_invalid_init();
-    // result |= test_create_destroy();
-    // result |= test_single_allocation();
+    result |= test_invalid_init();
+    result |= test_create_destroy();
+    result |= test_single_allocation();
     result |= test_multiple_allocations();
     result |= test_varied_sizes();
     result |= test_buddy_merging();
