@@ -263,15 +263,19 @@ SlabAllocator* SlabAllocator_create(SlabAllocator* a, size_t slab_size, size_t n
 }
 
 // Destroy a SlabAllocator
-void SlabAllocator_destroy(SlabAllocator* a) {
+int SlabAllocator_destroy(SlabAllocator* a) {
     #ifdef VERBOSE
     printf("\tDestroying SlabAllocator instance...\n");
     #endif
-    if (!a) return;
-    SlabAllocator_destructor((Allocator*)a);
+    if (!a) return -1;
+    
+    void* result = SlabAllocator_destructor((Allocator*)a);
+    if (!result) return -1;
+    
     #ifdef VERBOSE
     printf("\tSlabAllocator instance destroyed\n");
     #endif
+    return 0;
 }
 
 void* SlabAllocator_alloc(SlabAllocator* a) {

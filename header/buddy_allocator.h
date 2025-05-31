@@ -1,44 +1,50 @@
 #pragma once
-#include <allocator.h>  
-#include <data_structures/double_linked_list.h>
-#include <data_structures/slab_allocator.h>
+#include <allocator.h>
+#include <slab_allocator.h>
+#include <math.h>
+#include <sys/mman.h>
+#include <string.h>
+#include <stdio.h>
 
-#define MAX_LEVELS 4
+#define MAX_LEVELS 32
+#define MIN_BLOCK_SIZE 256
 
-// Forward declaration
-typedef struct BuddyNode BuddyNode;
 
-// Block header structure to track allocations
-struct BuddyNode {
-    Node node;        // Node for the double linked list
+typedef struct BuddyNode {
+    Node node;
     char *data;
-    size_t size;      // Size of the block including header
-    size_t user_size; // Size of the block excluding header
-    int level;        // Level in the buddy system
-    int is_free;      // Whether the block is free
-    BuddyNode* buddy; // Pointer to the buddy block
-    BuddyNode* next; // Pointer to the next block
-};
+    size_t size;           // Size of this block (including header)
+    int level;            // Level in the buddy system
+    int is_free;          // Whether this block is free
+    struct BuddyNode* buddy;  // Pointer to buddy block
+    struct BuddyNode* parent;   // Pointer to parent block
+} BuddyNode;
 
 typedef struct BuddyAllocator {
     Allocator base;           // Base allocator interface
-    int num_levels;          // Number of levels in the buddy system
-    char* managed_memory;    // Start of the managed memory region
-    size_t min_block_size;   // Size of smallest block (including header)
-    size_t total_size;       // Total size of managed memory
-    SlabAllocator slabs[MAX_LEVELS];  // Array of slab allocators for each level
+    void* memory_start;       // Start of managed memory
+    size_t total_size;        // Total size of managed memory
+    size_t min_block_size;    // Minimum block size (power of 2)
+    int num_levels;          // Number of levels in the system
+    SlabAllocator list_allocator;
+    SlabAllocator node_allocator;
+    DoubleLinkedList* free_lists[MAX_LEVELS];  // Array of free lists for each level
 } BuddyAllocator;
 
-// Allocator interface functions
+// Core allocator interface
 void* BuddyAllocator_init(Allocator* alloc, ...);
 void* BuddyAllocator_destructor(Allocator* alloc, ...);
 void* BuddyAllocator_malloc(Allocator* alloc, ...);
 void* BuddyAllocator_free(Allocator* alloc, ...);
 
 // Helper functions
-BuddyAllocator* BuddyAllocator_create(BuddyAllocator* a, size_t num_levels, int buffer_size);
-void BuddyAllocator_destroy(BuddyAllocator* a);
+BuddyAllocator* BuddyAllocator_create(BuddyAllocator* a, size_t total_size, int num_levels);
+int BuddyAllocator_destroy(BuddyAllocator* a);
 void* BuddyAllocator_alloc(BuddyAllocator* a, size_t size);
-int BuddyAllocator_release(BuddyAllocator* a, void* ptr);
-void BuddyAllocator_info(BuddyAllocator* a);
+void BuddyAllocator_release(BuddyAllocator* a, void* ptr);
+
+// Debug/Info functions
+int BuddyAllocator_print_state(BuddyAllocator* a);
+void BuddyAllocator_validate(BuddyAllocator* a);
+
 

@@ -36,4 +36,5 @@ Node* list_detach(DoubleLinkedList* head, Node* item);
 Node* list_pop_front(DoubleLinkedList *list);
 // returns and removes last item from list
 Node* list_pop_back(DoubleLinkedList *list);
-
+// prints list
+int list_print(DoubleLinkedList* list);

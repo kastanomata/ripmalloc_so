@@ -117,3 +117,13 @@ Node* list_pop_back(DoubleLinkedList *list) {
     if (!list || !list->tail) return NULL;
     return list_detach(list, list->tail);
 }
+
+int list_print(DoubleLinkedList* list) {
+    if (!list) return -1;
+    
+    printf("Double Linked List Info:\n");
+    printf("  Size: %d\n", list->size);
+    printf("  Head: %p\n", (void*)list->head);
+    printf("  Tail: %p\n", (void*)list->tail);
+    return 0;
+}
