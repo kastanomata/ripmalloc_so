@@ -2,8 +2,10 @@
 
 int main() {
     test_slab_allocator();
-    test_buddy_allocator();
 
+    printf("\n\n\n");
+    test_buddy_allocator();
+    printf("\n\n\n");
     printf("=== FREEFORM ===\n");
 
 

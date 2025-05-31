@@ -20,6 +20,11 @@ typedef struct BuddyNode {
     struct BuddyNode* parent;   // Pointer to parent block
 } BuddyNode;
 
+struct Buddies {
+    BuddyNode* left_buddy;
+    BuddyNode* right_buddy;
+};
+
 typedef struct BuddyAllocator {
     Allocator base;           // Base allocator interface
     void* memory_start;       // Start of managed memory
