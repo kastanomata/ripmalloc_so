@@ -360,6 +360,10 @@ void BuddyAllocator_release(BuddyAllocator* a, void* ptr) {
         printf("Error: NULL node in release\n");
         return;
     }
+    if(node->is_free) {
+        printf("Error: Attempting to release an already free block\n");
+        return;
+    }
     #ifdef VERBOSE
     printf("Releasing block at %p, size %zu, level %d\n", (void*)node->data, node->size, node->level);
     #endif
