@@ -137,8 +137,6 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
     // add the first node to the first level free list
     list_push_front(buddy->free_lists[0], (Node*)&first_node->node);
 
-    list_print(buddy->free_lists[0]);
-
     // Initialize the function pointers
     buddy->base.init = BuddyAllocator_init;
     buddy->base.dest = BuddyAllocator_destructor;

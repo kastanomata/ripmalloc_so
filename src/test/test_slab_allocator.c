@@ -292,15 +292,17 @@ int test_slab_allocator() {
     result |= std_result;
     #else
 
-    printf("\n=== Running Slab Allocator Operations Test ===\n");
+    printf("=== Running SlabAllocator Tests ===\n");
     result |= test_slab_operations_impl();
     #endif
-    
     if (result != 0) {
-        printf("Some Slab Allocator tests failed!\n");
+        // Red color for failed tests
+        printf("\033[1;31mSome SlabAllocator tests failed!\033[0m\n");
     } else {
-        printf("All Slab Allocator tests passed!\n");
+        // Green color for passed tests
+        printf("\033[1;32mAll SlabAllocator tests passed!\033[0m\n");
     }
+    printf("=== SlabAllocator Tests Complete ===\n");
     
     return result;
 }
