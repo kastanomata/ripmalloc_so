@@ -1,7 +1,13 @@
 #pragma once
 #include <allocator.h>
-
 #include <data_structures/double_linked_list.h>
+
+#include <stdlib.h>
+#include <string.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <sys/mman.h>
+#include <unistd.h>
 
 typedef struct {
     Node node;

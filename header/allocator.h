@@ -6,6 +6,10 @@
 #include <sys/mman.h>
 #include <stdarg.h>
 
+// ANSI color codes
+#define RED     "\x1B[31m"
+#define RESET   "\x1B[0m"
+
 // Forward declaration
 typedef struct Allocator Allocator;
 

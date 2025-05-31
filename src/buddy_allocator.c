@@ -3,7 +3,9 @@
 static struct Buddies BuddyAllocator_divide_block(BuddyAllocator* a, BuddyNode* parent) {
     struct Buddies buddies;
     if (!a || !parent) {
-        printf("Error: Invalid parameters!\n");
+        #ifdef DEBUG
+        printf(RED "ERROR: Invalid parameters in divide_block!\n" RESET);
+        #endif
         buddies.left_buddy = NULL;
         buddies.right_buddy = NULL;
         return buddies;
@@ -25,20 +27,23 @@ static struct Buddies BuddyAllocator_divide_block(BuddyAllocator* a, BuddyNode* 
     buddies.right_buddy->parent = parent;
     buddies.right_buddy->buddy = buddies.left_buddy;
 
-    
     return buddies;
 }
 
 static BuddyNode* BuddyAllocator_merge_blocks(BuddyAllocator* a, BuddyNode* left, BuddyNode* right) {
     if (!a || !left || !right) {
-        printf("Error: Invalid parameters!\n");
+        #ifdef DEBUG
+        printf(RED "ERROR: Invalid parameters in merge_blocks!\n" RESET);
+        #endif
         return NULL;
     }
 
     // The parent node will represent the merged block
     BuddyNode* parent = left->parent;
     if (!parent) {
-        printf("Error: Cannot merge, parent is NULL\n");
+        #ifdef DEBUG
+        printf(RED "ERROR: Cannot merge, parent is NULL\n" RESET);
+        #endif
         return NULL;
     }
 
@@ -48,7 +53,6 @@ static BuddyNode* BuddyAllocator_merge_blocks(BuddyAllocator* a, BuddyNode* left
     parent->is_free = 1;
     return parent;
 }
-
 
 void* BuddyAllocator_init(Allocator* alloc, ...) {
     va_list args;
@@ -60,19 +64,19 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
     
     va_end(args);
 
-    // Calculate max number of nodes based on total size and num_levels
+    // Calculate max number of nodes
     size_t max_nodes = 0;
     size_t level_nodes = 1;
     for (int i = 0; i < num_levels; i++) {
         max_nodes += level_nodes;
         level_nodes *= 2;
     }
+    
     #ifdef VERBOSE
     printf("Buddy Allocator initialized with:\n");
     printf("  Total size: %zu bytes\n", total_size);
     printf("  Number of levels: %d\n", num_levels);
     printf("  Max nodes: %zu\n", max_nodes);
-    // Print size of nodes at each level
     size_t level_size = total_size;
     printf("\nNode sizes at each level:\n");
     for (int i = 0; i < num_levels; i++) {
@@ -81,11 +85,13 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
     }
     #endif
 
-    // Initialize the allocator fields
+    // Initialize memory
     buddy->memory_start = mmap(NULL, total_size, PROT_READ | PROT_WRITE, 
                              MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     if (buddy->memory_start == MAP_FAILED) {
-        printf("Failed to allocate memory!\n");
+        #ifdef DEBUG
+        printf(RED "ERROR: Failed to allocate memory in init!\n" RESET);
+        #endif
         return NULL;
     }
 
@@ -93,18 +99,23 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
     buddy->num_levels = num_levels;
     buddy->min_block_size = total_size >> (num_levels - 1);
 
-    // initialize list allocator
+    // Initialize list allocator
     SlabAllocator* list_allocator = SlabAllocator_create(&(buddy->list_allocator), sizeof(DoubleLinkedList), num_levels);
     if (!list_allocator) {
-        printf("Failed to create list allocator!\n");
+        #ifdef DEBUG
+        printf(RED "ERROR: Failed to create list allocator!\n" RESET);
+        #endif
         return NULL;
     }
     buddy->list_allocator = *list_allocator;
+    
     // Initialize free lists
     for (int i = 0; i < num_levels; i++) {
         buddy->free_lists[i] = (DoubleLinkedList*)SlabAllocator_alloc(&buddy->list_allocator);
         if (!buddy->free_lists[i]) {
-            printf("Failed to allocate free list!\n");
+            #ifdef DEBUG
+            printf(RED "ERROR: Failed to allocate free list!\n" RESET);
+            #endif
             return NULL;
         }
         list_create(buddy->free_lists[i]);
@@ -113,20 +124,23 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
     // Initialize node allocator
     SlabAllocator* slab = SlabAllocator_create(&(buddy->node_allocator), sizeof(BuddyNode), max_nodes);
     if (!slab) {
-        printf("Failed to create slab allocator!\n");
+        #ifdef DEBUG
+        printf(RED "ERROR: Failed to create slab allocator!\n" RESET);
+        #endif
         return NULL;
     }
     buddy->node_allocator = *slab;
 
-    // Add to first level free list the first BuddyNode in the memory 
-    // allocate a BuddyNode from the slab allocator
+    // Create first node
     BuddyNode* first_node = (BuddyNode*)SlabAllocator_alloc(&buddy->node_allocator);
     if (!first_node) {
-        printf("Failed to create first node!\n");
+        #ifdef DEBUG
+        printf(RED "ERROR: Failed to create first node!\n" RESET);
+        #endif
         return NULL;
     }
 
-    // initialize the first node
+    // Initialize first node
     first_node->size = total_size;
     first_node->data = buddy->memory_start;
     first_node->level = 0;
@@ -134,10 +148,10 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
     first_node->buddy = NULL;
     first_node->parent = NULL;
     
-    // add the first node to the first level free list
+    // Add to free list
     list_push_front(buddy->free_lists[0], (Node*)&first_node->node);
 
-    // Initialize the function pointers
+    // Initialize function pointers
     buddy->base.init = BuddyAllocator_init;
     buddy->base.dest = BuddyAllocator_destructor;
     buddy->base.malloc = BuddyAllocator_malloc;
@@ -147,12 +161,16 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
 
 BuddyAllocator* BuddyAllocator_create(BuddyAllocator* a, size_t total_size, int num_levels) {
     if (!a || total_size == 0 || num_levels == 0) {
-        printf("Failed to create: invalid parameters!\n");
+        #ifdef DEBUG
+        printf(RED "ERROR: Invalid parameters in create!\n" RESET);
+        #endif
         return NULL;
     } 
        
     if (!BuddyAllocator_init((Allocator*)a, total_size, num_levels)) {
-        printf("Failed to initialize BuddyAllocator!\n");
+        #ifdef DEBUG
+        printf(RED "ERROR: Failed to initialize BuddyAllocator!\n" RESET);
+        #endif
         return NULL;
     }
     
@@ -161,40 +179,58 @@ BuddyAllocator* BuddyAllocator_create(BuddyAllocator* a, size_t total_size, int 
 
 void* BuddyAllocator_destructor(Allocator* alloc, ...) {
     if (!alloc) {
-        printf("Error: NULL allocator passed to destructor\n");
+        #ifdef DEBUG
+        printf(RED "ERROR: NULL allocator passed to destructor\n" RESET);
+        #endif
         return (void*)-1;
     }
 
     BuddyAllocator* buddy = (BuddyAllocator*)alloc;
     if (!buddy->memory_start) {
-        printf("Error: NULL memory_start in destructor\n");
+        #ifdef DEBUG
+        printf(RED "ERROR: NULL memory_start in destructor\n" RESET);
+        #endif
         return (void*)-1;
     }
 
     if (munmap(buddy->memory_start, buddy->total_size) != 0) {
-        printf("Error: Failed to unmap memory in destructor\n");
+        #ifdef DEBUG
+        printf(RED "ERROR: Failed to unmap memory in destructor\n" RESET);
+        #endif
         return (void*)-1;
     }
 
     if (SlabAllocator_destroy(&buddy->list_allocator) != 0) {
-        printf("Error: Failed to destroy list allocator\n");
+        #ifdef DEBUG
+        printf(RED "ERROR: Failed to destroy list allocator\n" RESET);
+        #endif
         return (void*)-1;
     }
 
     if (SlabAllocator_destroy(&buddy->node_allocator) != 0) {
-        printf("Error: Failed to destroy node allocator\n"); 
+        #ifdef DEBUG
+        printf(RED "ERROR: Failed to destroy node allocator\n" RESET); 
+        #endif
         return (void*)-1;
     }
+    
     #ifdef VERBOSE
-    printf("buddy allocator destroyed\n");
+    printf("Buddy allocator destroyed\n");
     #endif
     return (void*)0;
 }
 
 int BuddyAllocator_destroy(BuddyAllocator* a) {
-    if (!a) return -1;
+    if (!a) {
+        #ifdef DEBUG
+        printf(RED "ERROR: NULL allocator in destroy\n" RESET);
+        #endif
+        return -1;
+    }
     if (BuddyAllocator_destructor((Allocator*)a) != 0) {
-        printf("Error: Failed to destroy buddy allocator\n");
+        #ifdef DEBUG
+        printf(RED "ERROR: Failed to destroy buddy allocator\n" RESET);
+        #endif
         return -1;
     }
     return 0;
@@ -206,27 +242,28 @@ void* BuddyAllocator_malloc(Allocator* alloc, ...) {
     BuddyAllocator* buddy = (BuddyAllocator*)alloc;
     int level = va_arg(args, int);
     va_end(args);
+    
     #ifdef VERBOSE
     printf("Allocating at level %d\n", level);
     #endif
-    // Check if there's a free block at this level
+    
     if (!buddy->free_lists[level]) {
-        printf("No free list at level %d\n", level);
+        #ifdef DEBUG
+        printf(RED "ERROR: No free list at level %d\n" RESET, level);
+        #endif
         return NULL;
     }
 
     BuddyNode* free_block = (BuddyNode*) list_pop_front(buddy->free_lists[level]);
-    #ifdef VERBOSE
+    #ifdef DEBUG
     if(!free_block) {
-        printf("No block found at level %d\n", level);
-    } else {
-        printf("Found block at level %d: %p\n", level, (void*)free_block);
+        printf(RED "ERROR: No block found at level %d\n" RESET, level);
     }
     #endif
     
     int current_level = level;
     
-    // If no block at requested level, look for larger blocks
+    // Search larger blocks if needed
     while (!free_block && current_level > 0) {
         current_level--;
         #ifdef VERBOSE
@@ -238,18 +275,17 @@ void* BuddyAllocator_malloc(Allocator* alloc, ...) {
             printf("Found block at level %d, splitting...\n", current_level);
             #endif
             
-            // Split block until we reach desired level
+            // Split block to desired level
             while (current_level < level) {
                 struct Buddies buddies = BuddyAllocator_divide_block(buddy, free_block);
                 if (buddies.left_buddy == NULL || buddies.right_buddy == NULL) {
-                    printf("Failed to split block!\n");
+                    #ifdef DEBUG
+                    printf(RED "ERROR: Failed to split block!\n" RESET);
+                    #endif
                     return NULL;
                 }
                 
-                // Add buddy to free list
                 list_push_back(buddy->free_lists[current_level + 1], (Node *) buddies.right_buddy);
-                
-                // Continue with the other half
                 free_block = buddies.left_buddy;
                 current_level++;
             }
@@ -258,7 +294,9 @@ void* BuddyAllocator_malloc(Allocator* alloc, ...) {
     }
     
     if (!free_block) {
-        printf("No free blocks available at any level\n");
+        #ifdef DEBUG
+        printf(RED "ERROR: No free blocks available at any level\n" RESET);
+        #endif
         return NULL;
     }
 
@@ -266,46 +304,49 @@ void* BuddyAllocator_malloc(Allocator* alloc, ...) {
     printf("Found free block at level %d: %p\n", level, (void*)free_block);
     #endif
     return free_block;
-
 }
 
 void* BuddyAllocator_alloc(BuddyAllocator* a, size_t size) {
     if (!a || size == 0) {
-        printf("Error: NULL allocator or invalid size!\n");
+        #ifdef DEBUG
+        printf(RED "ERROR: NULL allocator or invalid size in alloc!\n" RESET);
+        #endif
         return NULL;
     }
 
-    // Reserve space for BuddyNode* metadata
+    // Reserve space for metadata
     size_t meta_size = sizeof(BuddyNode*);
     size_t adjusted_size = size + meta_size;
-    // Align to 8 bytes
     if (adjusted_size % 8 != 0) adjusted_size += 8 - (adjusted_size % 8);
 
-    // Calculate initial block size and level
+    // Find appropriate block size
     size_t block_size = a->total_size;
     int level = 0;
-
-    // Find smallest block size that fits the request
     while (block_size / 2 >= adjusted_size && level < a->num_levels - 1) {
         block_size /= 2;
         level++;
     }
+    
     #ifdef VERBOSE
     printf("Level required for size %zu: %d (block size: %zu)\n", size, level, block_size);
     #endif
 
     if (block_size < a->min_block_size) {
-        printf("Error: Requested size too small for minimum block size\n");
+        #ifdef DEBUG
+        printf(RED "ERROR: Requested size too small for minimum block size\n" RESET);
+        #endif
         return NULL;
     }
 
     BuddyNode* node = a->base.malloc((Allocator*)a, level);
     if (!node) {
-        printf("Failed to allocate node!\n");
+        #ifdef DEBUG
+        printf(RED "ERROR: Failed to allocate node!\n" RESET);
+        #endif
         return NULL;
     }
 
-    // Store the BuddyNode* just before the user data
+    // Store metadata
     void* user_data = (char*)node->data + meta_size;
     *((BuddyNode**)((char*)user_data - meta_size)) = node;
 
@@ -319,56 +360,65 @@ void *BuddyAllocator_free(Allocator* alloc, ...) {
     BuddyNode* node = va_arg(args, BuddyNode*);
     va_end(args);
 
-    // Mark the node as free
     node->is_free = 1;
-    // Try to merge with buddy if possible
     while (node->parent && node->buddy && node->buddy->is_free) {
-        // Remove buddy from free list
         list_detach(a->free_lists[node->level], (Node*)&node->buddy->node);
-        // Remove this node from free list if present
         list_detach(a->free_lists[node->level], (Node*)&node->node);
         
         #ifdef VERBOSE
         printf("\t Reunifying nodes! \n");
         #endif
 
-        // Merge nodes: parent becomes the merged free block
-        node = BuddyAllocator_merge_blocks(a, node < node->buddy ? node : node->buddy,
-                                              node > node->buddy ? node : node->buddy);
+        node = BuddyAllocator_merge_blocks(a, 
+            node < node->buddy ? node : node->buddy,
+            node > node->buddy ? node : node->buddy);
         if (!node) {
-            printf("Error: Failed to merge buddies\n");
+            #ifdef DEBUG
+            printf(RED "ERROR: Failed to merge buddies\n" RESET);
+            #endif
             return (void*) -1;
         }
         node->is_free = 1;
     }
-    // Add the (possibly merged) node to the free list at its level
     list_push_front(a->free_lists[node->level], (Node*)&node->node);
     return (void*) 0;
-
 }
 
 void BuddyAllocator_release(BuddyAllocator* a, void* ptr) {
     if(!a || !ptr) {
-        printf("Error: NULL allocator or pointer passed to release\n");
+        #ifdef DEBUG
+        printf(RED "ERROR: NULL allocator or pointer in release\n" RESET);
+        #endif
         return;
     }
-    // Retrieve BuddyNode* from metadata before the user pointer
+    
     BuddyNode* node = *((BuddyNode**)((char*)ptr - sizeof(BuddyNode*)));
     if (!node) {
-        printf("Error: NULL node in release\n");
+        #ifdef DEBUG
+        printf(RED "ERROR: NULL node in release\n" RESET);
+        #endif
         return;
     }
+    
     if(node->is_free) {
-        printf("Error: Attempting to release an already free block\n");
+        #ifdef DEBUG
+        printf(RED "ERROR: Attempting to release an already free block\n" RESET);
+        #endif
         return;
     }
+    
     #ifdef VERBOSE
-    printf("Releasing block at %p, size %zu, level %d\n", (void*)node->data, node->size, node->level);
+    printf("Releasing block at %p, size %zu, level %d\n", 
+           (void*)node->data, node->size, node->level);
     #endif
+    
     uint64_t r = (uint64_t)((Allocator*)a->base.free((Allocator*)a, node));
     if (r != 0) {
-        printf("Error: Failed to release block\n");
+        #ifdef DEBUG
+        printf(RED "ERROR: Failed to release block\n" RESET);
+        #endif
     }
+    
     #ifdef VERBOSE
     printf("Block released and merged if possible\n");
     #endif
@@ -384,12 +434,10 @@ int BuddyAllocator_print_state(BuddyAllocator* a) {
     for (int i = 0; i < a->num_levels; i++) {
         printf("Level %d (block size %zu):\n", i, a->total_size / (1 << i));
         
-        // Print indentation based on level
         for (int indent = 0; indent < i; indent++) {
             printf("  ");
         }
         
-        // Print blocks at this level
         Node* current = a->free_lists[i]->head;
         int blocks_in_level = 1 << i;
         for (int b = 0; b < blocks_in_level; b++) {
@@ -402,6 +450,5 @@ int BuddyAllocator_print_state(BuddyAllocator* a) {
         }
         printf("\n");
     }
-
     return 0;
 }
