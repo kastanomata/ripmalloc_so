@@ -18,6 +18,9 @@ HELPERS = $(BUILDDIR)/memory_manipulation.o \
 
 TESTS = $(BUILDDIR)/test_buddy_allocator.o \
 				$(BUILDDIR)/test_slab_allocator.o \
+				$(BUILDDIR)/test_bitmap.o \
+				$(BUILDDIR)/test_double_linked_list.o \
+
 
 OBJECTS = $(BUILDDIR)/main.o \
           $(BUILDDIR)/buddy_allocator.o \
@@ -91,6 +94,9 @@ $(BUILDDIR)/test_allocator.o: $(SRCDIR)/test/test_allocator.c $(HEADDIR)/test/te
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(BUILDDIR)/test_double_linked_list.o: $(SRCDIR)/test/test_double_linked_list.c $(HEADDIR)/test/test_double_linked_list.h
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+$(BUILDDIR)/test_bitmap.o: $(SRCDIR)/test/test_bitmap.c $(HEADDIR)/test/test_bitmap.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(BUILDDIR)/test_slab_allocator.o: $(SRCDIR)/test/test_slab_allocator.c $(HEADDIR)/test/test_slab_allocator.h

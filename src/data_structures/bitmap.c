@@ -10,7 +10,6 @@ Bitmap* bitmap_create(Bitmap *bitmap, int num_bits) {
     bitmap->bits = (unsigned int*)calloc(bitmap->num_words, sizeof(unsigned int));
     
     if (!bitmap->bits) {
-        free(bitmap);
         return NULL;
     }
     return bitmap;
@@ -20,7 +19,6 @@ Bitmap* bitmap_create(Bitmap *bitmap, int num_bits) {
 void bitmap_destroy(Bitmap *bitmap) {
     if (!bitmap) return;
     free(bitmap->bits);
-    free(bitmap);
 }
 
 // Set bit at given index (1-based)

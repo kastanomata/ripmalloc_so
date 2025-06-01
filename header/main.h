@@ -8,8 +8,8 @@
 #include <string.h>
 #include <unistd.h>
 
-
 #include <test/test_double_linked_list.h>
+#include <test/test_bitmap.h>
 
 #include <allocator.h>
 // #include <test/test_allocator.h>

@@ -1,5 +1,4 @@
-#include <data_structures/double_linked_list.h>
-#include <assert.h>
+#include <test/test_double_linked_list.h>
 
 int test_list_create() {
     DoubleLinkedList list;
