@@ -104,18 +104,19 @@ int test_bitmap_print() {
     bitmap_set(&b, 2);
     bitmap_set(&b, 15);
 
+    #ifdef VERBOSE
     printf("Expected bitmap pattern: 101000000000001\n");
     printf("Actual output:\n");
     bitmap_print(&b);
+    #endif
 
     bitmap_destroy(&b);
     return 0;
 }
 
 int test_bitmap() {
-    printf("Bitmap Test Program\n");
-    printf("Running tests...\n");
-    
+    printf("=== Running Bitmap Tests ===\n");
+
     int tests_passed = 0;
     int total_tests = 4;
     
@@ -123,7 +124,11 @@ int test_bitmap() {
     if (test_bitmap_set_clear_test() == 0) tests_passed++;
     if (test_bitmap_find_first() == 0) tests_passed++;
     if (test_bitmap_print() == 0) tests_passed++;
-    
-    printf("%d/%d tests passed\n", tests_passed, total_tests);
+    if (tests_passed == total_tests) {
+        printf("\033[1;32mAll Bitmap tests passed!\033[0m\n");
+    } else {
+        printf("\033[1;31mSome Bitmap tests failed!\033[0m\n");
+    }
+    printf("=== Bitmap Tests Complete ===\n");
     return tests_passed == total_tests ? 0 : 1;
 }

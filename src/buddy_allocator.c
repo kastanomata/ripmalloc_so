@@ -38,18 +38,29 @@ static BuddyNode* BuddyAllocator_merge_blocks(BuddyAllocator* a, BuddyNode* left
         return NULL;
     }
 
-    // The parent node will represent the merged block
-    BuddyNode* parent = left->parent;
-    if (!parent) {
+    // Check they are mutual buddies
+    if (left->buddy != right || right->buddy != left) {
         #ifdef DEBUG
-        printf(RED "ERROR: Cannot merge, parent is NULL\n" RESET);
+        printf(RED "ERROR: Nodes are not mutual buddies!\n" RESET);
         #endif
         return NULL;
     }
 
-    // Free the left and right buddy nodes
+    BuddyNode* parent = left->parent;
+    if (!parent || parent != right->parent) {
+        #ifdef DEBUG
+        printf(RED "ERROR: Parent mismatch!\n" RESET);
+        #endif
+        return NULL;
+    }
+
+    // Release the child nodes
     SlabAllocator_release(&(a->node_allocator), left);
     SlabAllocator_release(&(a->node_allocator), right);
+
+    list_detach(a->free_lists[left->level], (Node*)&left->node);
+    list_detach(a->free_lists[right->level], (Node*)&right->node);
+
     parent->is_free = 1;
     return parent;
 }
@@ -318,7 +329,7 @@ void* BuddyAllocator_alloc(BuddyAllocator* a, size_t size) {
     size_t meta_size = sizeof(BuddyNode*);
     size_t adjusted_size = size + meta_size;
     if (adjusted_size % 8 != 0) adjusted_size += 8 - (adjusted_size % 8);
-
+    
     // Find appropriate block size
     size_t block_size = a->total_size;
     int level = 0;
@@ -328,8 +339,9 @@ void* BuddyAllocator_alloc(BuddyAllocator* a, size_t size) {
     }
     
     #ifdef VERBOSE
+    printf("Requested size: %zu, adjusted size with metadata: %zu\n", size, adjusted_size);
     printf("Level required for size %zu: %d (block size: %zu)\n", size, level, block_size);
-    #endif
+    #endif    
 
     if (block_size < a->min_block_size) {
         #ifdef DEBUG
@@ -345,6 +357,7 @@ void* BuddyAllocator_alloc(BuddyAllocator* a, size_t size) {
         #endif
         return NULL;
     }
+    node->is_free = 0; // Mark as used
 
     // Store metadata
     void* user_data = (char*)node->data + meta_size;
@@ -360,28 +373,47 @@ void *BuddyAllocator_free(Allocator* alloc, ...) {
     BuddyNode* node = va_arg(args, BuddyNode*);
     va_end(args);
 
+    if (!node) {
+        #ifdef DEBUG
+        printf(RED "ERROR: NULL node in free!\n" RESET);
+        #endif
+        return (void*)-1;
+    }
+
+    #ifdef VERBOSE
+    printf("Freeing block at %p, size %zu, level %d\n", 
+           node->data, node->size, node->level);
+    #endif
+
     node->is_free = 1;
+    list_push_front(a->free_lists[node->level], (Node*)&node->node);
+
+    // Try to merge with buddy if possible
     while (node->parent && node->buddy && node->buddy->is_free) {
-        list_detach(a->free_lists[node->level], (Node*)&node->buddy->node);
-        list_detach(a->free_lists[node->level], (Node*)&node->node);
-        
+        BuddyNode* buddy = node->buddy;
+
         #ifdef VERBOSE
-        printf("\t Reunifying nodes! \n");
+        printf("Merging blocks: [%p] and [%p] at level %d\n", 
+               node->data, buddy->data, node->level);
         #endif
 
-        node = BuddyAllocator_merge_blocks(a, 
-            node < node->buddy ? node : node->buddy,
-            node > node->buddy ? node : node->buddy);
+        // Determine left and right buddies (lower address first)
+        BuddyNode* left = node;
+        BuddyNode* right = buddy;
+
+        node = BuddyAllocator_merge_blocks(a, left, right);
         if (!node) {
             #ifdef DEBUG
             printf(RED "ERROR: Failed to merge buddies\n" RESET);
             #endif
-            return (void*) -1;
+            break;
         }
-        node->is_free = 1;
+        
+        // After merging, add parent to its free list
+        list_push_front(a->free_lists[node->level], (Node*)&node->node);
     }
-    list_push_front(a->free_lists[node->level], (Node*)&node->node);
-    return (void*) 0;
+    
+    return (void*)0;
 }
 
 void BuddyAllocator_release(BuddyAllocator* a, void* ptr) {
@@ -426,17 +458,14 @@ void BuddyAllocator_release(BuddyAllocator* a, void* ptr) {
 
 int BuddyAllocator_print_state(BuddyAllocator* a) {
     printf("Buddy Allocator state:\n");
-    printf("  Total size: %zu bytes\n", a->total_size);
-    printf("  Number of levels: %d\n", a->num_levels);
-    printf("  Min block size: %zu bytes\n", a->min_block_size);
-    printf("  Memory start: %p\n", a->memory_start);
-    printf("  Free lists:\n");
+    printf("\tTotal size: %zu bytes\n", a->total_size);
+    printf("\tNumber of levels: %d\n", a->num_levels);
+    printf("\tMin block size: %zu bytes\n", a->min_block_size);
+    printf("\tMemory start: %p\n", a->memory_start);
+    SlabAllocator_print_state(&a->node_allocator);
+    printf("\tFree lists:\n");
     for (int i = 0; i < a->num_levels; i++) {
         printf("Level %d (block size %zu):\n", i, a->total_size / (1 << i));
-        
-        for (int indent = 0; indent < i; indent++) {
-            printf("  ");
-        }
         
         Node* current = a->free_lists[i]->head;
         int blocks_in_level = 1 << i;

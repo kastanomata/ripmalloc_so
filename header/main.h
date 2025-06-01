@@ -17,3 +17,5 @@
 #include <test/test_slab_allocator.h>
 #include <buddy_allocator.h>
 #include <test/test_buddy_allocator.h>
+
+#include <helpers/freeform.h>

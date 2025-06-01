@@ -42,6 +42,6 @@ SlabAllocator* SlabAllocator_create(SlabAllocator* a, size_t slab_size, size_t i
 int SlabAllocator_destroy(SlabAllocator* a);
 void* SlabAllocator_alloc(SlabAllocator* a);
 void SlabAllocator_release(SlabAllocator* a, void* ptr);
-void SlabAllocator_info(SlabAllocator* a);
+void SlabAllocator_print_state(SlabAllocator* a);
 void SlabAllocator_print_memory_map(SlabAllocator* a);
 void print_slab_info(SlabAllocator* a, unsigned int slab_index);

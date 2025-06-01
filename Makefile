@@ -15,6 +15,7 @@ DATA_STRUCTURES = $(BUILDDIR)/double_linked_list.o \
 
 HELPERS = $(BUILDDIR)/memory_manipulation.o \
 					$(BUILDDIR)/time.o \
+					$(BUILDDIR)/freeform.o \
 
 TESTS = $(BUILDDIR)/test_buddy_allocator.o \
 				$(BUILDDIR)/test_slab_allocator.o \
@@ -61,7 +62,6 @@ $(BINDIR)/main: CFLAGS += $(REQUESTED_FLAGS)
 # Shortcut targets that trigger the run
 verbose debug time: run
 
-# Prevent these targets from being treated as files
 .PHONY: run verbose debug time
 
 $(BINDIR)/main: $(HELPERS) $(DATA_STRUCTURES) $(OBJECTS) $(TESTS) 
@@ -112,5 +112,7 @@ $(BUILDDIR)/time.o: $(SRCDIR)/helpers/time.c $(HEADDIR)/helpers/time.h
 $(BUILDDIR)/memory_manipulation.o: $(SRCDIR)/helpers/memory_manipulation.c $(HEADDIR)/helpers/memory_manipulation.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
+$(BUILDDIR)/freeform.o: $(SRCDIR)/helpers/freeform.c $(HEADDIR)/helpers/freeform.h
+	$(CC) $(CFLAGS) -c -o $@ $<
 clean:
 	rm -rf $(BUILDDIR)/*.o $(BINDIR)/*

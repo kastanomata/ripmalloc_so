@@ -5,7 +5,7 @@
 #include <string.h>
 
 #define TOTAL_SIZE (1 << 10)  // 1KB
-#define NUM_LEVELS 4          // Results in 64B min block size (1024/2^4)
+#define NUM_LEVELS 4          // Results in 128B min block size (1024/2^4)
 
 // Test initialization with invalid parameters
 static int test_invalid_init() {
@@ -81,7 +81,7 @@ static int test_single_allocation() {
     printf("Allocating block of size %zu\n", alloc_size);
     #endif
     
-    ptr = BuddyAllocator_alloc(&allocator, alloc_size);    
+    ptr = BuddyAllocator_alloc(&allocator, alloc_size);
     // Verify we can write to the memory
     fill_memory_pattern(ptr, alloc_size, 0xAA);
     assert(verify_memory_pattern(ptr, alloc_size, 0xAA) == 0);

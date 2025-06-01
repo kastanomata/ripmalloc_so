@@ -74,7 +74,7 @@ static int test_slab_alloc_pattern() {
     }
     
     #ifdef VERBOSE
-    SlabAllocator_info(&allocator);
+    SlabAllocator_print_state(&allocator);
     printf("Verifying patterns...\n");
     #endif
     for (size_t i = 0; i < NUM_SLABS; i++) {
@@ -82,7 +82,7 @@ static int test_slab_alloc_pattern() {
     }
     
     #ifdef VERBOSE
-    SlabAllocator_info(&allocator);
+    SlabAllocator_print_state(&allocator);
     printf("Releasing in reverse order...\n");
     #endif
     for (size_t i = NUM_SLABS; i > 0; i--) {
@@ -90,7 +90,7 @@ static int test_slab_alloc_pattern() {
     }
     
     #ifdef VERBOSE
-    SlabAllocator_info(&allocator);
+    SlabAllocator_print_state(&allocator);
     printf("Reallocating and verifying no pattern remains...\n");
     #endif
     for (size_t i = 0; i < NUM_SLABS; i++) {

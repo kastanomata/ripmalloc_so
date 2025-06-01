@@ -42,15 +42,20 @@ int test_list_push_pop() {
 }
 
 int test_double_linked_list() {
-    printf("Double Linked List Test Program\n");
-    printf("Running tests...\n");
-    
+
+    printf("=== Running Double Linked List Tests ===\n");
+
     int tests_passed = 0;
     int total_tests = 2;
     
     if (test_list_create() == 0) tests_passed++;
     if (test_list_push_pop() == 0) tests_passed++;
     
-    printf("%d/%d tests passed\n", tests_passed, total_tests);
+    if (tests_passed != total_tests) {
+        printf("\033[1;31mSome Double Linked List tests failed!\033[0m\n");
+    } else {
+        printf("\033[1;32mAll Double Linked List tests passed!\033[0m\n");
+    }
+    printf("=== Double Linked List Tests Complete ===\n");
     return tests_passed;
 }

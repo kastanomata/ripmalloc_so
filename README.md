@@ -42,7 +42,7 @@ Questa interfaccia permette di implementare diversi tipi di allocatori mantenend
 Include funzionalità per:
 - Richiesta di utilizzo per uno slab libero (SlabAllocator_alloc)
 - Liberazione di slab esistenti (SlabAllocator_release)
-- Monitoraggio dell'utilizzo della memoria (SlabAllocator_info)
+- Monitoraggio dell'utilizzo della memoria (SlabAllocator_print_state)
 - Visualizzazione della memorya (SlabAllocator_print_memory_map)
 
 ### LinearAllocator

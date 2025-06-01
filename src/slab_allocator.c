@@ -304,7 +304,7 @@ void SlabAllocator_release(SlabAllocator* a, void* ptr) {
     ((Allocator*)a)->free((Allocator*)a, ptr);
 }
 
-void SlabAllocator_info(SlabAllocator* a) {
+void SlabAllocator_print_state(SlabAllocator* a) {
     printf("\tSlabAllocator Info:\n");
     printf("\tSlab Size: %zu\n", a->slab_size);
     printf("\tSlots: %u/%u used\n", 
