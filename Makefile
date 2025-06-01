@@ -11,6 +11,7 @@ BINDIR = bin
 BINS = $(BINDIR)/main
 
 DATA_STRUCTURES = $(BUILDDIR)/double_linked_list.o \
+									$(BUILDDIR)/bitmap.o
 
 HELPERS = $(BUILDDIR)/memory_manipulation.o \
 					$(BUILDDIR)/time.o \
@@ -22,13 +23,9 @@ OBJECTS = $(BUILDDIR)/main.o \
           $(BUILDDIR)/buddy_allocator.o \
           $(BUILDDIR)/slab_allocator.o \
 
-					
-          
-
 .PHONY: clean all valgrind verbose time
 
 all: $(BINDIR)/main
-	./$(BINDIR)/main
 
 valgrind: $(BINDIR)/main
 	valgrind  --track-origins=yes --show-leak-kinds=all --leak-check=full ./$(BINDIR)/main
@@ -43,14 +40,26 @@ massif: $(BINDIR)/main
 		echo "No massif output file found."; \
 	fi
 
-verbose: CFLAGS += -DVERBOSE
-verbose: $(BINDIR)/main
+# Define flags based on target names
+VERBOSE_FLAG := $(if $(filter verbose,$(MAKECMDGOALS)),-DVERBOSE)
+DEBUG_FLAG := $(if $(filter debug,$(MAKECMDGOALS)),-DDEBUG)
+TIME_FLAG := $(if $(filter time,$(MAKECMDGOALS)),-DTIME)
+
+# Combine all requested flags
+REQUESTED_FLAGS := $(VERBOSE_FLAG) $(DEBUG_FLAG) $(TIME_FLAG)
+
+# Main run rule
+run: $(BINDIR)/main
 	./$(BINDIR)/main
 
-time: CFLAGS += -DTIME
-time: $(BINDIR)/main
-	./$(BINDIR)/main
+# Build binary with requested flags
+$(BINDIR)/main: CFLAGS += $(REQUESTED_FLAGS)
 
+# Shortcut targets that trigger the run
+verbose debug time: run
+
+# Prevent these targets from being treated as files
+.PHONY: run verbose debug time
 
 $(BINDIR)/main: $(HELPERS) $(DATA_STRUCTURES) $(OBJECTS) $(TESTS) 
 	@mkdir -p $(BINDIR)
@@ -70,7 +79,11 @@ $(BUILDDIR)/slab_allocator.o: $(SRCDIR)/slab_allocator.c $(HEADDIR)/slab_allocat
 $(BUILDDIR)/buddy_allocator.o: $(SRCDIR)/buddy_allocator.c $(HEADDIR)/buddy_allocator.h $(HEADDIR)/allocator.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
+# Data structures
 $(BUILDDIR)/double_linked_list.o: $(SRCDIR)/data_structures/double_linked_list.c $(HEADDIR)/data_structures/double_linked_list.h
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+$(BUILDDIR)/bitmap.o: $(SRCDIR)/data_structures/bitmap.c $(HEADDIR)/data_structures/bitmap.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 # Tests

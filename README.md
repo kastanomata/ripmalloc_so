@@ -22,7 +22,6 @@ Allocator (Interface)
   │
   └── BuddyAllocator
       ├── TreeBuddyAllocator
-      │
       └── BitmapBuddyAllocator
 
 ```
