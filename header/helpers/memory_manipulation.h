@@ -5,3 +5,4 @@
 
 void fill_memory_pattern(void* ptr, size_t size, unsigned char pattern);
 int verify_memory_pattern(void* ptr, size_t size, unsigned char pattern);
+int print_memory_pattern(void* ptr, size_t size);

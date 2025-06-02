@@ -221,6 +221,11 @@ static int freeform_buddy_allocator() {
     return 0;
 }
     
+
+// static int freeform_bitmap_allocator() {
+//     // TODO
+// }
+
 int freeform() {
     printf("=== START FREEFORM ===\n");
     // Freeform testing area

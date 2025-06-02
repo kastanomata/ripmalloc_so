@@ -17,3 +17,21 @@ int verify_memory_pattern(void* ptr, size_t size, unsigned char pattern) {
     }
     return 0;
 }
+
+int print_memory_pattern(void* ptr, size_t size) {
+    unsigned char* bytes = (unsigned char*)ptr;
+    printf("Memory pattern at %p:\n", ptr);
+    size_t bytes_printed = 0;
+    for (size_t i = 0; i < size; i++) {
+        printf("0x%02x ", bytes[i]);
+        bytes_printed++;
+        if ((i + 1) % 16 == 0) {
+            printf("\n");
+        }
+    }
+    if (size % 16 != 0) {
+        printf("\n");
+    }
+    printf("Total bytes printed: %zu\n", bytes_printed);
+    return 0;
+}

@@ -24,8 +24,9 @@ TESTS = $(BUILDDIR)/test_buddy_allocator.o \
 
 
 OBJECTS = $(BUILDDIR)/main.o \
-          $(BUILDDIR)/buddy_allocator.o \
           $(BUILDDIR)/slab_allocator.o \
+          $(BUILDDIR)/buddy_allocator.o \
+					$(BUILDDIR)/bitmap_buddy_allocator.o \
 
 .PHONY: clean all valgrind verbose time
 
@@ -66,7 +67,7 @@ verbose debug time: run
 
 $(BINDIR)/main: $(HELPERS) $(DATA_STRUCTURES) $(OBJECTS) $(TESTS) 
 	@mkdir -p $(BINDIR)
-	$(CC) $(CFLAGS) -o $@ $(HELPERS) $(DATA_STRUCTURES) $(OBJECTS) $(TESTS) 
+	$(CC) $(CFLAGS) -o $@ $(HELPERS) $(DATA_STRUCTURES) $(OBJECTS) $(TESTS) -lm
 
 # Main and core components
 $(BUILDDIR)/main.o: $(SRCDIR)/main.c $(HEADDIR)/main.h
@@ -81,6 +82,9 @@ $(BUILDDIR)/slab_allocator.o: $(SRCDIR)/slab_allocator.c $(HEADDIR)/slab_allocat
 
 $(BUILDDIR)/buddy_allocator.o: $(SRCDIR)/buddy_allocator.c $(HEADDIR)/buddy_allocator.h $(HEADDIR)/allocator.h
 	$(CC) $(CFLAGS) -c -o $@ $<
+
+$(BUILDDIR)/bitmap_buddy_allocator.o: $(SRCDIR)/bitmap_buddy_allocator.c $(HEADDIR)/bitmap_buddy_allocator.h $(HEADDIR)/allocator.h
+	$(CC) $(CFLAGS) -c -o $@ $< 
 
 # Data structures
 $(BUILDDIR)/double_linked_list.o: $(SRCDIR)/data_structures/double_linked_list.c $(HEADDIR)/data_structures/double_linked_list.h
@@ -114,5 +118,6 @@ $(BUILDDIR)/memory_manipulation.o: $(SRCDIR)/helpers/memory_manipulation.c $(HEA
 
 $(BUILDDIR)/freeform.o: $(SRCDIR)/helpers/freeform.c $(HEADDIR)/helpers/freeform.h
 	$(CC) $(CFLAGS) -c -o $@ $<
+
 clean:
 	rm -rf $(BUILDDIR)/*.o $(BINDIR)/*
