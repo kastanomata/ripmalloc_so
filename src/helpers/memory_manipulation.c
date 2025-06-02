@@ -22,14 +22,19 @@ int print_memory_pattern(void* ptr, size_t size) {
     unsigned char* bytes = (unsigned char*)ptr;
     printf("Memory pattern at %p:\n", ptr);
     size_t bytes_printed = 0;
+    size_t row_width = 8; // 64 bits = 8 bytes
     for (size_t i = 0; i < size; i++) {
+        if (i % row_width == 0) {
+            // Print displacement at the start of the row
+            printf("%04zx: ", i);
+        }
         printf("0x%02x ", bytes[i]);
         bytes_printed++;
-        if ((i + 1) % 16 == 0) {
+        if ((i + 1) % row_width == 0) {
             printf("\n");
         }
     }
-    if (size % 16 != 0) {
+    if (size % row_width != 0) {
         printf("\n");
     }
     printf("Total bytes printed: %zu\n", bytes_printed);

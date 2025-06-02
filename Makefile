@@ -17,8 +17,9 @@ HELPERS = $(BUILDDIR)/memory_manipulation.o \
 					$(BUILDDIR)/time.o \
 					$(BUILDDIR)/freeform.o \
 
-TESTS = $(BUILDDIR)/test_buddy_allocator.o \
-				$(BUILDDIR)/test_slab_allocator.o \
+TESTS = $(BUILDDIR)/test_slab_allocator.o \
+				$(BUILDDIR)/test_buddy_allocator.o \
+				$(BUILDDIR)/test_bitmap_buddy_allocator.o \
 				$(BUILDDIR)/test_bitmap.o \
 				$(BUILDDIR)/test_double_linked_list.o \
 
@@ -107,6 +108,9 @@ $(BUILDDIR)/test_slab_allocator.o: $(SRCDIR)/test/test_slab_allocator.c $(HEADDI
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(BUILDDIR)/test_buddy_allocator.o: $(SRCDIR)/test/test_buddy_allocator.c $(HEADDIR)/test/test_buddy_allocator.h
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+$(BUILDDIR)/test_bitmap_buddy_allocator.o: $(SRCDIR)/test/test_bitmap_buddy_allocator.c $(HEADDIR)/test/test_bitmap_buddy_allocator.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 # Helpers 
