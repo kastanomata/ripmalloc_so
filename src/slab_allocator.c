@@ -98,9 +98,9 @@ void *SlabAllocator_init(Allocator* alloc, ...) {
 
     // Setup interface methods
     alloc->init = SlabAllocator_init;
-    alloc->dest = SlabAllocator_destructor;
-    alloc->malloc = SlabAllocator_malloc;
-    alloc->free = SlabAllocator_free;
+    alloc->dest = SlabAllocator_cleanup;
+    alloc->malloc = SlabAllocator_reserve;
+    alloc->free = SlabAllocator_release;
     #ifdef VERBOSE
     printf("\tInterface methods configured\n");
     printf("\tSlabAllocator initialization complete\n");
@@ -136,13 +136,13 @@ SlabAllocator* SlabAllocator_create(SlabAllocator* a, size_t slab_size, size_t n
 }
 
 // Clean up SlabAllocator
-void *SlabAllocator_destructor(Allocator* alloc, ...) {
+void *SlabAllocator_cleanup(Allocator* alloc, ...) {
     #ifdef VERBOSE
     printf("\tDestroying SlabAllocator...\n");
     #endif
     if (!alloc) {
         #ifdef DEBUG
-        printf(RED "ERROR: NULL allocator passed to SlabAllocator_destructor\n" RESET);
+        printf(RED "ERROR: NULL allocator passed to SlabAllocator_cleanup\n" RESET);
         #endif
         return NULL;
     }
@@ -173,7 +173,7 @@ int SlabAllocator_destroy(SlabAllocator* a) {
         return -1;
     }
     
-    void* result = SlabAllocator_destructor((Allocator*)a);
+    void* result = SlabAllocator_cleanup((Allocator*)a);
     if (!result) return -1;
     
     #ifdef VERBOSE
@@ -183,7 +183,7 @@ int SlabAllocator_destroy(SlabAllocator* a) {
 }
 
 // Allocate a slab
-void *SlabAllocator_malloc(Allocator* alloc, ...) {
+void *SlabAllocator_reserve(Allocator* alloc, ...) {
     #ifdef VERBOSE
     printf("\tAttempting to allocate a slab...\n");
     #endif
@@ -223,12 +223,12 @@ void *SlabAllocator_malloc(Allocator* alloc, ...) {
     return slab_node->data;
 }
 
-void* SlabAllocator_alloc(SlabAllocator* a) {
+void* SlabAllocator_malloc(SlabAllocator* a) {
     return ((Allocator*)a)->malloc((Allocator*)a);
 }
 
 // Free a slab
-void *SlabAllocator_free(Allocator* alloc, ...) {
+void *SlabAllocator_release(Allocator* alloc, ...) {
     #ifdef VERBOSE
     printf("\tAttempting to free a slab...\n");
     #endif
@@ -300,7 +300,7 @@ void *SlabAllocator_free(Allocator* alloc, ...) {
     return (void*)1;
 }
 
-void SlabAllocator_release(SlabAllocator* a, void* ptr) {
+void SlabAllocator_free(SlabAllocator* a, void* ptr) {
     ((Allocator*)a)->free((Allocator*)a, ptr);
 }
 
@@ -325,7 +325,7 @@ void SlabAllocator_print_memory_map(SlabAllocator* a) {
     printf("\tSlabAllocator Visualization:\n");
     if (!a || !a->managed_memory) {
         #ifdef DEBUG
-        printf(RED "ERROR: No memory to visualize\n" RESET);
+        printf(RED "ERROR: No memory to visualize\n" RESETreserverelease);
         #endif
         return;
     }

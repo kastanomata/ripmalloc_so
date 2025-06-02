@@ -10,8 +10,8 @@ static struct Buddies BuddyAllocator_divide_block(BuddyAllocator* a, BuddyNode* 
         buddies.right_buddy = NULL;
         return buddies;
     }
-    buddies.left_buddy = SlabAllocator_alloc(&(a->node_allocator));
-    buddies.right_buddy = SlabAllocator_alloc(&(a->node_allocator));
+    buddies.left_buddy = SlabAllocator_malloc(&(a->node_allocator));
+    buddies.right_buddy = SlabAllocator_malloc(&(a->node_allocator));
 
     parent->is_free = 0;
 
@@ -57,14 +57,14 @@ static BuddyNode* BuddyAllocator_merge_blocks(BuddyAllocator* a, BuddyNode* left
     }
     if (parent->is_free == true) {
         #ifdef DEBUG
-        printf(RED "ERROR: Parent node is already free!\n" RESET);
+        printf(RED "ERROR: Parent node is alreadyreserve free!\n" RESET);
         #endif
         return NULL;
     }
 
     // Release the child nodes
-    SlabAllocator_release(&(a->node_allocator), left);
-    SlabAllocator_release(&(a->node_allocator), right);
+    SlabAllocator_free(&(a->node_allocator), left);
+    SlabAllocator_free(&(a->node_allocator), right);
 
     list_detach(a->free_lists[left->level], (Node*)&left->node);
     list_detach(a->free_lists[right->level], (Node*)&right->node);
@@ -130,7 +130,7 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
     
     // Initialize free lists
     for (int i = 0; i < num_levels; i++) {
-        buddy->free_lists[i] = (DoubleLinkedList*)SlabAllocator_alloc(&buddy->list_allocator);
+        buddy->free_lists[i] = (DoubleLinkedList*)SlabAllocator_malloc(&buddy->list_allocator);
         if (!buddy->free_lists[i]) {
             #ifdef DEBUG
             printf(RED "ERROR: Failed to allocate free list!\n" RESET);
@@ -151,7 +151,7 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
     buddy->node_allocator = *slab;
 
     // Create first node
-    BuddyNode* first_node = (BuddyNode*)SlabAllocator_alloc(&buddy->node_allocator);
+    BuddyNode* first_node = (BuddyNode*)SlabAllocator_malloc(&buddy->node_allocator);
     if (!first_node) {
         #ifdef DEBUG
         printf(RED "ERROR: Failed to create first node!\n" RESET);
@@ -172,9 +172,9 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
 
     // Initialize function pointers
     buddy->base.init = BuddyAllocator_init;
-    buddy->base.dest = BuddyAllocator_destructor;
-    buddy->base.malloc = BuddyAllocator_malloc;
-    buddy->base.free = BuddyAllocator_free;
+    buddy->base.dest = BuddyAllocator_cleanup;
+    buddy->base.malloc = BuddyAllocator_reserve;
+    buddy->base.free = BuddyAllocator_release;
     return buddy;
 }
 
@@ -196,7 +196,7 @@ BuddyAllocator* BuddyAllocator_create(BuddyAllocator* a, size_t total_size, int 
     return a;
 }
 
-void* BuddyAllocator_destructor(Allocator* alloc, ...) {
+void* BuddyAllocator_cleanup(Allocator* alloc, ...) {
     if (!alloc) {
         #ifdef DEBUG
         printf(RED "ERROR: NULL allocator passed to destructor\n" RESET);
@@ -246,7 +246,7 @@ int BuddyAllocator_destroy(BuddyAllocator* a) {
         #endif
         return -1;
     }
-    if (BuddyAllocator_destructor((Allocator*)a) != 0) {
+    if (BuddyAllocator_cleanup((Allocator*)a) != 0) {
         #ifdef DEBUG
         printf(RED "ERROR: Failed to destroy buddy allocator\n" RESET);
         #endif
@@ -255,7 +255,7 @@ int BuddyAllocator_destroy(BuddyAllocator* a) {
     return 0;
 }
 
-void* BuddyAllocator_malloc(Allocator* alloc, ...) {
+void* BuddyAllocator_reserve(Allocator* alloc, ...) {
     va_list args;
     va_start(args, alloc);
     BuddyAllocator* buddy = (BuddyAllocator*)alloc;
@@ -325,7 +325,7 @@ void* BuddyAllocator_malloc(Allocator* alloc, ...) {
     return free_block;
 }
 
-void* BuddyAllocator_alloc(BuddyAllocator* a, size_t size) {
+void* BuddyAllocator_malloc(BuddyAllocator* a, size_t size) {
     if (!a || size == 0) {
         #ifdef DEBUG
         printf(RED "ERROR: NULL allocator or invalid size in alloc!\n" RESET);
@@ -374,7 +374,7 @@ void* BuddyAllocator_alloc(BuddyAllocator* a, size_t size) {
     return user_data;
 }
 
-void *BuddyAllocator_free(Allocator* alloc, ...) {
+void *BuddyAllocator_release(Allocator* alloc, ...) {
     va_list args;
     va_start(args, alloc);
     BuddyAllocator* a = (BuddyAllocator*)alloc;
@@ -424,7 +424,7 @@ void *BuddyAllocator_free(Allocator* alloc, ...) {
     return (void*)0;
 }
 
-void BuddyAllocator_release(BuddyAllocator* a, void* ptr) {
+void BuddyAllocator_free(BuddyAllocator* a, void* ptr) {
     if(!a || !ptr) {
         #ifdef DEBUG
         printf(RED "ERROR: NULL allocator or pointer in release\n" RESET);

@@ -18,6 +18,6 @@
 #include <buddy_allocator.h>
 #include <test/test_buddy_allocator.h>
 #include <bitmap_buddy_allocator.h>
-// #include <test/test_bitmap_buddy_allocator.h>
+#include <test/test_bitmap_buddy_allocator.h>
 
 #include <helpers/freeform.h>

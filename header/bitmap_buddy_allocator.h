@@ -16,11 +16,17 @@ typedef struct {
 
 // Core allocator interface
 void* BitmapBuddyAllocator_init(Allocator* alloc, ...);
-void* BitmapBuddyAllocator_destructor(Allocator* alloc, ...);
-void* BitmapBuddyAllocator_malloc(Allocator* alloc, ...);
-void* BitmapBuddyAllocator_free(Allocator* alloc, ...);
+void* BitmapBuddyAllocator_cleanup(Allocator* alloc, ...);
+void* BitmapBuddyAllocator_reserve(Allocator* alloc, ...);
+void* BitmapBuddyAllocator_release(Allocator* alloc, ...);
 
 // Helper function to create the allocator
 BitmapBuddyAllocator* BitmapBuddyAllocator_create(BitmapBuddyAllocator* alloc, 
                                                  size_t total_size, 
                                                  int num_levels);
+int BitmapBuddyAllocator_destroy(BitmapBuddyAllocator* alloc);
+void* BitmapBuddyAllocator_malloc(BitmapBuddyAllocator* alloc, size_t size);
+int BitmapBuddyAllocator_free(BitmapBuddyAllocator* alloc, void* ptr);
+
+// Debug/Info functions
+int BitmapBuddyAllocator_print_state(BitmapBuddyAllocator* alloc);

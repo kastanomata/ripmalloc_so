@@ -10,7 +10,6 @@
 #define MAX_LEVELS 32
 #define MIN_BLOCK_SIZE 256
 
-
 typedef struct BuddyNode {
     Node node;
     char *data;
@@ -39,15 +38,15 @@ typedef struct BuddyAllocator {
 
 // Core allocator interface
 void* BuddyAllocator_init(Allocator* alloc, ...);
-void* BuddyAllocator_destructor(Allocator* alloc, ...);
-void* BuddyAllocator_malloc(Allocator* alloc, ...);
-void* BuddyAllocator_free(Allocator* alloc, ...);
+void* BuddyAllocator_cleanup(Allocator* alloc, ...);
+void* BuddyAllocator_reserve(Allocator* alloc, ...);
+void* BuddyAllocator_release(Allocator* alloc, ...);
 
 // Helper functions
 BuddyAllocator* BuddyAllocator_create(BuddyAllocator* a, size_t total_size, int num_levels);
 int BuddyAllocator_destroy(BuddyAllocator* a);
-void* BuddyAllocator_alloc(BuddyAllocator* a, size_t size);
-void BuddyAllocator_release(BuddyAllocator* a, void* ptr);
+void* BuddyAllocator_malloc(BuddyAllocator* a, size_t size);
+void BuddyAllocator_free(BuddyAllocator* a, void* ptr);
 
 // Debug/Info functions
 int BuddyAllocator_print_state(BuddyAllocator* a);

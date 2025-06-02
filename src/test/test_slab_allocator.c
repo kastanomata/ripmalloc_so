@@ -68,7 +68,7 @@ static int test_slab_alloc_pattern() {
     printf("Allocating and filling with pattern...\n");
     #endif
     for (size_t i = 0; i < NUM_SLABS; i++) {
-        ptrs[i] = SlabAllocator_alloc(&allocator);
+        ptrs[i] = SlabAllocator_malloc(&allocator);
         assert(ptrs[i] != NULL);
         fill_memory_pattern(ptrs[i], SLAB_SIZE, TEST_PATTERN);
     }
@@ -86,7 +86,7 @@ static int test_slab_alloc_pattern() {
     printf("Releasing in reverse order...\n");
     #endif
     for (size_t i = NUM_SLABS; i > 0; i--) {
-        SlabAllocator_release(&allocator, ptrs[i-1]);
+        SlabAllocator_free(&allocator, ptrs[i-1]);
     }
     
     #ifdef VERBOSE
@@ -94,7 +94,7 @@ static int test_slab_alloc_pattern() {
     printf("Reallocating and verifying no pattern remains...\n");
     #endif
     for (size_t i = 0; i < NUM_SLABS; i++) {
-        ptrs[i] = SlabAllocator_alloc(&allocator);
+        ptrs[i] = SlabAllocator_malloc(&allocator);
         assert(ptrs[i] != NULL);
 
         // Memory should be undefined, but we can write to it
@@ -106,7 +106,7 @@ static int test_slab_alloc_pattern() {
     printf("Cleaning up...\n");
     #endif
     for (size_t i = 0; i < NUM_SLABS; i++) {
-        SlabAllocator_release(&allocator, ptrs[i]);
+        SlabAllocator_free(&allocator, ptrs[i]);
     }
     SlabAllocator_destroy(&allocator);
     
@@ -131,29 +131,29 @@ static int test_slab_exhaustion() {
     printf("Allocating all available slabs...\n");
     #endif
     for (size_t i = 0; i < NUM_SLABS; i++) {
-        ptrs[i] = SlabAllocator_alloc(&allocator);
+        ptrs[i] = SlabAllocator_malloc(&allocator);
         assert(ptrs[i] != NULL);
     }
     
     #ifdef VERBOSE
     printf("Trying to allocate one more - should fail...\n");
     #endif
-    assert(SlabAllocator_alloc(&allocator) == NULL);
+    assert(SlabAllocator_malloc(&allocator) == NULL);
     
     #ifdef VERBOSE
     printf("Freeing one and trying again - should succeed...\n");
     #endif
-    SlabAllocator_release(&allocator, ptrs[0]);
-    ptrs[NUM_SLABS] = SlabAllocator_alloc(&allocator);
+    SlabAllocator_free(&allocator, ptrs[0]);
+    ptrs[NUM_SLABS] = SlabAllocator_malloc(&allocator);
     assert(ptrs[NUM_SLABS] != NULL);
     
     #ifdef VERBOSE
     printf("Cleaning up...\n");
     #endif
     for (size_t i = 1; i < NUM_SLABS; i++) {
-        SlabAllocator_release(&allocator, ptrs[i]);
+        SlabAllocator_free(&allocator, ptrs[i]);
     }
-    SlabAllocator_release(&allocator, ptrs[NUM_SLABS]);
+    SlabAllocator_free(&allocator, ptrs[NUM_SLABS]);
     SlabAllocator_destroy(&allocator);
     
     #ifdef VERBOSE
@@ -163,7 +163,7 @@ static int test_slab_exhaustion() {
 }
 
 // Test invalid releases
-static int test_slab_invalid_release() {
+static int test_slab_invalid_free() {
     SlabAllocator allocator;
     void* ptr;
     
@@ -176,25 +176,25 @@ static int test_slab_invalid_release() {
     #ifdef VERBOSE
     printf("Allocating one slab...\n");
     #endif
-    ptr = SlabAllocator_alloc(&allocator);
+    ptr = SlabAllocator_malloc(&allocator);
     assert(ptr != NULL);
     
     #ifdef VERBOSE
     printf("Testing NULL release...\n");
     #endif
-    SlabAllocator_release(&allocator, NULL);  // Should not crash
+    SlabAllocator_free(&allocator, NULL);  // Should not crash
     
     #ifdef VERBOSE
     printf("Testing double release...\n");
     #endif
-    SlabAllocator_release(&allocator, ptr);
-    SlabAllocator_release(&allocator, ptr);  // Should not crash or corrupt
+    SlabAllocator_free(&allocator, ptr);
+    SlabAllocator_free(&allocator, ptr);  // Should not crash or corrupt
     
     #ifdef VERBOSE
     printf("Testing invalid pointer release...\n");
     #endif
     char invalid_ptr[SLAB_SIZE];
-    SlabAllocator_release(&allocator, invalid_ptr);  // Should not crash
+    SlabAllocator_free(&allocator, invalid_ptr);  // Should not crash
     
     SlabAllocator_destroy(&allocator);
     
@@ -243,10 +243,10 @@ static int test_slab_operations_impl() {
     
     // Allocate slabs and write to them
     for (size_t i = 0; i < NUM_SLABS ; i++) {
-        ptrs[i] = SlabAllocator_alloc(&allocator);
+        ptrs[i] = SlabAllocator_malloc(&allocator);
         if (!ptrs[i]) {
             for (size_t j = 0; j < i; j++) {
-                SlabAllocator_release(&allocator, ptrs[j]);
+                SlabAllocator_free(&allocator, ptrs[j]);
             }
             SlabAllocator_destroy(&allocator);
             return -1;
@@ -257,7 +257,7 @@ static int test_slab_operations_impl() {
 
     // Free slabs
     for (size_t i = 0; i < NUM_SLABS; i++) {
-        SlabAllocator_release(&allocator, ptrs[i]);
+        SlabAllocator_free(&allocator, ptrs[i]);
     }
     
     // Cleanup
@@ -280,7 +280,7 @@ int test_slab_allocator() {
     result |= test_slab_create_destroy();
     result |= test_slab_alloc_pattern();
     result |= test_slab_exhaustion();
-    result |= test_slab_invalid_release();
+    result |= test_slab_invalid_free();
     
     #ifdef TIME
     printf("\n=== Running Timing Tests ===\n");

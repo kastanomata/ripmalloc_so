@@ -5,7 +5,6 @@
 #include <stdarg.h>
 #include <sys/mman.h>
 
-// Helper functions (static for internal use)
 static int levelIdx(size_t idx) {
     return (int)floor(log2(idx+1));
 }
@@ -133,14 +132,32 @@ void* BitmapBuddyAllocator_init(Allocator* base_alloc, ...) {
     
     // Set up function pointers
     alloc->base.init = BitmapBuddyAllocator_init;
-    alloc->base.dest = BitmapBuddyAllocator_destructor;
-    alloc->base.malloc = BitmapBuddyAllocator_malloc;
-    alloc->base.free = BitmapBuddyAllocator_free;
+    alloc->base.dest = BitmapBuddyAllocator_cleanup;
+    alloc->base.malloc = BitmapBuddyAllocator_reserve;
+    alloc->base.free = BitmapBuddyAllocator_release;
     
     return alloc;
 }
 
-void* BitmapBuddyAllocator_destructor(Allocator* base_alloc, ...) {
+BitmapBuddyAllocator* BitmapBuddyAllocator_create(BitmapBuddyAllocator* alloc, 
+                                                 size_t total_size, 
+                                                 int num_levels) {
+    if(!alloc || total_size == 0 || num_levels <= 0) {
+        printf("Error: Invalid parameters for BitmapBuddyAllocator_create\n");
+        return NULL;
+    }
+    if (num_levels >= BITMAP_BUDDY_MAX_LEVELS) {
+        printf("Error: Number of levels exceeds maximum (%d)\n", BITMAP_BUDDY_MAX_LEVELS);
+        return NULL;
+    }
+    if (!BitmapBuddyAllocator_init((Allocator*)alloc, total_size, num_levels)) {
+        printf("Error: Failed to initialize BitmapBuddyAllocator\n");
+        return NULL;
+    }
+    return alloc;
+}
+
+void* BitmapBuddyAllocator_cleanup(Allocator* base_alloc, ...) {
     BitmapBuddyAllocator* alloc = (BitmapBuddyAllocator*)base_alloc;
     
     if (alloc->memory) {
@@ -154,7 +171,20 @@ void* BitmapBuddyAllocator_destructor(Allocator* base_alloc, ...) {
     return NULL;
 }
 
-void* BitmapBuddyAllocator_malloc(Allocator* base_alloc, ...) {
+int BitmapBuddyAllocator_destroy(BitmapBuddyAllocator* alloc) {
+    if (!alloc) {
+        printf("Error: NULL allocator in BitmapBuddyAllocator_destroy\n");
+        return -1;
+    }
+    
+    if (alloc->base.dest((Allocator*)alloc) != NULL) {
+        printf("Error: Failed to destroy BitmapBuddyAllocator\n");
+        return -1;
+    }
+    return 0;
+}
+
+void* BitmapBuddyAllocator_reserve(Allocator* base_alloc, ...) {
     va_list args;
     va_start(args, base_alloc);
     
@@ -178,7 +208,21 @@ void* BitmapBuddyAllocator_malloc(Allocator* base_alloc, ...) {
     return get_buddy(alloc, level, size);
 }
 
-void* BitmapBuddyAllocator_free(Allocator* base_alloc, ...) {
+void* BitmapBuddyAllocator_malloc(BitmapBuddyAllocator* alloc, size_t size) {
+    if (!alloc || size <= 0) {
+        printf("Error: NULL allocator or invalid size in BitmapBuddyAllocator_alloc\n");
+        return NULL;
+    }
+
+    void* memory = alloc->base.malloc((Allocator*)alloc, size);
+    if( memory == NULL ) {
+        printf("Error: Failed to allocate memory in BitmapBuddyAllocator\n");
+        return NULL;
+    }
+    return memory;
+}
+
+void* BitmapBuddyAllocator_release(Allocator* base_alloc, ...) {
     va_list args;
     va_start(args, base_alloc);
     
@@ -199,8 +243,30 @@ void* BitmapBuddyAllocator_free(Allocator* base_alloc, ...) {
     return NULL;
 }
 
-BitmapBuddyAllocator* BitmapBuddyAllocator_create(BitmapBuddyAllocator* alloc, 
-                                                 size_t total_size, 
-                                                 int num_levels) {
-    return BitmapBuddyAllocator_init((Allocator*)alloc, total_size, num_levels);
+int BitmapBuddyAllocator_free(BitmapBuddyAllocator* alloc, void* ptr) {
+    if (!alloc || !ptr) {
+        printf("Error: NULL allocator or pointer in BitmapBuddyAllocator_free\n");
+        return -1;
+    }
+    
+    return alloc->base.free((Allocator*)alloc, ptr) ? 0 : -1;
+}
+
+int BitmapBuddyAllocator_print_state(BitmapBuddyAllocator* alloc) {
+    if (!alloc) {
+        printf("Error: NULL allocator in BitmapBuddyAllocator_print_state\n");
+        return -1;
+    }
+    
+    printf("Bitmap Buddy Allocator State:\n");
+    printf("  Memory Size: %d bytes\n", alloc->memory_size);
+    printf("  Number of Levels: %d\n", alloc->num_levels);
+    printf("  Minimum Bucket Size: %d bytes\n", alloc->min_bucket_size);
+    
+    printf("Bitmap Status:\n");
+    for (int i = 0; i < alloc->bitmap.num_bits; i++) {
+        printf("  Bit %d: %s\n", i, bitmap_test(&alloc->bitmap, i) ? "Used" : "Free");
+    }
+    
+    return 0;
 }

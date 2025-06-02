@@ -42,7 +42,7 @@ static int freeform_slab_allocator() {
                 continue;
             }
             
-            void* ptr = SlabAllocator_alloc(&slab_allocator);
+            void* ptr = SlabAllocator_malloc(&slab_allocator);
             if (ptr) {
                 allocations[allocation_count++] = ptr;
                 printf("Allocated %zu bytes at %p (index %d)\n", slab_allocator.slab_size, ptr, allocation_count-1);
@@ -70,7 +70,7 @@ static int freeform_slab_allocator() {
             }
             
             void* ptr = allocations[index];
-            SlabAllocator_release(&slab_allocator, ptr);
+            SlabAllocator_free(&slab_allocator, ptr);
             
             // Remove from array by shifting remaining elements
             for (int i = index; i < allocation_count - 1; i++) {
@@ -93,7 +93,7 @@ static int freeform_slab_allocator() {
     
     // // Free any remaining allocations
     // for (int i = 0; i < allocation_count; i++) {
-    //     SlabAllocator_release(&slab_allocator, allocations[i]);
+    //     SlabAllocator_free(&slab_allocator, allocations[i]);
     // }
     
     SlabAllocator_destroy(&slab_allocator);
@@ -157,7 +157,7 @@ static int freeform_buddy_allocator() {
             printf("Enter size to allocate: ");
             scanf("%zu", &size);
             
-            void* ptr = BuddyAllocator_alloc(&buddy_allocator, size);
+            void* ptr = BuddyAllocator_malloc(&buddy_allocator, size);
             if (ptr) {
                 allocations[allocation_count] = ptr;
                 allocation_sizes[allocation_count] = size;
@@ -188,7 +188,7 @@ static int freeform_buddy_allocator() {
             }
             
             void* ptr = allocations[index];
-            BuddyAllocator_release(&buddy_allocator, ptr);
+            BuddyAllocator_free(&buddy_allocator, ptr);
             
             // Remove from arrays by shifting remaining elements
             for (int i = index; i < allocation_count - 1; i++) {
@@ -213,7 +213,7 @@ static int freeform_buddy_allocator() {
     
     // Free any remaining allocations
     for (int i = 0; i < allocation_count; i++) {
-        BuddyAllocator_release(&buddy_allocator, allocations[i]);
+        BuddyAllocator_free(&buddy_allocator, allocations[i]);
     }
     
     BuddyAllocator_destroy(&buddy_allocator);

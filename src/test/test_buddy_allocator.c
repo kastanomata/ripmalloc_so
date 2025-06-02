@@ -81,13 +81,13 @@ static int test_single_allocation() {
     printf("Allocating block of size %zu\n", alloc_size);
     #endif
     
-    ptr = BuddyAllocator_alloc(&allocator, alloc_size);
+    ptr = BuddyAllocator_malloc(&allocator, alloc_size);
     // Verify we can write to the memory
     fill_memory_pattern(ptr, alloc_size, 0xAA);
     assert(verify_memory_pattern(ptr, alloc_size, 0xAA) == 0);
     
     // Release the block
-    BuddyAllocator_release(&allocator, ptr);
+    BuddyAllocator_free(&allocator, ptr);
     
     #ifdef VERBOSE
     BuddyAllocator_print_state(&allocator);
@@ -122,28 +122,28 @@ static int test_multiple_allocations() {
     // Allocate all available blocks at smallest size
     int max_blocks = (1 << (NUM_LEVELS-1));
     for (int i = 0; i < max_blocks; i++) {
-        ptrs[i] = BuddyAllocator_alloc(&allocator, alloc_size);
+        ptrs[i] = BuddyAllocator_malloc(&allocator, alloc_size);
         fill_memory_pattern(ptrs[i], alloc_size, i % 256);
         assert(verify_memory_pattern(ptrs[i], alloc_size, i % 256) == 0);
     }
     
     // Try to allocate one more - should fail
-    assert(BuddyAllocator_alloc(&allocator, alloc_size) == NULL);
+    assert(BuddyAllocator_malloc(&allocator, alloc_size) == NULL);
     
     // Release half of the blocks
     for (int i = 0; i < max_blocks/2; i++) {
-        BuddyAllocator_release(&allocator, ptrs[i]);
+        BuddyAllocator_free(&allocator, ptrs[i]);
     }
     
     // Allocate again - should succeed
     for (int i = 0; i < max_blocks/2; i++) {
-        ptrs[i] = BuddyAllocator_alloc(&allocator, alloc_size);
+        ptrs[i] = BuddyAllocator_malloc(&allocator, alloc_size);
     }
     
     // Clean up
     for (int i = 0; i < max_blocks; i++) {
         if (ptrs[i]) {
-            BuddyAllocator_release(&allocator, ptrs[i]);
+            BuddyAllocator_free(&allocator, ptrs[i]);
         }
     }
     
@@ -184,7 +184,7 @@ static int test_varied_sizes() {
         printf("Allocating block of size %zu (level %d)\n", request_size, i);
         #endif
         
-        ptrs[i] = BuddyAllocator_alloc(&allocator, request_size);
+        ptrs[i] = BuddyAllocator_malloc(&allocator, request_size);
         fill_memory_pattern(ptrs[i], request_size, 0x55 + i);
         assert(verify_memory_pattern(ptrs[i], request_size, 0x55 + i) == 0);
     }
@@ -192,7 +192,7 @@ static int test_varied_sizes() {
     // Release blocks
     for (int i = 1; i < NUM_LEVELS; i++) {
         if (ptrs[i]) {
-            BuddyAllocator_release(&allocator, ptrs[i]);
+            BuddyAllocator_free(&allocator, ptrs[i]);
         }
     }
     
@@ -218,20 +218,20 @@ static int test_buddy_merging() {
     size_t large_size = small_size * 2;
     
     // Allocate two adjacent small blocks
-    void* ptr1 = BuddyAllocator_alloc(&allocator, small_size);
-    void* ptr2 = BuddyAllocator_alloc(&allocator, small_size);
+    void* ptr1 = BuddyAllocator_malloc(&allocator, small_size);
+    void* ptr2 = BuddyAllocator_malloc(&allocator, small_size);
     assert(ptr1 != NULL);
     assert(ptr2 != NULL);
     
     // Release both blocks - they should merge
-    BuddyAllocator_release(&allocator, ptr1);
-    BuddyAllocator_release(&allocator, ptr2);
+    BuddyAllocator_free(&allocator, ptr1);
+    BuddyAllocator_free(&allocator, ptr2);
     
     // Now we should be able to allocate a large block
-    void* large_ptr = BuddyAllocator_alloc(&allocator, large_size);
+    void* large_ptr = BuddyAllocator_malloc(&allocator, large_size);
     assert(large_ptr != NULL);
     
-    BuddyAllocator_release(&allocator, large_ptr);
+    BuddyAllocator_free(&allocator, large_ptr);
     
     #ifdef VERBOSE
     BuddyAllocator_print_state(&allocator);
@@ -253,17 +253,17 @@ static int test_invalid_releases() {
     assert(BuddyAllocator_create(&allocator, TOTAL_SIZE, NUM_LEVELS) != NULL);
     
     // Test NULL pointer release
-    BuddyAllocator_release(&allocator, NULL);  // Should not crash
+    BuddyAllocator_free(&allocator, NULL);  // Should not crash
     
     // Test double release
-    void* ptr = BuddyAllocator_alloc(&allocator, allocator.min_block_size);
+    void* ptr = BuddyAllocator_malloc(&allocator, allocator.min_block_size);
     assert(ptr != NULL);
-    BuddyAllocator_release(&allocator, ptr);
-    BuddyAllocator_release(&allocator, ptr);  // Should not crash
+    BuddyAllocator_free(&allocator, ptr);
+    BuddyAllocator_free(&allocator, ptr);  // Should not crash
     
     // Test invalid pointer release
     char invalid_ptr[64];
-    BuddyAllocator_release(&allocator, invalid_ptr);  // Should not crash
+    BuddyAllocator_free(&allocator, invalid_ptr);  // Should not crash
     
     assert(BuddyAllocator_destroy(&allocator) == 0);
     
