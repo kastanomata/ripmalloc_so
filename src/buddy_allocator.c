@@ -13,6 +13,8 @@ static struct Buddies BuddyAllocator_divide_block(BuddyAllocator* a, BuddyNode* 
     buddies.left_buddy = SlabAllocator_alloc(&(a->node_allocator));
     buddies.right_buddy = SlabAllocator_alloc(&(a->node_allocator));
 
+    parent->is_free = 0;
+
     buddies.left_buddy->size = parent->size / 2;
     buddies.left_buddy->data = parent->data;
     buddies.left_buddy->level = parent->level + 1;
@@ -39,7 +41,7 @@ static BuddyNode* BuddyAllocator_merge_blocks(BuddyAllocator* a, BuddyNode* left
     }
 
     // Check they are mutual buddies
-    if (left->buddy != right || right->buddy != left) {
+    if (left->buddy != right || right->buddy != left || left->level != right->level) {
         #ifdef DEBUG
         printf(RED "ERROR: Nodes are not mutual buddies!\n" RESET);
         #endif
@@ -50,6 +52,12 @@ static BuddyNode* BuddyAllocator_merge_blocks(BuddyAllocator* a, BuddyNode* left
     if (!parent || parent != right->parent) {
         #ifdef DEBUG
         printf(RED "ERROR: Parent mismatch!\n" RESET);
+        #endif
+        return NULL;
+    }
+    if (parent->is_free == true) {
+        #ifdef DEBUG
+        printf(RED "ERROR: Parent node is already free!\n" RESET);
         #endif
         return NULL;
     }
@@ -266,9 +274,9 @@ void* BuddyAllocator_malloc(Allocator* alloc, ...) {
     }
 
     BuddyNode* free_block = (BuddyNode*) list_pop_front(buddy->free_lists[level]);
-    #ifdef DEBUG
+    #ifdef VERBOSE
     if(!free_block) {
-        printf(RED "ERROR: No block found at level %d\n" RESET, level);
+        printf("No block found at level %d\n",  level);
     }
     #endif
     
