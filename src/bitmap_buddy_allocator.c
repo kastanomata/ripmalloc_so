@@ -53,7 +53,9 @@ static void merge(Bitmap* bitmap, int bit) {
     if (bit == 0) return;
     
     if (bitmap_test(bitmap, bit)) {
-        printf("Fatal Error in bitmap (merge on bit 1)\n");
+        #ifdef DEBUG
+        printf(RED "ERROR: Fatal Error in bitmap (merge on bit 1)\n" RESET);
+        #endif
         return;
     }
     
@@ -106,7 +108,9 @@ void* BitmapBuddyAllocator_init(Allocator* base_alloc, ...) {
     
     // Validate parameters
     if (num_levels >= BITMAP_BUDDY_MAX_LEVELS) {
-        printf("Error: Number of levels exceeds maximum (%d)\n", BITMAP_BUDDY_MAX_LEVELS);
+        #ifdef DEBUG
+        printf(RED "ERROR: Number of levels exceeds maximum (%d)\n" RESET, BITMAP_BUDDY_MAX_LEVELS);
+        #endif
         return NULL;
     }
     
@@ -114,7 +118,9 @@ void* BitmapBuddyAllocator_init(Allocator* base_alloc, ...) {
     alloc->memory = mmap(NULL, total_size, PROT_READ | PROT_WRITE, 
                         MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     if (alloc->memory == MAP_FAILED) {
-        printf("Error: Failed to allocate memory\n");
+        #ifdef DEBUG
+        printf(RED "ERROR: Failed to allocate memory\n" RESET);
+        #endif
         return NULL;
     }
     
@@ -126,7 +132,9 @@ void* BitmapBuddyAllocator_init(Allocator* base_alloc, ...) {
     int num_bits = (1 << (num_levels + 1)) - 1;
     if (!bitmap_create(&alloc->bitmap, num_bits)) {
         munmap(alloc->memory, total_size);
-        printf("Error: Failed to create bitmap\n");
+        #ifdef DEBUG
+        printf(RED "ERROR: Failed to create bitmap\n" RESET);
+        #endif
         return NULL;
     }
     
@@ -143,15 +151,21 @@ BitmapBuddyAllocator* BitmapBuddyAllocator_create(BitmapBuddyAllocator* alloc,
                                                  size_t total_size, 
                                                  int num_levels) {
     if(!alloc || total_size == 0 || num_levels <= 0) {
-        printf("Error: Invalid parameters for BitmapBuddyAllocator_create\n");
+        #ifdef DEBUG
+        printf(RED "Error: Invalid parameters for BitmapBuddyAllocator_create\n" RESET);
+        #endif
         return NULL;
     }
     if (num_levels >= BITMAP_BUDDY_MAX_LEVELS) {
-        printf("Error: Number of levels exceeds maximum (%d)\n", BITMAP_BUDDY_MAX_LEVELS);
+        #ifdef DEBUG
+        printf(RED "Error: Number of levels exceeds maximum (%d)\n" RESET, BITMAP_BUDDY_MAX_LEVELS);
+        #endif
         return NULL;
     }
     if (!BitmapBuddyAllocator_init((Allocator*)alloc, total_size, num_levels)) {
-        printf("Error: Failed to initialize BitmapBuddyAllocator\n");
+        #ifdef DEBUG
+        printf(RED "Error: Failed to initialize BitmapBuddyAllocator\n" RESET);
+        #endif
         return NULL;
     }
     return alloc;
@@ -173,12 +187,16 @@ void* BitmapBuddyAllocator_cleanup(Allocator* base_alloc, ...) {
 
 int BitmapBuddyAllocator_destroy(BitmapBuddyAllocator* alloc) {
     if (!alloc) {
-        printf("Error: NULL allocator in BitmapBuddyAllocator_destroy\n");
+        #ifdef DEBUG
+        printf(RED "Error: NULL allocator in BitmapBuddyAllocator_destroy\n" RESET);
+        #endif
         return -1;
     }
     
     if (alloc->base.dest((Allocator*)alloc) != NULL) {
-        printf("Error: Failed to destroy BitmapBuddyAllocator\n");
+        #ifdef DEBUG
+        printf(RED "Error: Failed to destroy BitmapBuddyAllocator\n" RESET);
+        #endif
         return -1;
     }
     return 0;
@@ -210,13 +228,17 @@ void* BitmapBuddyAllocator_reserve(Allocator* base_alloc, ...) {
 
 void* BitmapBuddyAllocator_malloc(BitmapBuddyAllocator* alloc, size_t size) {
     if (!alloc || size <= 0) {
-        printf("Error: NULL allocator or invalid size in BitmapBuddyAllocator_alloc\n");
+        #ifdef DEBUG
+        printf(RED "Error: NULL allocator or invalid size\n" RESET);
+        #endif
         return NULL;
     }
 
     void* memory = alloc->base.malloc((Allocator*)alloc, size);
     if( memory == NULL ) {
-        printf("Error: Failed to allocate memory in BitmapBuddyAllocator\n");
+        #ifdef DEBUG
+        printf(RED "Error: Failed to allocate memory\n" RESET);
+        #endif
         return NULL;
     }
     return memory;
@@ -229,9 +251,9 @@ void* BitmapBuddyAllocator_release(Allocator* base_alloc, ...) {
     BitmapBuddyAllocator* alloc = (BitmapBuddyAllocator*)base_alloc;
     void* ptr = va_arg(args, void*);
     va_end(args);
-    
-    if (!ptr) return NULL;
-    
+
+    if (!ptr) return (void*) -1;
+
     // Retrieve metadata
     int* metadata = (int*)((char*)ptr - 2 * sizeof(int));
     int bit = metadata[0];
@@ -239,22 +261,41 @@ void* BitmapBuddyAllocator_release(Allocator* base_alloc, ...) {
     // Update bitmap
     update_child(&alloc->bitmap, bit, 0);
     merge(&alloc->bitmap, bit);
-    
-    return NULL;
+
+    return (void*)0;
 }
 
 int BitmapBuddyAllocator_free(BitmapBuddyAllocator* alloc, void* ptr) {
     if (!alloc || !ptr) {
-        printf("Error: NULL allocator or pointer in BitmapBuddyAllocator_free\n");
+        #ifdef DEBUG
+        printf(RED "Error: NULL allocator or pointer in BitmapBuddyAllocator_free\n" RESET);
+        #endif
         return -1;
     }
-    
-    return alloc->base.free((Allocator*)alloc, ptr) ? 0 : -1;
+    // Retrieve metadata
+    int* metadata = (int*)((char*)ptr - 2 * sizeof(int));
+    int bit = metadata[0];
+    // Check if the pointer is already free
+    if (bitmap_test(&alloc->bitmap, bit) == 0) {
+        #ifdef DEBUG
+        printf(RED "Error: Memory already free!\n" RESET);
+        #endif
+        return -1;
+    }
+    if (alloc->base.free((Allocator*)alloc, ptr) == (void*) -1) {
+        #ifdef DEBUG
+        printf(RED "Error: Failed to free memory in BitmapBuddyAllocator_free\n" RESET);
+        #endif
+        return -1;
+    }
+    return 0;
 }
 
 int BitmapBuddyAllocator_print_state(BitmapBuddyAllocator* alloc) {
     if (!alloc) {
-        printf("Error: NULL allocator in BitmapBuddyAllocator_print_state\n");
+        #ifdef DEBUG
+        printf(RED "Error: NULL allocator in BitmapBuddyAllocator_print_state\n" RESET);
+        #endif
         return -1;
     }
     
@@ -265,8 +306,10 @@ int BitmapBuddyAllocator_print_state(BitmapBuddyAllocator* alloc) {
     
     printf("Bitmap Status:\n");
     for (int i = 0; i < alloc->bitmap.num_bits; i++) {
-        printf("  Bit %d: %s\n", i, bitmap_test(&alloc->bitmap, i) ? "Used" : "Free");
+        printf("%s ", bitmap_test(&alloc->bitmap, i) ? "■" : "□");
+        if ((i + 1) && !((i + 2) & (i + 1))) printf("| ");
     }
+    printf("\n");
     
     return 0;
 }

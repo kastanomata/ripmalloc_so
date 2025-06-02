@@ -325,7 +325,7 @@ void SlabAllocator_print_memory_map(SlabAllocator* a) {
     printf("\tSlabAllocator Visualization:\n");
     if (!a || !a->managed_memory) {
         #ifdef DEBUG
-        printf(RED "ERROR: No memory to visualize\n" RESETreserverelease);
+        printf(RED "ERROR: No memory to visualize\n" RESET);
         #endif
         return;
     }
