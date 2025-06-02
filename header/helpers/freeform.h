@@ -6,6 +6,7 @@
 
 #include <slab_allocator.h>
 #include <buddy_allocator.h>
+#include <bitmap_buddy_allocator.h>
 
 
 #define RED     "\x1B[31m"

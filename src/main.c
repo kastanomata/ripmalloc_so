@@ -13,6 +13,6 @@ int main() {
   line
   test_bitmap_buddy_allocator();
   line
-  // freeform();
+  freeform();
     
 }

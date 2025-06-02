@@ -219,12 +219,128 @@ static int freeform_buddy_allocator() {
     BuddyAllocator_destroy(&buddy_allocator);
     printf("=== END FREEFORM BUDDY ALLOCATOR ===\n");
     return 0;
-}
-    
+} 
 
-// static int freeform_bitmap_allocator() {
-//     // TODO
-// }
+static int freeform_bitmap_allocator() {
+    printf("=== START FREEFORM BITMAP ALLOCATOR ===\n");
+    BitmapBuddyAllocator bitmap_allocator;
+    
+    int total_size, max_levels;
+    while (true) {
+        printf("Enter total size for Bitmap Allocator (in bytes): ");
+        scanf("%d", &total_size);
+        if (total_size > 0) {
+            break;
+        } else if (total_size == 0) {
+           total_size = PAGESIZE; // Use system page size if 0 is entered
+           break;
+        } else {
+        printf("Invalid total size. Please enter a positive value.\n");
+        }
+    }
+    while (true) {
+        printf("Enter max levels (1-32): ");
+        scanf("%d", &max_levels);
+        if (max_levels > 0 && max_levels <= MAX_LEVELS) {
+            break;
+        } else if (max_levels == 0) {
+            max_levels = DEF_LEVELS_NUMBER; // Default to 4 levels if 0 is entered
+            break;
+        }
+        printf("Invalid number of levels. \
+                Please enter a value between 1 and %d, or 0 for default (%d).\n",
+                MAX_LEVELS, DEF_LEVELS_NUMBER);
+    }
+    int max_allocations = (1 << max_levels) - 1;
+    int allocation_count = 0;
+    void* allocations[max_allocations];
+    size_t allocation_sizes[max_allocations];
+    memset(allocations, 0, sizeof(allocations));
+    memset(allocation_sizes, 0, sizeof(allocation_sizes));
+    BitmapBuddyAllocator_create(&bitmap_allocator, total_size, max_levels);
+    printf("Bitmap Allocator created with total size: %d bytes and max levels: %d\n", total_size, max_levels);
+    
+    while (true) {
+        char command[256];
+        printf("Enter command (alloc, free, print, exit): ");
+        scanf("%s", command);
+        
+        if (strcmp(command, "exit") == 0 || strcmp(command, "quit") == 0 || strcmp(command, "q") == 0) {
+            break;
+        } else if (strcmp(command, "alloc") == 0) {
+            if (allocation_count >= max_allocations) {
+                printf("Maximum number of allocations reached (%d)\n", max_allocations);
+                continue;
+            }
+            
+            size_t size;
+            printf("Enter size to allocate: ");
+            scanf("%zu", &size);
+            
+            void* ptr = BitmapBuddyAllocator_malloc(&bitmap_allocator, size);
+            if (ptr) {
+                allocations[allocation_count] = ptr;
+                allocation_sizes[allocation_count] = size;
+                allocation_count++;
+                printf("Allocated %zu bytes at %p (index %d)\n", size, ptr, allocation_count-1);
+            } else {
+                printf("Allocation failed for %zu bytes\n", size);
+            }
+            BitmapBuddyAllocator_print_state(&bitmap_allocator);
+        } else if (strcmp(command, "free") == 0) {
+            if (allocation_count == 0) {
+                printf("No allocations to free\n");
+                continue;
+            }
+            
+            printf("Current allocations:\n");
+            for (int i = 0; i < allocation_count; i++) {
+                printf("[%d] %p (%zu bytes)\n", i, allocations[i], allocation_sizes[i]);
+            }
+            
+            int index;
+            printf("Enter index to free: ");
+            scanf("%d", &index);
+            
+            if (index < 0 || index >= allocation_count) {
+                printf("Invalid index\n");
+                continue;
+            }
+            
+            void* ptr = allocations[index];
+            BitmapBuddyAllocator_free(&bitmap_allocator, ptr);
+            
+            // Remove from arrays by shifting remaining elements
+            for (int i = index; i < allocation_count - 1; i++) {
+                allocations[i] = allocations[i + 1];
+                allocation_sizes[i] = allocation_sizes[i + 1];
+            }
+            allocation_count--;
+            
+            printf("Freed memory at %p (index %d)\n", ptr, index);
+            BitmapBuddyAllocator_print_state(&bitmap_allocator);
+        } else if (strcmp(command, "print") == 0) {
+            BitmapBuddyAllocator_print_state(&bitmap_allocator);
+            
+            printf("Current allocations:\n");
+            for (int i = 0; i < allocation_count; i++) {
+                printf("[%d] %p (%zu bytes)\n", i, allocations[i], allocation_sizes[i]);
+            }
+        } else {
+            printf("Unknown command: %s\n", command);
+        }
+    }
+    
+    // Free any remaining allocations
+    for (int i = 0; i < allocation_count; i++) {
+        BitmapBuddyAllocator_free(&bitmap_allocator, allocations[i]);
+    }
+    
+    BitmapBuddyAllocator_destroy(&bitmap_allocator);
+
+    printf("=== END FREEFORM BITMAP ALLOCATOR ===\n");
+    return 0;
+}
 
 int freeform() {
     printf("=== START FREEFORM ===\n");
@@ -245,6 +361,7 @@ int freeform() {
             printf("  exit, quit, q: Exit the freeform testing area\n");
             printf("  buddy: Start Buddy Allocator freeform testing\n");
             printf("  slab: Start Slab Allocator freeform testing\n");
+            printf("  bitmap: Start Bitmap Buddy Allocator freeform testing\n");
             continue;
         }
         if (strncmp(input, "buddy", 5) == 0) {
@@ -255,8 +372,11 @@ int freeform() {
             freeform_slab_allocator();
             continue;
         }
-        // Process the input command
-        printf("You entered: %s", input);
+        if (strncmp(input, "bitmap", 6) == 0) {
+            freeform_bitmap_allocator();
+            continue;
+        }
+
     }
 
     printf("=== END FREEFORM ===\n");
