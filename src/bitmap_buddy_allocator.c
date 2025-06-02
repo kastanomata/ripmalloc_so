@@ -26,15 +26,22 @@ static int startIdx(int idx) {
     return idx - firstIdx(levelIdx(idx));
 }
 
-static void update_parent(Bitmap* bitmap, int bit, int value) {
-    if (value) {
-        bitmap_set(bitmap, bit);
-    } else {
-        bitmap_clear(bitmap, bit);
-    }
-    if (bit > 0) {
-        update_parent(bitmap, parentIdx(bit), value);
-    }
+static void update_parent(Bitmap* bitmap, int bit) {
+    if (bit == 0) return;
+
+    int parent = parentIdx(bit);
+    int left = parent * 2 + 1;
+    int right = parent * 2 + 2;
+
+    int left_set = bitmap_test(bitmap, left);
+    int right_set = bitmap_test(bitmap, right);
+
+    if (left_set && right_set)
+        bitmap_set(bitmap, parent);
+    else
+        bitmap_clear(bitmap, parent);
+
+    update_parent(bitmap, parent);
 }
 
 static void update_child(Bitmap* bitmap, int bit, int value) {
@@ -49,7 +56,7 @@ static void update_child(Bitmap* bitmap, int bit, int value) {
     update_child(bitmap, bit * 2 + 2, value);
 }
 
-static void merge(Bitmap* bitmap, int bit) {
+static void merge_block(Bitmap* bitmap, int bit) {
     if (bit == 0) return;
     
     if (bitmap_test(bitmap, bit)) {
@@ -64,34 +71,53 @@ static void merge(Bitmap* bitmap, int bit) {
     
     int parent = parentIdx(bit);
     bitmap_clear(bitmap, parent);
-    merge(bitmap, parent);
+    merge_block(bitmap, parent);
+}
+
+static int split_block(BitmapBuddyAllocator* alloc, int level) {
+    for (int upper = level - 1; upper >= 0; --upper) {
+        int first = firstIdx(upper);
+        int last = firstIdx(upper + 1);
+        for (int i = first; i < last; ++i) {
+            if (!bitmap_test(&alloc->bitmap, i)) {
+                bitmap_set(&alloc->bitmap, i);  // mark used temporarily
+
+                int cur = i;
+                while (levelIdx(cur) < level) {
+                    int left = cur * 2 + 1;
+                    int right = cur * 2 + 2;
+                    bitmap_clear(&alloc->bitmap, left);
+                    bitmap_clear(&alloc->bitmap, right);
+                    cur = left;
+                }
+                return cur;
+            }
+        }
+    }
+    return -1;
 }
 
 static void* get_buddy(BitmapBuddyAllocator* alloc, int level, int size) {
     int bitmap_idx = -1;
-    
-    if (level == 0) {
-        if (!bitmap_test(&alloc->bitmap, firstIdx(level))) {
-            bitmap_idx = 0;
-        }
-    } else {
-        for (int i = firstIdx(level); i < firstIdx(level + 1); i++) {
-            if (!bitmap_test(&alloc->bitmap, i)) {
-                bitmap_idx = i;
-                break;
-            }
+
+    for (int i = firstIdx(level); i < firstIdx(level + 1); i++) {
+        if (!bitmap_test(&alloc->bitmap, i)) {
+            bitmap_idx = i;
+            break;
         }
     }
-    
-    if (bitmap_idx == -1) return NULL;
-    
+
+    if (bitmap_idx == -1) {
+        bitmap_idx = split_block(alloc, level);
+        if (bitmap_idx == -1) return NULL;
+    }
+
     update_child(&alloc->bitmap, bitmap_idx, 1);
-    update_parent(&alloc->bitmap, bitmap_idx, 1);
-    
+    update_parent(&alloc->bitmap, bitmap_idx);
+
     int block_size = alloc->min_bucket_size << (alloc->num_levels - level);
-    char* ret = alloc->memory + ((startIdx(bitmap_idx)) * block_size);
-    
-    // Store metadata
+    char* ret = alloc->memory + (startIdx(bitmap_idx) * block_size);
+
     ((int*)ret)[0] = bitmap_idx;
     ((int*)ret)[1] = size;
     return (void*)(ret + 2 * sizeof(int));
@@ -260,7 +286,7 @@ void* BitmapBuddyAllocator_release(Allocator* base_alloc, ...) {
     
     // Update bitmap
     update_child(&alloc->bitmap, bit, 0);
-    merge(&alloc->bitmap, bit);
+    merge_block(&alloc->bitmap, bit);
 
     return (void*)0;
 }
