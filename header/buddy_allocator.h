@@ -50,6 +50,5 @@ void BuddyAllocator_free(BuddyAllocator* a, void* ptr);
 
 // Debug/Info functions
 int BuddyAllocator_print_state(BuddyAllocator* a);
-void BuddyAllocator_validate(BuddyAllocator* a);
 
 

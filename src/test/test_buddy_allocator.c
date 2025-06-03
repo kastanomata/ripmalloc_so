@@ -43,7 +43,7 @@ static int test_create_destroy() {
     
     // Verify initial state
     assert(allocator.total_size == TOTAL_SIZE);
-    assert(allocator.num_levels == NUM_LEVELS);
+    assert(allocator.num_levels == NUM_LEVELS + 1); // + 1 for the larger block
     assert(allocator.memory_start != NULL);
     
     // Verify free lists are initialized
@@ -105,11 +105,13 @@ static int test_single_allocation() {
 // Test allocation of multiple blocks
 static int test_multiple_allocations() {
     BuddyAllocator allocator;
-    void* ptrs[16];
+    int max_blocks = (1 << (NUM_LEVELS));
+    void* ptrs[max_blocks];
     
     #ifdef VERBOSE
     printf("Testing multiple allocations...\n");
     #endif
+
     
     assert(BuddyAllocator_create(&allocator, TOTAL_SIZE, NUM_LEVELS) != NULL);
     size_t alloc_size = allocator.min_block_size - sizeof(BuddyNode*); // Account for metadata
@@ -120,13 +122,11 @@ static int test_multiple_allocations() {
     #endif
     
     // Allocate all available blocks at smallest size
-    int max_blocks = (1 << (NUM_LEVELS-1));
     for (int i = 0; i < max_blocks; i++) {
         ptrs[i] = BuddyAllocator_malloc(&allocator, alloc_size);
         fill_memory_pattern(ptrs[i], alloc_size, i % 256);
         assert(verify_memory_pattern(ptrs[i], alloc_size, i % 256) == 0);
     }
-    
     // Try to allocate one more - should fail
     assert(BuddyAllocator_malloc(&allocator, alloc_size) == NULL);
     

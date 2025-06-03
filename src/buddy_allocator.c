@@ -79,7 +79,7 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
     
     BuddyAllocator* buddy = (BuddyAllocator*)alloc;
     size_t total_size = va_arg(args, size_t);
-    int num_levels = va_arg(args, int);
+    int num_levels = va_arg(args, int) + 1; // +1 for the root level
     
     va_end(args);
 
