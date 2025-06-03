@@ -9,6 +9,9 @@
 #define RED     "\x1B[31m"
 #define RESET   "\x1B[0m"
 
+#define PAGESIZE sysconf(_SC_PAGESIZE)
+#define DEF_LEVELS_NUMBER 4
+
 #define wait_user() scanf("%*c", 1, NULL)
 
 // Forward declaration

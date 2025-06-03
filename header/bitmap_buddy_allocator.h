@@ -7,7 +7,7 @@
 
 typedef struct {
     Allocator base;          // Base allocator interface
-    char* memory;            // Managed memory area
+    char* memory_start;      // Managed memory area
     int memory_size;         // Size of managed memory
     int num_levels;          // Number of levels in the hierarchy
     int min_bucket_size;     // Minimum allocation size

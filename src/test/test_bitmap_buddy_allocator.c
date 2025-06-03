@@ -36,7 +36,7 @@ static int test_create_destroy() {
     // Verify initial state
     assert(allocator.memory_size == 1024);
     assert(allocator.num_levels == 4);
-    assert(allocator.memory != NULL);
+    assert(allocator.memory_start != NULL);
     
     // Verify bitmap is initialized
     assert(allocator.bitmap.num_bits > 0);
@@ -146,56 +146,71 @@ static int test_multiple_allocations() {
 }
 
 static int test_varied_sizes() {
-    BitmapBuddyAllocator allocator;
-    void* ptrs[16];
+    int total_size = PAGESIZE;
+    int max_alloc_size = total_size - sizeof(void*);
+    int half_alloc_size = total_size / 2 - sizeof(void*);
+    int quarter_alloc_size = total_size / 4 - sizeof(void*);
+    int eight_alloc_size = total_size / 8 - sizeof(void*);
+    void *ptrs[4]; // array of four pointers
+    void *ptr;
     
+    BitmapBuddyAllocator buddy;
+    BitmapBuddyAllocator_create(&buddy, total_size, DEF_LEVELS_NUMBER);
+
     #ifdef VERBOSE
-    printf("Testing varied size allocations...\n");
+    BitmapBuddyAllocator_print_state(&buddy);
     #endif
 
-    assert(BitmapBuddyAllocator_create(&allocator, 1024, 4) != NULL);
-    // 1024
-    // 512
-    // 256
-    // 128
-    
-    // Allocate blocks of different sizes
-    size_t sizes[] = {128, 128, 256, 512};
-    for (int i = 0; i < 4; i++) {
-        size_t request_size = sizes[i] - sizeof(void*); // Account for metadata
-        #ifdef VERBOSE
-        printf("Allocating block of size %zu (level %d)\n", request_size, i);
+    ptr = BitmapBuddyAllocator_malloc(&buddy, max_alloc_size);
+    if (ptr == NULL) {
+        #ifdef DEBUG
+        printf(RED "BitmapBuddyAllocator_malloc failed\n" RESET);
         #endif
-        
-        ptrs[i] = BitmapBuddyAllocator_malloc(&allocator, request_size);
+        return -1;
+    }
+
+    fill_memory_pattern(ptr, max_alloc_size, 0xAA);
+    #ifdef VERBOSE
+    BitmapBuddyAllocator_print_state(&buddy);
+    printf("Memory filled with pattern 0xAA\n");
+    #endif
+    assert(verify_memory_pattern(ptr, max_alloc_size, 0xAA) == 0);
+
+    BitmapBuddyAllocator_free(&buddy, ptr);
+    #ifdef VERBOSE
+    BitmapBuddyAllocator_print_state(&buddy);
+    #endif
+
+    ptrs[0] = BitmapBuddyAllocator_malloc(&buddy, half_alloc_size);
+    ptrs[1] = BitmapBuddyAllocator_malloc(&buddy, quarter_alloc_size);
+    ptrs[2] = BitmapBuddyAllocator_malloc(&buddy, eight_alloc_size);
+    ptrs[3] = BitmapBuddyAllocator_malloc(&buddy, eight_alloc_size);
+
+    for(int i = 0; i < 4; i++) {
         if (ptrs[i] == NULL) {
             #ifdef DEBUG
-            printf(RED "Allocation failed for size %zu\n" RESET, request_size);
+            printf("BitmapBuddyAllocator_malloc failed for ptrs[%d]\n", i);
             #endif
-        } else {
-            fill_memory_pattern(ptrs[i], request_size, 0x55 + i);
-            assert(verify_memory_pattern(ptrs[i], request_size, 0x55 + i) == 0);
+            return -1;
         }
+        fill_memory_pattern(ptrs[i], (i == 0 ? half_alloc_size : (i == 1 ? quarter_alloc_size : eight_alloc_size)), 0x01 + i);
+        assert(verify_memory_pattern(ptrs[i], (i == 0 ? half_alloc_size : (i == 1 ? quarter_alloc_size : eight_alloc_size)), 0x01 + i) == 0);
+    }
+    #ifdef VERBOSE
+    BitmapBuddyAllocator_print_state(&buddy);
+    printf("Allocated four blocks of memory\n");
+    
+    print_memory_pattern(buddy.memory_start, total_size);
+    printf("Memory pattern printed\n");
+    #endif
+    
+    for(int i = 0; i < 4; i++) {
+        BitmapBuddyAllocator_free(&buddy, ptrs[i]);
     }
 
-    // Release blocks
-    for (int i = 0; i < 4; i++) {
-        if (ptrs[i]) {
-            BitmapBuddyAllocator_free(&allocator, ptrs[i]);
-        }
-    }
-    
-    #ifdef VERBOSE
-    BitmapBuddyAllocator_print_state(&allocator);
-    #endif
-    
-    assert(BitmapBuddyAllocator_destroy(&allocator) == 0);
-    
-    #ifdef VERBOSE
-    printf("Varied size allocations test passed\n");
-    #endif
     return 0;
 }
+
 
 static int test_buddy_merging() {
     BitmapBuddyAllocator allocator;

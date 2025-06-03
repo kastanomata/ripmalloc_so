@@ -161,47 +161,68 @@ static int test_multiple_allocations() {
 
 // Test allocation of different sizes
 static int test_varied_sizes() {
-    BuddyAllocator allocator;
+    int total_size = PAGESIZE;
+    int max_alloc_size = total_size - sizeof(void*);
+    int half_alloc_size = total_size / 2 - sizeof(void*);
+    int quarter_alloc_size = total_size / 4 - sizeof(void*);
+    int eight_alloc_size = total_size / 8 - sizeof(void*);
+    void *ptrs[4]; // array of four pointers
+    void *ptr;
     
+    BuddyAllocator buddy;
+    BuddyAllocator_create(&buddy, total_size, DEF_LEVELS_NUMBER);
+
     #ifdef VERBOSE
-    printf("Testing varied size allocations...\n");
+    BuddyAllocator_print_state(&buddy);
     #endif
-    
-    assert(BuddyAllocator_create(&allocator, TOTAL_SIZE, NUM_LEVELS) != NULL);
-    
-    // Calculate sizes for each level
-    size_t sizes[NUM_LEVELS];
-    for (int i = 0; i < NUM_LEVELS; i++) {
-        sizes[i] = TOTAL_SIZE / (1 << i);
-    }
-    
-    // Allocate one block at each level
-    void* ptrs[NUM_LEVELS] = {0};
-    // Should skip first level, otherwise others cannot be allocated
-    for (int i = 1; i < NUM_LEVELS; i++) {
-        size_t request_size = sizes[i] - sizeof(BuddyNode*); // Account for metadata
-        #ifdef VERBOSE
-        printf("Allocating block of size %zu (level %d)\n", request_size, i);
+
+    ptr = BuddyAllocator_malloc(&buddy, max_alloc_size);
+    if (ptr == NULL) {
+        #ifdef DEBUG
+        printf(RED "BuddyAllocator_malloc failed\n" RESET);
         #endif
-        
-        ptrs[i] = BuddyAllocator_malloc(&allocator, request_size);
-        fill_memory_pattern(ptrs[i], request_size, 0x55 + i);
-        assert(verify_memory_pattern(ptrs[i], request_size, 0x55 + i) == 0);
+        return -1;
     }
-    
-    // Release blocks
-    for (int i = 1; i < NUM_LEVELS; i++) {
-        if (ptrs[i]) {
-            BuddyAllocator_free(&allocator, ptrs[i]);
-        }
-    }
-    
+
+    fill_memory_pattern(ptr, max_alloc_size, 0xAA);
     #ifdef VERBOSE
-    BuddyAllocator_print_state(&allocator);
-    printf("Varied size allocations test passed\n");
+    BuddyAllocator_print_state(&buddy);
+    printf("Memory filled with pattern 0xAA\n");
+    #endif
+    assert(verify_memory_pattern(ptr, max_alloc_size, 0xAA) == 0);
+
+    BuddyAllocator_free(&buddy, ptr);
+    #ifdef VERBOSE
+    BuddyAllocator_print_state(&buddy);
+    #endif
+
+    ptrs[0] = BuddyAllocator_malloc(&buddy, half_alloc_size);
+    ptrs[1] = BuddyAllocator_malloc(&buddy, quarter_alloc_size);
+    ptrs[2] = BuddyAllocator_malloc(&buddy, eight_alloc_size);
+    ptrs[3] = BuddyAllocator_malloc(&buddy, eight_alloc_size);
+
+    for(int i = 0; i < 4; i++) {
+        if (ptrs[i] == NULL) {
+            #ifdef DEBUG
+            printf("BuddyAllocator_malloc failed for ptrs[%d]\n", i);
+            #endif
+            return -1;
+        }
+        fill_memory_pattern(ptrs[i], (i == 0 ? half_alloc_size : (i == 1 ? quarter_alloc_size : eight_alloc_size)), 0x01 + i);
+        assert(verify_memory_pattern(ptrs[i], (i == 0 ? half_alloc_size : (i == 1 ? quarter_alloc_size : eight_alloc_size)), 0x01 + i) == 0);
+    }
+    #ifdef VERBOSE
+    BuddyAllocator_print_state(&buddy);
+    printf("Allocated four blocks of memory\n");
+    
+    print_memory_pattern(buddy.memory_start, total_size);
+    printf("Memory pattern printed\n");
     #endif
     
-    assert(BuddyAllocator_destroy(&allocator) == 0);
+    for(int i = 0; i < 4; i++) {
+        BuddyAllocator_free(&buddy, ptrs[i]);
+    }
+
     return 0;
 }
 

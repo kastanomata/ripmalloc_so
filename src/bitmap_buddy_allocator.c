@@ -116,7 +116,7 @@ static void* get_buddy(BitmapBuddyAllocator* alloc, int level, int size) {
     update_parent(&alloc->bitmap, bitmap_idx);
 
     int block_size = alloc->min_bucket_size << (alloc->num_levels - level);
-    char* ret = alloc->memory + (startIdx(bitmap_idx) * block_size);
+    char* ret = alloc->memory_start + (startIdx(bitmap_idx) * block_size);
 
     ((int*)ret)[0] = bitmap_idx;
     ((int*)ret)[1] = size;
@@ -141,9 +141,9 @@ void* BitmapBuddyAllocator_init(Allocator* base_alloc, ...) {
     }
     
     // Allocate memory
-    alloc->memory = mmap(NULL, total_size, PROT_READ | PROT_WRITE, 
+    alloc->memory_start = mmap(NULL, total_size, PROT_READ | PROT_WRITE, 
                         MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-    if (alloc->memory == MAP_FAILED) {
+    if (alloc->memory_start == MAP_FAILED) {
         #ifdef DEBUG
         printf(RED "ERROR: Failed to allocate memory\n" RESET);
         #endif
@@ -157,7 +157,7 @@ void* BitmapBuddyAllocator_init(Allocator* base_alloc, ...) {
     // Initialize bitmap
     int num_bits = (1 << (num_levels + 1)) - 1;
     if (!bitmap_create(&alloc->bitmap, num_bits)) {
-        munmap(alloc->memory, total_size);
+        munmap(alloc->memory_start, total_size);
         #ifdef DEBUG
         printf(RED "ERROR: Failed to create bitmap\n" RESET);
         #endif
@@ -200,8 +200,8 @@ BitmapBuddyAllocator* BitmapBuddyAllocator_create(BitmapBuddyAllocator* alloc,
 void* BitmapBuddyAllocator_cleanup(Allocator* base_alloc, ...) {
     BitmapBuddyAllocator* alloc = (BitmapBuddyAllocator*)base_alloc;
     
-    if (alloc->memory) {
-        munmap(alloc->memory, alloc->memory_size);
+    if (alloc->memory_start) {
+        munmap(alloc->memory_start, alloc->memory_size);
     }
     
     if (alloc->bitmap.bits) {
@@ -260,14 +260,14 @@ void* BitmapBuddyAllocator_malloc(BitmapBuddyAllocator* alloc, size_t size) {
         return NULL;
     }
 
-    void* memory = alloc->base.malloc((Allocator*)alloc, size);
-    if( memory == NULL ) {
+    void* memory_start = alloc->base.malloc((Allocator*)alloc, size);
+    if( memory_start == NULL ) {
         #ifdef DEBUG
         printf(RED "Error: Failed to allocate memory\n" RESET);
         #endif
         return NULL;
     }
-    return memory;
+    return memory_start;
 }
 
 void* BitmapBuddyAllocator_release(Allocator* base_alloc, ...) {
