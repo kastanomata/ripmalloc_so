@@ -223,6 +223,7 @@ static int test_varied_sizes() {
         BuddyAllocator_free(&buddy, ptrs[i]);
     }
 
+    assert(BuddyAllocator_destroy(&buddy) == 0);
     return 0;
 }
 
