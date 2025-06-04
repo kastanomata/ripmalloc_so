@@ -14,5 +14,9 @@ int main() {
   test_bitmap_buddy_allocator();
   line
   freeform();
-    
+  
+  
+
+
+
 }

@@ -208,6 +208,8 @@ static int test_varied_sizes() {
         BitmapBuddyAllocator_free(&buddy, ptrs[i]);
     }
 
+    assert(BitmapBuddyAllocator_destroy(&buddy) == 0);
+
     return 0;
 }
 
