@@ -13,9 +13,11 @@ $(OUTDIR)/$(PDF): $(SRC)
 
 $(PARENT)/$(PDF): $(OUTDIR)/$(PDF)
 		cp $(OUTDIR)/$(PDF) $(PARENT)/
+		cp $(OUTDIR)/$(PDF) ./
 
 clean:
 		rm -rf $(OUTDIR)/*
 		rm -f $(PARENT)/$(PDF)
+		rm -f ./$(PDF)
 
 .PHONY: all clean

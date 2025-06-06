@@ -24,37 +24,67 @@ HIC SUNT ABSTRACTA RE
 
 \tableofcontents
 
-\mainmatter   % Arabic page numbers (chapters)
-\chapter{Introduction}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam pharetra finibus odio a euismod. Donec consectetur nisl quis ante volutpat finibus. Suspendisse at porttitor nisi. Cras lobortis purus mi. Maecenas cursus enim quis quam facilisis, vitae faucibus metus dapibus. Phasellus tincidunt odio at lobortis sagittis. In pharetra est at nulla tristique porttitor sit amet nec ipsum. In sed nisi ut sapien condimentum iaculis in et urna. Proin pellentesque metus eu ante blandit varius.
+\mainmatter 
+\chapter{Introduzione}
 
-Nunc sed lorem ipsum. Donec consectetur nulla a tristique vulputate. Aliquam ac ipsum id justo porttitor luctus ut vel augue. Fusce ornare ipsum fringilla quam fermentum, in interdum urna lobortis. Nam ligula risus, pharetra quis placerat ut, eleifend vel purus. Vestibulum eu lorem et sapien dignissim facilisis. Etiam at porta metus. Aliquam magna enim, commodo sit amet porta vel, maximus vel diam. Quisque pulvinar pellentesque scelerisque.
+\begin{itemize}
+  \item Cos’è il problema affrontato?
+  \item Perché è importante?
+  \item Come si colloca il mio contributo?
+  \item Dichiarazione d’intenti: che cosa voglio fare
+\end{itemize}
 
-Pellentesque vulputate arcu non nisl lobortis, ac ultrices nulla ultrices. Aliquam vehicula leo et arcu ullamcorper mattis. Curabitur mollis tristique ultricies. In finibus odio nunc. Pellentesque aliquet pharetra interdum. Nullam vulputate vel elit vel placerat. Pellentesque id velit vitae tellus porttitor fermentum ac non dui. Phasellus non ipsum volutpat, interdum elit in, congue augue. Morbi faucibus et nibh et rutrum.
+\chapter{Lavori Correlati/Basi}
+\section{Strumenti e letteratura}
 
-Donec rhoncus metus dignissim felis iaculis interdum. Suspendisse in efficitur ante, ac dictum lectus. Phasellus in varius dui, id aliquet orci. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Mauris egestas libero faucibus dolor bibendum, nec suscipit sem gravida. Vivamus in lectus orci. Nulla ac bibendum lectus. Pellentesque nec lobortis massa, quis ornare tellus. Aenean ut dictum orci. Phasellus non massa quis nisi semper interdum. Vestibulum sodales, nunc eget pharetra varius, lectus urna egestas tortor, ut rhoncus risus libero quis risus.
+Per approfondire il tema della programmazione OOP in C è stato consultato (nonostante non sia stato ritenuto di applicarne interamente gli insegnamenti per semplicità) il libro “Object-Oriented Programming With ANSI-C” del professor Axel-Tobias Schreiner.
 
-Phasellus at ornare turpis, non commodo eros. Aliquam ornare eu eros eu feugiat. Suspendisse consequat risus a tellus consectetur, eu aliquam odio pulvinar. Vivamus sit amet condimentum massa, a venenatis ligula. Suspendisse fringilla hendrerit molestie. Nunc sit amet ultrices eros. Nullam ac felis ac nisi dignissim varius. Fusce consequat, diam id porta fermentum, odio arcu semper nibh, vel aliquam urna tortor id ipsum. Morbi id dictum massa. 
+Il progetto è basato in primo luogo sull’implementazione dello SlabAllocator e BuddyAllocator vista durante le lezioni del corso di Sistemi Operativi tenuto dal professor Grisetti. Tuttavia, la struttura è stata rivisitata e rivista profondamente. Sono stati di riferimento i lavori degli utenti mtrebi e emeryberger, pubblicati su GitHub: il primo per aver fornito chiare indicazioni sul funzionamento e i trade-off di diverse tipologie di allocatori di memoria, il secondo per il lavoro di catalogazione storica, che ha permesso di osservare il percorso compiuto dagli allocatori nel corso del tempo.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam pharetra finibus odio a euismod. Donec consectetur nisl quis ante volutpat finibus. Suspendisse at porttitor nisi. Cras lobortis purus mi. Maecenas cursus enim quis quam facilisis, vitae faucibus metus dapibus. Phasellus tincidunt odio at lobortis sagittis. In pharetra est at nulla tristique porttitor sit amet nec ipsum. In sed nisi ut sapien condimentum iaculis in et urna. Proin pellentesque metus eu ante blandit varius.
+\chapter{Implementazione di ripmalloc}
 
-Nunc sed lorem ipsum. Donec consectetur nulla a tristique vulputate. Aliquam ac ipsum id justo porttitor luctus ut vel augue. Fusce ornare ipsum fringilla quam fermentum, in interdum urna lobortis. Nam ligula risus, pharetra quis placerat ut, eleifend vel purus. Vestibulum eu lorem et sapien dignissim facilisis. Etiam at porta metus. Aliquam magna enim, commodo sit amet porta vel, maximus vel diam. Quisque pulvinar pellentesque scelerisque.
+Il progetto contenuto nella repository è gestito in quattro cartelle principali. \texttt{bin} e \texttt{build} sono utilizzate durante il processo di compilazione, mentre \texttt{header} e \texttt{src} contengono il codice sorgente nella sua interezza.
 
-Pellentesque vulputate arcu non nisl lobortis, ac ultrices nulla ultrices. Aliquam vehicula leo et arcu ullamcorper mattis. Curabitur mollis tristique ultricies. In finibus odio nunc. Pellentesque aliquet pharetra interdum. Nullam vulputate vel elit vel placerat. Pellentesque id velit vitae tellus porttitor fermentum ac non dui. Phasellus non ipsum volutpat, interdum elit in, congue augue. Morbi faucibus et nibh et rutrum.
+\section{Descrizione del sistema}
 
-Donec rhoncus metus dignissim felis iaculis interdum. Suspendisse in efficitur ante, ac dictum lectus. Phasellus in varius dui, id aliquet orci. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Mauris egestas libero faucibus dolor bibendum, nec suscipit sem gravida. Vivamus in lectus orci. Nulla ac bibendum lectus. Pellentesque nec lobortis massa, quis ornare tellus. Aenean ut dictum orci. Phasellus non massa quis nisi semper interdum. Vestibulum sodales, nunc eget pharetra varius, lectus urna egestas tortor, ut rhoncus risus libero quis risus.
+Il progetto contenuto nella repository è gestito in quattro cartelle principali. \texttt{bin} e \texttt{build} sono utilizzate durante il processo di compilazione, mentre \texttt{header} e \texttt{src} contengono il codice sorgente nella sua interezza.
 
-Phasellus at ornare turpis, non commodo eros. Aliquam ornare eu eros eu feugiat. Suspendisse consequat risus a tellus consectetur, eu aliquam odio pulvinar. Vivamus sit amet condimentum massa, a venenatis ligula. Suspendisse fringilla hendrerit molestie. Nunc sit amet ultrices eros. Nullam ac felis ac nisi dignissim varius. Fusce consequat, diam id porta fermentum, odio arcu semper nibh, vel aliquam urna tortor id ipsum. Morbi id dictum massa. 
+\subsection{L’interfaccia Allocator}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam pharetra finibus odio a euismod. Donec consectetur nisl quis ante volutpat finibus. Suspendisse at porttitor nisi. Cras lobortis purus mi. Maecenas cursus enim quis quam facilisis, vitae faucibus metus dapibus. Phasellus tincidunt odio at lobortis sagittis. In pharetra est at nulla tristique porttitor sit amet nec ipsum. In sed nisi ut sapien condimentum iaculis in et urna. Proin pellentesque metus eu ante blandit varius.
+Il contratto che gli Allocatori devono seguire consiste nell’interfaccia \texttt{Allocator} (definita in \texttt{./header/allocator.h}), che stabilisce le primitive necessarie:
+\begin{itemize}
+  \item l’inizializzazione (\textit{init});
+  \item la distruzione (\textit{dest});
+  \item l’allocazione di memoria (\textit{reserve});
+  \item il rilascio di memoria per uso futuro (\textit{release}).
+\end{itemize}
+Queste operazioni sono progettate per un uso interno: infatti, gli argomenti sono passati attraverso modalità definite dalla libreria di sistema \texttt{<stdarg.h>}. Ciò introduce flessibilità nella nostra implementazione delle funzioni permettendoci di gestire i parametri in modo arbitrario, ma contemporaneamente costituisce un rischio, poiché le verifiche sulla correttezza del tipo e del numero non sono fatte a \textit{compile-time}.
 
-Nunc sed lorem ipsum. Donec consectetur nulla a tristique vulputate. Aliquam ac ipsum id justo porttitor luctus ut vel augue. Fusce ornare ipsum fringilla quam fermentum, in interdum urna lobortis. Nam ligula risus, pharetra quis placerat ut, eleifend vel purus. Vestibulum eu lorem et sapien dignissim facilisis. Etiam at porta metus. Aliquam magna enim, commodo sit amet porta vel, maximus vel diam. Quisque pulvinar pellentesque scelerisque.
+Per ovviare a questo problema e permettere al nostro programma di verificare correttamente che i parametri passati siano validi, introduciamo un \textit{buffer} tra le funzioni interne e l’utente nella forma di funzioni \textit{helper} segnalate come \textit{inline}. Attraverso esse, il programma mantiene la sua flessibilità internamente senza dover sacrificare in sicurezza: la correttezza dei parametri passati alla chiamata è effettuata dal compilatore e contemporaneamente la performance non è eccessivamente impattata da questo passaggio intermedio grazie alla keyword \textit{inline}. Essa indica al compilatore di ottimizzare aggressivamente la funzione, sostituendo alla chiamata il suo corpo e per questo motivo, è importante che queste funzioni \textit{helper} siano brevi e concise, in modo da evitare \textit{code bloat}.
 
-Pellentesque vulputate arcu non nisl lobortis, ac ultrices nulla ultrices. Aliquam vehicula leo et arcu ullamcorper mattis. Curabitur mollis tristique ultricies. In finibus odio nunc. Pellentesque aliquet pharetra interdum. Nullam vulputate vel elit vel placerat. Pellentesque id velit vitae tellus porttitor fermentum ac non dui. Phasellus non ipsum volutpat, interdum elit in, congue augue. Morbi faucibus et nibh et rutrum.
+È importante ricordare che \textit{inline} non è che un suggerimento, e non un obbligo, per il compilatore: esistono modalità per forzare questa ottimizzazione, imponendo di applicarla a tutte le chiamate, ma questo potrebbe portare nel lungo termine a una minore ottimizzazione per via della quantità di codice, che renderebbe necessari più \textit{cache swaps} del dovuto. Ulteriori test potrebbero mostrarne l’impatto e con ciò l’importanza di lasciare che sia il compilatore a occuparsi delle ottimizzazioni, ma ciò esula dagli scopi dell’analisi.
 
-Donec rhoncus metus dignissim felis iaculis interdum. Suspendisse in efficitur ante, ac dictum lectus. Phasellus in varius dui, id aliquet orci. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Mauris egestas libero faucibus dolor bibendum, nec suscipit sem gravida. Vivamus in lectus orci. Nulla ac bibendum lectus. Pellentesque nec lobortis massa, quis ornare tellus. Aenean ut dictum orci. Phasellus non massa quis nisi semper interdum. Vestibulum sodales, nunc eget pharetra varius, lectus urna egestas tortor, ut rhoncus risus libero quis risus.
+Ogni classe che implementa l’interfaccia \texttt{Allocator} deve implementare le proprie funzioni interne, che mantengono la stessa \textit{signature}, e le funzioni \textit{wrapper}, che invece possono avere una \textit{signature} diversa in base alle necessità. Per esempio, nell’allocazione di memoria per uno \textit{SlabAllocator} (che velocemente anticipiamo poter allocare unicamente blocchi di memoria di grandezza omogenea) non sarà necessario specificare la grandezza dell’area richiesta. In più, deve fornire anche una rappresentazione grafica del suo stato ai fini di \textit{debugging} e analisi.
 
-Phasellus at ornare turpis, non commodo eros. Aliquam ornare eu eros eu feugiat. Suspendisse consequat risus a tellus consectetur, eu aliquam odio pulvinar. Vivamus sit amet condimentum massa, a venenatis ligula. Suspendisse fringilla hendrerit molestie. Nunc sit amet ultrices eros. Nullam ac felis ac nisi dignissim varius. Fusce consequat, diam id porta fermentum, odio arcu semper nibh, vel aliquam urna tortor id ipsum. Morbi id dictum massa. 
+Le funzioni \textit{helper} seguono una nomenclatura più vicina a quella della \textit{libc}, in modo da rendere l’API più intuitiva e immediata. Esse sono:
+\begin{itemize}
+  \item \textit{Allocator\_create} (\textit{wrapper} di \textit{Allocator\_init})
+  \item \textit{Allocator\_destroy} (\textit{wrapper} di \textit{Allocator\_dest})
+  \item \textit{Allocator\_malloc} (\textit{wrapper} di \textit{Allocator\_reserve})
+  \item \textit{Allocator\_free} (\textit{wrapper} di \textit{Allocator\_release})
+\end{itemize}
+
+Per via del \textit{linker} del linguaggio C, siamo costretti ad anteporre al nome della funzione la classe, come vediamo sopra. Sono state esplorate soluzioni a questo problema, ma sfortunatamente introducevano livelli di complessità oppure sacrificavano a livello di \textit{type checking}. Grazie alla duplice struttura con funzioni \textit{helper} e \textit{internal} sarebbe possibile realizzare in C una forma semplice di polimorfismo, ma risulta sempre necessario, al netto dell’utilizzo di \textit{macro} (che reintrodurrebbero i problemi evidenziati precedentemente), usare nomi univoci per ogni funzione con diversa combinazione di parametri.
+
+\chapter{Esperimenti, Casi d’Uso}
+
+\begin{itemize}
+  \item Descrizione di una run del sistema o, se applicabile, esperimenti qualitativi.
+\end{itemize}
+
+\chapter{Conclusioni}
+
+Riprendi la dichiarazione d’intenti al capitolo uno e metti le spunte.
 
 \backmatter
 \cleardoublepage
