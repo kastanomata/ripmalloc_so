@@ -5,10 +5,9 @@
  \____|
        
 # Folders 
-./bin/*
-bin/main
-bin/
-./build/*
+bin/*
+build/*
+thesis/tex_compile/*
 
 # Prerequisites
 *.d

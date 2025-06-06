@@ -1,0 +1,62 @@
+\documentclass[noexaminfo]{sapthesis}  % Load the class
+
+\title{ripmalloc\_so}
+\alttitle{A study on Memory Allocators}
+\subtitle{How I Learned to Stop Worrying and Love the Allocator}
+\author{Antonio Turco}
+\IDnumber{1986183} 
+\date{\today}
+\course{Corso di Laurea Triennale in Ingegneria Informatica e Automatica}  
+\courseorganizer{Facoltà di Ingegneria dell'Informazione, Informatica e Statistica}
+\AcademicYear{2024/2025}
+\advisor{Prof. Giorgio Grisetti}
+\copyyear{2024/2025}
+\versiondate{\today}
+\authoremail{turco.1986183@studenti.uniroma1.it}
+\begin{document}
+\frontmatter  
+\maketitle
+\dedication{Dedicato a...}
+
+\begin{abstract}
+HIC SUNT ABSTRACTA RE
+\end{abstract}
+
+\tableofcontents
+
+\mainmatter   % Arabic page numbers (chapters)
+\chapter{Introduction}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam pharetra finibus odio a euismod. Donec consectetur nisl quis ante volutpat finibus. Suspendisse at porttitor nisi. Cras lobortis purus mi. Maecenas cursus enim quis quam facilisis, vitae faucibus metus dapibus. Phasellus tincidunt odio at lobortis sagittis. In pharetra est at nulla tristique porttitor sit amet nec ipsum. In sed nisi ut sapien condimentum iaculis in et urna. Proin pellentesque metus eu ante blandit varius.
+
+Nunc sed lorem ipsum. Donec consectetur nulla a tristique vulputate. Aliquam ac ipsum id justo porttitor luctus ut vel augue. Fusce ornare ipsum fringilla quam fermentum, in interdum urna lobortis. Nam ligula risus, pharetra quis placerat ut, eleifend vel purus. Vestibulum eu lorem et sapien dignissim facilisis. Etiam at porta metus. Aliquam magna enim, commodo sit amet porta vel, maximus vel diam. Quisque pulvinar pellentesque scelerisque.
+
+Pellentesque vulputate arcu non nisl lobortis, ac ultrices nulla ultrices. Aliquam vehicula leo et arcu ullamcorper mattis. Curabitur mollis tristique ultricies. In finibus odio nunc. Pellentesque aliquet pharetra interdum. Nullam vulputate vel elit vel placerat. Pellentesque id velit vitae tellus porttitor fermentum ac non dui. Phasellus non ipsum volutpat, interdum elit in, congue augue. Morbi faucibus et nibh et rutrum.
+
+Donec rhoncus metus dignissim felis iaculis interdum. Suspendisse in efficitur ante, ac dictum lectus. Phasellus in varius dui, id aliquet orci. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Mauris egestas libero faucibus dolor bibendum, nec suscipit sem gravida. Vivamus in lectus orci. Nulla ac bibendum lectus. Pellentesque nec lobortis massa, quis ornare tellus. Aenean ut dictum orci. Phasellus non massa quis nisi semper interdum. Vestibulum sodales, nunc eget pharetra varius, lectus urna egestas tortor, ut rhoncus risus libero quis risus.
+
+Phasellus at ornare turpis, non commodo eros. Aliquam ornare eu eros eu feugiat. Suspendisse consequat risus a tellus consectetur, eu aliquam odio pulvinar. Vivamus sit amet condimentum massa, a venenatis ligula. Suspendisse fringilla hendrerit molestie. Nunc sit amet ultrices eros. Nullam ac felis ac nisi dignissim varius. Fusce consequat, diam id porta fermentum, odio arcu semper nibh, vel aliquam urna tortor id ipsum. Morbi id dictum massa. 
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam pharetra finibus odio a euismod. Donec consectetur nisl quis ante volutpat finibus. Suspendisse at porttitor nisi. Cras lobortis purus mi. Maecenas cursus enim quis quam facilisis, vitae faucibus metus dapibus. Phasellus tincidunt odio at lobortis sagittis. In pharetra est at nulla tristique porttitor sit amet nec ipsum. In sed nisi ut sapien condimentum iaculis in et urna. Proin pellentesque metus eu ante blandit varius.
+
+Nunc sed lorem ipsum. Donec consectetur nulla a tristique vulputate. Aliquam ac ipsum id justo porttitor luctus ut vel augue. Fusce ornare ipsum fringilla quam fermentum, in interdum urna lobortis. Nam ligula risus, pharetra quis placerat ut, eleifend vel purus. Vestibulum eu lorem et sapien dignissim facilisis. Etiam at porta metus. Aliquam magna enim, commodo sit amet porta vel, maximus vel diam. Quisque pulvinar pellentesque scelerisque.
+
+Pellentesque vulputate arcu non nisl lobortis, ac ultrices nulla ultrices. Aliquam vehicula leo et arcu ullamcorper mattis. Curabitur mollis tristique ultricies. In finibus odio nunc. Pellentesque aliquet pharetra interdum. Nullam vulputate vel elit vel placerat. Pellentesque id velit vitae tellus porttitor fermentum ac non dui. Phasellus non ipsum volutpat, interdum elit in, congue augue. Morbi faucibus et nibh et rutrum.
+
+Donec rhoncus metus dignissim felis iaculis interdum. Suspendisse in efficitur ante, ac dictum lectus. Phasellus in varius dui, id aliquet orci. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Mauris egestas libero faucibus dolor bibendum, nec suscipit sem gravida. Vivamus in lectus orci. Nulla ac bibendum lectus. Pellentesque nec lobortis massa, quis ornare tellus. Aenean ut dictum orci. Phasellus non massa quis nisi semper interdum. Vestibulum sodales, nunc eget pharetra varius, lectus urna egestas tortor, ut rhoncus risus libero quis risus.
+
+Phasellus at ornare turpis, non commodo eros. Aliquam ornare eu eros eu feugiat. Suspendisse consequat risus a tellus consectetur, eu aliquam odio pulvinar. Vivamus sit amet condimentum massa, a venenatis ligula. Suspendisse fringilla hendrerit molestie. Nunc sit amet ultrices eros. Nullam ac felis ac nisi dignissim varius. Fusce consequat, diam id porta fermentum, odio arcu semper nibh, vel aliquam urna tortor id ipsum. Morbi id dictum massa. 
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam pharetra finibus odio a euismod. Donec consectetur nisl quis ante volutpat finibus. Suspendisse at porttitor nisi. Cras lobortis purus mi. Maecenas cursus enim quis quam facilisis, vitae faucibus metus dapibus. Phasellus tincidunt odio at lobortis sagittis. In pharetra est at nulla tristique porttitor sit amet nec ipsum. In sed nisi ut sapien condimentum iaculis in et urna. Proin pellentesque metus eu ante blandit varius.
+
+Nunc sed lorem ipsum. Donec consectetur nulla a tristique vulputate. Aliquam ac ipsum id justo porttitor luctus ut vel augue. Fusce ornare ipsum fringilla quam fermentum, in interdum urna lobortis. Nam ligula risus, pharetra quis placerat ut, eleifend vel purus. Vestibulum eu lorem et sapien dignissim facilisis. Etiam at porta metus. Aliquam magna enim, commodo sit amet porta vel, maximus vel diam. Quisque pulvinar pellentesque scelerisque.
+
+Pellentesque vulputate arcu non nisl lobortis, ac ultrices nulla ultrices. Aliquam vehicula leo et arcu ullamcorper mattis. Curabitur mollis tristique ultricies. In finibus odio nunc. Pellentesque aliquet pharetra interdum. Nullam vulputate vel elit vel placerat. Pellentesque id velit vitae tellus porttitor fermentum ac non dui. Phasellus non ipsum volutpat, interdum elit in, congue augue. Morbi faucibus et nibh et rutrum.
+
+Donec rhoncus metus dignissim felis iaculis interdum. Suspendisse in efficitur ante, ac dictum lectus. Phasellus in varius dui, id aliquet orci. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Mauris egestas libero faucibus dolor bibendum, nec suscipit sem gravida. Vivamus in lectus orci. Nulla ac bibendum lectus. Pellentesque nec lobortis massa, quis ornare tellus. Aenean ut dictum orci. Phasellus non massa quis nisi semper interdum. Vestibulum sodales, nunc eget pharetra varius, lectus urna egestas tortor, ut rhoncus risus libero quis risus.
+
+Phasellus at ornare turpis, non commodo eros. Aliquam ornare eu eros eu feugiat. Suspendisse consequat risus a tellus consectetur, eu aliquam odio pulvinar. Vivamus sit amet condimentum massa, a venenatis ligula. Suspendisse fringilla hendrerit molestie. Nunc sit amet ultrices eros. Nullam ac felis ac nisi dignissim varius. Fusce consequat, diam id porta fermentum, odio arcu semper nibh, vel aliquam urna tortor id ipsum. Morbi id dictum massa. 
+
+\backmatter
+\cleardoublepage
+
+\end{document}
