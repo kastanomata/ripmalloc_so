@@ -62,7 +62,8 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-# My notes
+# My 
+thesis/.~lock.*.fodt#
 *.txt
 .vscode
 

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <office:document xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:ooo="http://openoffice.org/2004/office" xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:config="urn:oasis:names:tc:opendocument:xmlns:config:1.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:meta="urn:oasis:names:tc:opendocument:xmlns:meta:1.0" xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0" xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0" xmlns:rpt="http://openoffice.org/2005/report" xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0" xmlns:dr3d="urn:oasis:names:tc:opendocument:xmlns:dr3d:1.0" xmlns:svg="urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0" xmlns:chart="urn:oasis:names:tc:opendocument:xmlns:chart:1.0" xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0" xmlns:number="urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0" xmlns:ooow="http://openoffice.org/2004/writer" xmlns:oooc="http://openoffice.org/2004/calc" xmlns:of="urn:oasis:names:tc:opendocument:xmlns:of:1.2" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:tableooo="http://openoffice.org/2009/table" xmlns:calcext="urn:org:documentfoundation:names:experimental:calc:xmlns:calcext:1.0" xmlns:drawooo="http://openoffice.org/2010/draw" xmlns:loext="urn:org:documentfoundation:names:experimental:office:xmlns:loext:1.0" xmlns:field="urn:openoffice:names:experimental:ooo-ms-interop:xmlns:field:1.0" xmlns:math="http://www.w3.org/1998/Math/MathML" xmlns:form="urn:oasis:names:tc:opendocument:xmlns:form:1.0" xmlns:script="urn:oasis:names:tc:opendocument:xmlns:script:1.0" xmlns:formx="urn:openoffice:names:experimental:ooxml-odf-interop:xmlns:form:1.0" xmlns:dom="http://www.w3.org/2001/xml-events" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:grddl="http://www.w3.org/2003/g/data-view#" xmlns:css3t="http://www.w3.org/TR/css3-text/" xmlns:officeooo="http://openoffice.org/2009/office" office:version="1.4" office:mimetype="application/vnd.oasis.opendocument.text">
- <office:meta><meta:creation-date>2025-06-06T12:36:10.770512400</meta:creation-date><dc:date>2025-06-06T15:35:51.152229100</dc:date><meta:editing-duration>PT1H56M17S</meta:editing-duration><meta:editing-cycles>7</meta:editing-cycles><meta:generator>LibreOffice/25.2.3.2$Windows_X86_64 LibreOffice_project/bbb074479178df812d175f709636b368952c2ce3</meta:generator><meta:document-statistic meta:table-count="0" meta:image-count="0" meta:object-count="0" meta:page-count="6" meta:paragraph-count="33" meta:word-count="521" meta:character-count="3621" meta:non-whitespace-character-count="3139"/></office:meta>
+ <office:meta><meta:creation-date>2025-06-06T12:36:10.770512400</meta:creation-date><dc:date>2025-06-06T17:07:43.308196200</dc:date><meta:editing-duration>PT2H24M36S</meta:editing-duration><meta:editing-cycles>11</meta:editing-cycles><meta:generator>LibreOffice/25.2.3.2$Windows_X86_64 LibreOffice_project/bbb074479178df812d175f709636b368952c2ce3</meta:generator><meta:document-statistic meta:table-count="0" meta:image-count="0" meta:object-count="0" meta:page-count="7" meta:paragraph-count="35" meta:word-count="720" meta:character-count="4985" meta:non-whitespace-character-count="4306"/></office:meta>
  <office:settings>
   <config:config-item-set config:name="ooo:view-settings">
-   <config:config-item config:name="ViewAreaTop" config:type="long">0</config:config-item>
+   <config:config-item config:name="ViewAreaTop" config:type="long">60094</config:config-item>
    <config:config-item config:name="ViewAreaLeft" config:type="long">0</config:config-item>
    <config:config-item config:name="ViewAreaWidth" config:type="long">30124</config:config-item>
    <config:config-item config:name="ViewAreaHeight" config:type="long">13548</config:config-item>
@@ -13,12 +13,12 @@
    <config:config-item-map-indexed config:name="Views">
     <config:config-item-map-entry>
      <config:config-item config:name="ViewId" config:type="string">view2</config:config-item>
-     <config:config-item config:name="ViewLeft" config:type="long">8825</config:config-item>
-     <config:config-item config:name="ViewTop" config:type="long">2925</config:config-item>
+     <config:config-item config:name="ViewLeft" config:type="long">17616</config:config-item>
+     <config:config-item config:name="ViewTop" config:type="long">125718</config:config-item>
      <config:config-item config:name="VisibleLeft" config:type="long">0</config:config-item>
-     <config:config-item config:name="VisibleTop" config:type="long">0</config:config-item>
+     <config:config-item config:name="VisibleTop" config:type="long">60094</config:config-item>
      <config:config-item config:name="VisibleRight" config:type="long">30122</config:config-item>
-     <config:config-item config:name="VisibleBottom" config:type="long">13547</config:config-item>
+     <config:config-item config:name="VisibleBottom" config:type="long">73641</config:config-item>
      <config:config-item config:name="ZoomType" config:type="short">0</config:config-item>
      <config:config-item config:name="ViewLayoutColumns" config:type="short">1</config:config-item>
      <config:config-item config:name="ViewLayoutBookMode" config:type="boolean">false</config:config-item>
@@ -92,7 +92,7 @@
    <config:config-item config:name="IgnoreTabsAndBlanksForLineCalculation" config:type="boolean">false</config:config-item>
    <config:config-item config:name="IgnoreHiddenCharsForLineCalculation" config:type="boolean">true</config:config-item>
    <config:config-item config:name="TabAtLeftIndentForParagraphsInList" config:type="boolean">false</config:config-item>
-   <config:config-item config:name="Rsid" config:type="int">1687278</config:config-item>
+   <config:config-item config:name="Rsid" config:type="int">1760801</config:config-item>
    <config:config-item config:name="RsidRoot" config:type="int">828735</config:config-item>
    <config:config-item config:name="LoadReadonly" config:type="boolean">false</config:config-item>
    <config:config-item config:name="ClipAsCharacterAnchoredWriterFlyFrames" config:type="boolean">false</config:config-item>
@@ -178,7 +178,7 @@
  <office:styles>
   <style:default-style style:family="graphic">
    <style:graphic-properties svg:stroke-color="#3465a4" draw:fill-color="#729fcf" fo:wrap-option="no-wrap" draw:shadow-offset-x="0.3cm" draw:shadow-offset-y="0.3cm" draw:start-line-spacing-horizontal="0.283cm" draw:start-line-spacing-vertical="0.283cm" draw:end-line-spacing-horizontal="0.283cm" draw:end-line-spacing-vertical="0.283cm" style:writing-mode="lr-tb" style:flow-with-text="false"/>
-   <style:paragraph-properties style:text-autospace="ideograph-alpha" style:line-break="strict" loext:tab-stop-distance="0cm" style:font-independent-line-spacing="false">
+   <style:paragraph-properties style:text-autospace="ideograph-alpha" style:line-break="strict" loext:tab-stop-distance="0cm" style:writing-mode="lr-tb" style:font-independent-line-spacing="false">
     <style:tab-stops/>
    </style:paragraph-properties>
    <style:text-properties style:use-window-font-color="true" loext:opacity="0%" style:font-name="Liberation Serif" fo:font-size="12pt" fo:language="it" fo:country="IT" style:letter-kerning="true" style:font-name-asian="NSimSun1" style:font-size-asian="10.5pt" style:language-asian="zh" style:country-asian="CN" style:font-name-complex="Lucida Sans1" style:font-size-complex="12pt" style:language-complex="hi" style:country-complex="IN"/>
@@ -343,66 +343,69 @@
    <style:text-properties fo:language="it" fo:country="IT" officeooo:rsid="000e073f" officeooo:paragraph-rsid="000f15f2"/>
   </style:style>
   <style:style style:name="P8" style:family="paragraph" style:parent-style-name="Text_20_body">
+   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="001480a4" officeooo:paragraph-rsid="000f15f2" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
+  </style:style>
+  <style:style style:name="P9" style:family="paragraph" style:parent-style-name="Text_20_body">
    <style:text-properties fo:language="it" fo:country="IT" officeooo:paragraph-rsid="000ca53f"/>
   </style:style>
-  <style:style style:name="P9" style:family="paragraph" style:parent-style-name="Heading_20_1">
+  <style:style style:name="P10" style:family="paragraph" style:parent-style-name="Heading_20_1">
    <style:paragraph-properties fo:break-before="page"/>
    <style:text-properties officeooo:paragraph-rsid="001480a4"/>
   </style:style>
-  <style:style style:name="P10" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L2">
+  <style:style style:name="P11" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L2">
    <style:text-properties fo:language="it" fo:country="IT" officeooo:rsid="000ca53f" officeooo:paragraph-rsid="000f15f2"/>
   </style:style>
-  <style:style style:name="P11" style:family="paragraph" style:parent-style-name="Text_20_body" style:master-page-name="">
+  <style:style style:name="P12" style:family="paragraph" style:parent-style-name="Text_20_body" style:master-page-name="">
    <loext:graphic-properties draw:fill="none"/>
    <style:paragraph-properties fo:margin-left="0cm" fo:margin-right="0cm" fo:margin-top="0cm" fo:margin-bottom="0.247cm" style:contextual-spacing="false" fo:line-height="115%" fo:text-align="start" style:justify-single-word="false" fo:text-indent="0cm" style:auto-text-indent="false" style:page-number="auto" fo:background-color="transparent"/>
    <style:text-properties fo:language="it" fo:country="IT" officeooo:paragraph-rsid="000f15f2"/>
   </style:style>
-  <style:style style:name="P12" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L3">
+  <style:style style:name="P13" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L3">
    <loext:graphic-properties draw:fill="none"/>
    <style:paragraph-properties fo:margin-top="0cm" fo:margin-bottom="0.247cm" style:contextual-spacing="false" fo:line-height="115%" fo:text-align="start" style:justify-single-word="false" fo:background-color="transparent"/>
    <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" officeooo:rsid="000f15f2" officeooo:paragraph-rsid="000f15f2" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
-  <style:style style:name="P13" style:family="paragraph" style:parent-style-name="Text_20_body">
+  <style:style style:name="P14" style:family="paragraph" style:parent-style-name="Text_20_body">
    <loext:graphic-properties draw:fill="none"/>
    <style:paragraph-properties fo:margin-top="0cm" fo:margin-bottom="0.247cm" style:contextual-spacing="false" fo:line-height="115%" fo:text-align="start" style:justify-single-word="false" fo:background-color="transparent"/>
    <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" officeooo:rsid="000f3bd6" officeooo:paragraph-rsid="00163e5c" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
-  <style:style style:name="P14" style:family="paragraph" style:parent-style-name="Text_20_body">
-   <loext:graphic-properties draw:fill="none"/>
-   <style:paragraph-properties fo:margin-top="0cm" fo:margin-bottom="0.247cm" style:contextual-spacing="false" fo:line-height="115%" fo:text-align="start" style:justify-single-word="false" fo:background-color="transparent"/>
-   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="italic" officeooo:rsid="00163e5c" officeooo:paragraph-rsid="00163e5c" style:font-style-asian="italic" style:font-style-complex="italic"/>
-  </style:style>
   <style:style style:name="P15" style:family="paragraph" style:parent-style-name="Text_20_body">
    <loext:graphic-properties draw:fill="none"/>
    <style:paragraph-properties fo:margin-top="0cm" fo:margin-bottom="0.247cm" style:contextual-spacing="false" fo:line-height="115%" fo:text-align="start" style:justify-single-word="false" fo:background-color="transparent"/>
-   <style:text-properties officeooo:paragraph-rsid="001699d4"/>
+   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" officeooo:rsid="000f3bd6" officeooo:paragraph-rsid="001ade21" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
-  <style:style style:name="P16" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L4">
+  <style:style style:name="P16" style:family="paragraph" style:parent-style-name="Text_20_body">
    <loext:graphic-properties draw:fill="none"/>
    <style:paragraph-properties fo:margin-top="0cm" fo:margin-bottom="0.247cm" style:contextual-spacing="false" fo:line-height="115%" fo:text-align="start" style:justify-single-word="false" fo:background-color="transparent"/>
-   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" officeooo:rsid="001699d4" officeooo:paragraph-rsid="001699d4" style:font-style-asian="normal" style:font-style-complex="normal"/>
+   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" officeooo:rsid="001ade21" officeooo:paragraph-rsid="001ade21" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
   <style:style style:name="P17" style:family="paragraph" style:parent-style-name="Text_20_body">
    <loext:graphic-properties draw:fill="none"/>
    <style:paragraph-properties fo:margin-top="0cm" fo:margin-bottom="0.247cm" style:contextual-spacing="false" fo:line-height="115%" fo:text-align="start" style:justify-single-word="false" fo:background-color="transparent"/>
-   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" officeooo:rsid="001699d4" officeooo:paragraph-rsid="00171e5c" style:font-style-asian="normal" style:font-style-complex="normal"/>
+   <style:text-properties officeooo:paragraph-rsid="001699d4"/>
   </style:style>
-  <style:style style:name="P18" style:family="paragraph" style:parent-style-name="Text_20_body">
+  <style:style style:name="P18" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L4">
+   <loext:graphic-properties draw:fill="none"/>
+   <style:paragraph-properties fo:margin-top="0cm" fo:margin-bottom="0.247cm" style:contextual-spacing="false" fo:line-height="115%" fo:text-align="start" style:justify-single-word="false" fo:background-color="transparent"/>
+   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" officeooo:rsid="001699d4" officeooo:paragraph-rsid="001699d4" style:font-style-asian="normal" style:font-style-complex="normal"/>
+  </style:style>
+  <style:style style:name="P19" style:family="paragraph" style:parent-style-name="Text_20_body">
    <loext:graphic-properties draw:fill="none"/>
    <style:paragraph-properties fo:margin-left="0cm" fo:margin-right="0cm" fo:margin-top="0cm" fo:margin-bottom="0.247cm" style:contextual-spacing="false" fo:line-height="115%" fo:text-indent="0cm" style:auto-text-indent="false" fo:background-color="transparent"/>
    <style:text-properties fo:language="it" fo:country="IT" officeooo:paragraph-rsid="000f15f2"/>
   </style:style>
-  <style:style style:name="P19" style:family="paragraph" style:parent-style-name="Heading_20_1">
+  <style:style style:name="P20" style:family="paragraph" style:parent-style-name="Heading_20_1">
    <style:paragraph-properties fo:break-before="page"/>
    <style:text-properties officeooo:paragraph-rsid="000ca53f"/>
   </style:style>
-  <style:style style:name="P20" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L5">
+  <style:style style:name="P21" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L5">
    <style:text-properties officeooo:rsid="000ca53f" officeooo:paragraph-rsid="000ca53f"/>
   </style:style>
-  <style:style style:name="P21" style:family="paragraph" style:parent-style-name="Text_20_body">
+  <style:style style:name="P22" style:family="paragraph" style:parent-style-name="Text_20_body">
    <style:text-properties officeooo:paragraph-rsid="000ca53f"/>
   </style:style>
-  <style:style style:name="P22" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L6">
+  <style:style style:name="P23" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L6">
    <style:text-properties officeooo:rsid="000ca53f" officeooo:paragraph-rsid="000ca53f"/>
   </style:style>
   <style:style style:name="T1" style:family="text">
@@ -439,52 +442,70 @@
    <style:text-properties fo:font-style="italic" fo:font-weight="normal" officeooo:rsid="000f15f2" style:font-style-asian="italic" style:font-weight-asian="normal" style:font-style-complex="italic" style:font-weight-complex="normal"/>
   </style:style>
   <style:style style:name="T12" style:family="text">
-   <style:text-properties fo:font-style="italic" officeooo:rsid="001699d4" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="001ade21" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
   </style:style>
   <style:style style:name="T13" style:family="text">
-   <style:text-properties fo:font-style="italic" officeooo:rsid="000f15f2" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties fo:font-style="italic" officeooo:rsid="001699d4" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T14" style:family="text">
-   <style:text-properties fo:font-style="normal" officeooo:rsid="000f15f2" style:font-style-asian="normal" style:font-style-complex="normal"/>
+   <style:text-properties fo:font-style="italic" officeooo:rsid="000f15f2" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T15" style:family="text">
-   <style:text-properties officeooo:rsid="000f3bd6"/>
+   <style:text-properties fo:font-style="normal" officeooo:rsid="000f15f2" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
   <style:style style:name="T16" style:family="text">
-   <style:text-properties officeooo:rsid="00101f48"/>
+   <style:text-properties officeooo:rsid="000f3bd6"/>
   </style:style>
   <style:style style:name="T17" style:family="text">
-   <style:text-properties fo:font-style="italic" officeooo:rsid="00101f48" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties officeooo:rsid="00101f48"/>
   </style:style>
   <style:style style:name="T18" style:family="text">
-   <style:text-properties fo:font-style="italic" officeooo:rsid="00163e5c" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties fo:font-style="italic" officeooo:rsid="00101f48" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T19" style:family="text">
-   <style:text-properties officeooo:rsid="00163e5c"/>
+   <style:text-properties fo:font-style="italic" officeooo:rsid="00163e5c" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T20" style:family="text">
-   <style:text-properties fo:font-style="italic"/>
+   <style:text-properties officeooo:rsid="00163e5c"/>
   </style:style>
   <style:style style:name="T21" style:family="text">
-   <style:text-properties fo:font-style="normal"/>
+   <style:text-properties fo:font-style="italic"/>
   </style:style>
   <style:style style:name="T22" style:family="text">
-   <style:text-properties fo:font-style="italic" officeooo:rsid="001167aa" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties fo:font-style="normal"/>
   </style:style>
   <style:style style:name="T23" style:family="text">
-   <style:text-properties officeooo:rsid="001167aa"/>
+   <style:text-properties fo:font-style="italic" officeooo:rsid="001167aa" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T24" style:family="text">
-   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" officeooo:rsid="001699d4" style:font-style-asian="normal" style:font-style-complex="normal"/>
+   <style:text-properties officeooo:rsid="001167aa"/>
   </style:style>
   <style:style style:name="T25" style:family="text">
-   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="italic" officeooo:rsid="001699d4" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties officeooo:rsid="001ade21"/>
   </style:style>
   <style:style style:name="T26" style:family="text">
-   <style:text-properties fo:font-style="italic" officeooo:rsid="00171e5c" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties fo:font-style="italic" officeooo:rsid="001ade21" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T27" style:family="text">
    <style:text-properties style:text-underline-style="none"/>
+  </style:style>
+  <style:style style:name="T28" style:family="text">
+   <style:text-properties fo:font-style="italic" style:text-underline-style="none" style:font-style-asian="italic" style:font-style-complex="italic"/>
+  </style:style>
+  <style:style style:name="T29" style:family="text">
+   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" officeooo:rsid="001699d4" style:font-style-asian="normal" style:font-style-complex="normal"/>
+  </style:style>
+  <style:style style:name="T30" style:family="text">
+   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="italic" officeooo:rsid="001699d4" style:font-style-asian="italic" style:font-style-complex="italic"/>
+  </style:style>
+  <style:style style:name="T31" style:family="text">
+   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" officeooo:rsid="001ade21" style:font-style-asian="normal" style:font-style-complex="normal"/>
+  </style:style>
+  <style:style style:name="T32" style:family="text">
+   <style:text-properties fo:font-style="italic" officeooo:rsid="00171e5c" style:font-style-asian="italic" style:font-style-complex="italic"/>
+  </style:style>
+  <style:style style:name="T33" style:family="text">
+   <style:text-properties officeooo:rsid="001699d4"/>
   </style:style>
   <text:list-style style:name="L1">
    <text:list-level-style-bullet text:level="1" text:style-name="Bullet_20_Symbols" loext:num-list-format="%1%" text:bullet-char="•">
@@ -901,70 +922,77 @@
     </text:list-item>
    </text:list>
    <text:h text:style-name="P3" text:outline-level="1" text:is-list-header="true">2. Lavori Correlati/Basi</text:h>
-   <text:list xml:id="list2874909091" text:style-name="L2">
+   <text:list xml:id="list2643063238" text:style-name="L2">
     <text:list-item>
      <text:p text:style-name="P6">Strumenti e letteratura su cui ho costruito il mio sistema</text:p>
     </text:list-item>
    </text:list>
    <text:p text:style-name="P7">Per approfondire il tema della programmazione OOP in C è stato consultato (nonostante non sia stato ritenuto d<text:span text:style-name="T2">i</text:span> applicarne interamente gli insegnamenti per semplicità) <text:span text:style-name="T3">il </text:span><text:span text:style-name="T4">libro “</text:span><text:span text:style-name="T3">Object-Oriented Programming With ANSI-C” <text:s/></text:span><text:span text:style-name="T5">del professor </text:span><text:span text:style-name="T6">Axel-Tobias Schreiner. </text:span></text:p>
-   <text:p text:style-name="P7">Il progetto è basato in primo luogo sull’implementazione dello SlabAllocator e BuddyAllocator vista durante le lezioni del corso di Sistemi Operativi tenuto dal professor Grisetti. <text:span text:style-name="T2">Tuttavia, la struttura è stata rivisitata e rivista profondamente. </text:span><text:span text:style-name="T7">Sono stati di riferimento i lavori degli utenti mtrebi e emeryberger, pubblicati su GitHub: il primo per aver </text:span><text:span text:style-name="T8">fornito chiare indicazioni sul funzionamento </text:span><text:span text:style-name="T9">e i</text:span><text:span text:style-name="T10"> trade-off</text:span><text:span text:style-name="T11"> </text:span><text:span text:style-name="T9">di diverse tipologie di </text:span><text:span text:style-name="T8">allocatori di memoria, </text:span><text:span text:style-name="T9">il secondo per il lavoro di catalogazione storica, che ha permesso di osservare il percorso compiuto nel mondo dell’allocazione nel corso del tempo. </text:span></text:p>
+   <text:p text:style-name="P7">Il progetto è basato in primo luogo sull’implementazione dello SlabAllocator e BuddyAllocator vista durante le lezioni del corso di Sistemi Operativi tenuto dal professor Grisetti. <text:span text:style-name="T2">Tuttavia, la struttura è stata rivisitata e rivista profondamente. </text:span><text:span text:style-name="T7">Sono stati di riferimento i lavori degli utenti mtrebi e emeryberger, pubblicati su GitHub: il primo per aver </text:span><text:span text:style-name="T8">fornito chiare indicazioni sul funzionamento </text:span><text:span text:style-name="T9">e i</text:span><text:span text:style-name="T10"> trade-off</text:span><text:span text:style-name="T11"> </text:span><text:span text:style-name="T9">di diverse tipologie di </text:span><text:span text:style-name="T8">allocatori di memoria, </text:span><text:span text:style-name="T9">il secondo per il lavoro di catalogazione storica, che ha permesso di osservare il percorso compiuto </text:span><text:span text:style-name="T12">dagli allocatori</text:span><text:span text:style-name="T9"> nel corso del tempo. </text:span></text:p>
    <text:p text:style-name="P8"/>
-   <text:h text:style-name="P9" text:outline-level="1" text:is-list-header="true">3. <text:span text:style-name="T1">Implementazione di ripmalloc</text:span></text:h>
+   <text:p text:style-name="P9"/>
+   <text:h text:style-name="P10" text:outline-level="1" text:is-list-header="true">3. <text:span text:style-name="T1">Implementazione di ripmalloc</text:span></text:h>
    <text:list text:continue-numbering="true" text:style-name="L2">
     <text:list-item>
-     <text:p text:style-name="P10">Descrizione del sistema, etc. etc.</text:p>
+     <text:p text:style-name="P11">Descrizione del sistema, etc. etc.</text:p>
     </text:list-item>
    </text:list>
-   <text:p text:style-name="P11"><text:span text:style-name="T2">Il sistema è costituito di un’interfaccia, definita in ./</text:span><text:span text:style-name="T12">header/a</text:span><text:span text:style-name="T13">llocator.h</text:span><text:span text:style-name="T14">, che stabilisce le primitive che tutti gli allocatori di memoria devono implementare:</text:span></text:p>
+   <text:p text:style-name="P12"><text:span text:style-name="T2">Il sistema è costituito di un’interfaccia, definita in ./</text:span><text:span text:style-name="T13">header/a</text:span><text:span text:style-name="T14">llocator.h</text:span><text:span text:style-name="T15">, che stabilisce le primitive che tutti gli allocatori di memoria devono implementare:</text:span></text:p>
    <text:list text:style-name="L3">
     <text:list-item>
-     <text:p text:style-name="P12">l’<text:span text:style-name="T15">inizializzazione</text:span> <text:span text:style-name="T15">(init)</text:span>;</text:p>
+     <text:p text:style-name="P13">l’<text:span text:style-name="T16">inizializzazione</text:span> <text:span text:style-name="T16">(init)</text:span>;</text:p>
     </text:list-item>
     <text:list-item>
-     <text:p text:style-name="P12">la distruzione <text:span text:style-name="T15">(dest)</text:span>;</text:p>
+     <text:p text:style-name="P13">la distruzione <text:span text:style-name="T16">(dest)</text:span>;</text:p>
     </text:list-item>
     <text:list-item>
-     <text:p text:style-name="P12">l’allocazione di memoria <text:span text:style-name="T15">(reserve)</text:span>;</text:p>
+     <text:p text:style-name="P13">l’allocazione di memoria <text:span text:style-name="T16">(reserve)</text:span>;</text:p>
     </text:list-item>
     <text:list-item>
-     <text:p text:style-name="P12">il rilascio di memoria per uso futuro <text:span text:style-name="T15">(release)</text:span>.</text:p>
+     <text:p text:style-name="P13">il rilascio di memoria per uso futuro <text:span text:style-name="T16">(release)</text:span>.</text:p>
     </text:list-item>
    </text:list>
-   <text:p text:style-name="P13">Queste operazioni sono progettate per un uso interno: infatti, gli argomenti sono passati attraverso modalità definite dalla libreria di sistema &lt;<text:span text:style-name="T3">stdarg.h</text:span>&gt;. <text:span text:style-name="T16">Ciò introduce flessibilità nella nostra implementazione delle funzioni permettendoci di gestire i parametri in modo arbitrario, ma contemporaneamente costituisce un rischio, poiché le verifiche sulla correttezza del tipo e del numero non sono fatte a </text:span><text:span text:style-name="T17">compile-time.</text:span><text:span text:style-name="T16"> </text:span></text:p>
-   <text:p text:style-name="P13"><text:span text:style-name="T16">Per ovviare a questo problema e permettere al nostro programma di verificare correttamente che i parametri passati siano validi, introduciamo un </text:span><text:span text:style-name="T17">buffer</text:span><text:span text:style-name="T16"> tra le funzioni interne e l’utente nella forma di funzioni </text:span><text:span text:style-name="T18">helper </text:span><text:span text:style-name="T19">segnalate come </text:span><office:annotation office:name="__Annotation__0_3804777247" loext:resolved="false">
+   <text:p text:style-name="P14">Queste operazioni sono progettate per un uso interno: infatti, gli argomenti sono passati attraverso modalità definite dalla libreria di sistema &lt;<text:span text:style-name="T3">stdarg.h</text:span>&gt;. <text:span text:style-name="T17">Ciò introduce flessibilità nella nostra implementazione delle funzioni permettendoci di gestire i parametri in modo arbitrario, ma contemporaneamente costituisce un rischio, poiché le verifiche sulla correttezza del tipo e del numero non sono fatte a </text:span><text:span text:style-name="T18">compile-time.</text:span><text:span text:style-name="T17"> </text:span></text:p>
+   <text:p text:style-name="P15"><text:span text:style-name="T17">Per ovviare a questo problema e permettere al nostro programma di verificare correttamente che i parametri passati siano validi, introduciamo un </text:span><text:span text:style-name="T18">buffer</text:span><text:span text:style-name="T17"> tra le funzioni interne e l’utente nella forma di funzioni </text:span><text:span text:style-name="T19">helper </text:span><text:span text:style-name="T20">segnalate come </text:span><office:annotation office:name="__Annotation__0_3804777247" loext:resolved="false">
      <dc:creator>Unknown Author</dc:creator>
      <dc:date>2025-06-06T13:18:59.476805900</dc:date>
-     <text:p text:style-name="Comment">TODO: Add <text:span text:style-name="T20">inline</text:span> <text:span text:style-name="T21">keyword </text:span>to internal functions</text:p>
-    </office:annotation><text:span text:style-name="T22">inline</text:span><office:annotation-end office:name="__Annotation__0_3804777247"/><text:span text:style-name="T22">. </text:span><text:span text:style-name="T23">Attraverso esse, il programma mantiene la sua flessibilità internamente senza dover sacrificare in sicurezza: </text:span><text:span text:style-name="T19">la correttezza dei parametri passati alla chiamata è effettuata dal compilatore e contemporaneamente l</text:span><text:span text:style-name="T23">a performance non è eccessivamente impattata da questo passaggio intermedio </text:span><text:span text:style-name="T19">grazie alla</text:span><text:span text:style-name="T23"> keyword </text:span><text:span text:style-name="T22">inline</text:span><text:span text:style-name="T23">. </text:span><text:span text:style-name="T19">Essa </text:span><text:span text:style-name="T23">indica al compilatore di ottimizzare aggressivamente la funzione, </text:span><text:span text:style-name="T19">sostituendo alla chiamata il suo corpo e per questo motivo, è importante che queste funzioni </text:span><text:span text:style-name="T18">helper</text:span><text:span text:style-name="T19"> siano brevi e concise, in modo da evitare</text:span><text:span text:style-name="T18"> code bloat</text:span><text:span text:style-name="T19">.</text:span><text:span text:style-name="T18"> </text:span></text:p>
-   <text:p text:style-name="P14"/>
-   <text:p text:style-name="P15"><text:span text:style-name="T24">Le funzioni </text:span><text:span text:style-name="T25">helper </text:span><text:span text:style-name="T24">seguono una nomenclatura più vicina a quella della </text:span><text:span text:style-name="T25">libc</text:span><text:span text:style-name="T24">, in modo da rendere l’API più comprensibile. Esse sono:</text:span></text:p>
+     <text:p text:style-name="Comment">TODO: Add <text:span text:style-name="T21">inline</text:span> <text:span text:style-name="T22">keyword </text:span>to internal functions</text:p>
+    </office:annotation><text:span text:style-name="T23">inline</text:span><office:annotation-end office:name="__Annotation__0_3804777247"/><text:span text:style-name="T23">. </text:span><text:span text:style-name="T24">Attraverso esse, il programma mantiene la sua flessibilità internamente senza dover sacrificare in sicurezza: </text:span><text:span text:style-name="T20">la correttezza dei parametri passati alla chiamata è effettuata dal compilatore e contemporaneamente l</text:span><text:span text:style-name="T24">a performance non è eccessivamente impattata da questo passaggio intermedio </text:span><text:span text:style-name="T20">grazie alla</text:span><text:span text:style-name="T24"> keyword </text:span><text:span text:style-name="T23">inline</text:span><text:span text:style-name="T24">. </text:span><text:span text:style-name="T20">Essa </text:span><text:span text:style-name="T24">indica al compilatore di ottimizzare aggressivamente la funzione, </text:span><text:span text:style-name="T20">sostituendo alla chiamata il suo corpo e per questo motivo, è importante che queste funzioni </text:span><text:span text:style-name="T19">helper</text:span><text:span text:style-name="T20"> siano brevi e concise, in modo da evitare</text:span><text:span text:style-name="T19"> code bloat</text:span><text:span text:style-name="T20">.</text:span><text:span text:style-name="T19"> </text:span></text:p>
+   <text:p text:style-name="P15"><text:span text:style-name="T25">È importante ricordare che </text:span><text:span text:style-name="T26">inline</text:span><text:span text:style-name="T25"> non è che un suggerimento, e non un obbligo, per il compilatore: esistono modalità per forzare questa ottimizzazione, imponendo di applicarla a tutte le chiamate, ma questo potrebbe portare nel lungo termine a una minore ottimizzazione per via della quantità di codice, che renderebbe necessari </text:span><text:span text:style-name="T25"><office:annotation office:name="__Annotation__217_4260686598" loext:resolved="false">
+      <dc:creator>Unknown Author</dc:creator>
+      <dc:date>2025-06-06T16:47:46.235593700</dc:date>
+      <text:p text:style-name="Comment">Troppo informale!</text:p>
+      <text:p text:style-name="Comment"/>
+     </office:annotation></text:span><text:span text:style-name="T25">più </text:span><text:span text:style-name="T26">cache swaps </text:span><text:span text:style-name="T25">del dovuto</text:span><office:annotation-end office:name="__Annotation__217_4260686598"/><text:span text:style-name="T25">. Ulteriori test potrebbero mostrarne l’impatto e con ciò l’importanza di lasciare che sia il compilatore a occuparsi delle ottimizzazioni, ma ciò esula dagli scopi dell’analisi.</text:span></text:p>
+   <text:p text:style-name="P16">Ogni classe che implementa l’interfaccia Allocator deve implementare le proprie funzioni <text:span text:style-name="T27">interne, che mantengono la stessa </text:span><text:span text:style-name="T28">signature, </text:span><text:span text:style-name="T27">e le funzioni </text:span><text:span text:style-name="T28">wrapper</text:span><text:span text:style-name="T27">, che invece possono avere una </text:span><text:span text:style-name="T28">signature</text:span><text:span text:style-name="T27"> diversa in base alle necessità. Per esempio, nell’allocazione di memoria per uno SlabAllocator (che velocemente anticipiamo poter allocare unicamente blocchi di memoria di grandezza omogenea) non sarà necessario specificare la grandezza dell’area richiesta. In più, deve fornire anche una rappresentazione grafica del suo stato ai fini di </text:span><text:span text:style-name="T28">debugging </text:span><text:span text:style-name="T27">e analisi.</text:span></text:p>
+   <text:p text:style-name="P17"><text:span text:style-name="T29">Le funzioni </text:span><text:span text:style-name="T30">helper </text:span><text:span text:style-name="T29">seguono una nomenclatura più vicina a quella della </text:span><text:span text:style-name="T30">libc</text:span><text:span text:style-name="T29">, in modo da rendere l’API più </text:span><text:span text:style-name="T31">intuitiva e immediata</text:span><text:span text:style-name="T29">. Esse sono:</text:span></text:p>
    <text:list text:style-name="L4">
     <text:list-item>
-     <text:p text:style-name="P16"><text:span text:style-name="T3">Allocator_create</text:span> (wrapper di <text:span text:style-name="T3">Allocator_init</text:span>)</text:p>
+     <text:p text:style-name="P18"><text:span text:style-name="T3">Allocator_create</text:span> (wrapper di <text:span text:style-name="T3">Allocator_init</text:span>)</text:p>
     </text:list-item>
     <text:list-item>
-     <text:p text:style-name="P16"><text:span text:style-name="T3">Allocator_destroy</text:span> (wrapper di <text:span text:style-name="T3">Allocator_dest</text:span>)</text:p>
+     <text:p text:style-name="P18"><text:span text:style-name="T3">Allocator_destroy</text:span> (wrapper di <text:span text:style-name="T3">Allocator_dest</text:span>)</text:p>
     </text:list-item>
     <text:list-item>
-     <text:p text:style-name="P16"><text:span text:style-name="T3">Allocator_malloc</text:span> (wrapper di <text:span text:style-name="T3">Allocator_reserve</text:span>)</text:p>
+     <text:p text:style-name="P18"><text:span text:style-name="T3">Allocator_malloc</text:span> (wrapper di <text:span text:style-name="T3">Allocator_reserve</text:span>)</text:p>
     </text:list-item>
     <text:list-item>
-     <text:p text:style-name="P16"><text:span text:style-name="T3">Allocator_free</text:span> (wrapper di <text:span text:style-name="T3">Allocator_</text:span><text:span text:style-name="T26">release</text:span>)<text:line-break/></text:p>
+     <text:p text:style-name="P18"><text:soft-page-break/><text:span text:style-name="T3">Allocator_free</text:span> (wrapper di <text:span text:style-name="T3">Allocator_</text:span><text:span text:style-name="T32">release</text:span>)<text:line-break/></text:p>
     </text:list-item>
    </text:list>
-   <text:p text:style-name="P17">Grazie alla duplice struttura funzione <text:span text:style-name="T3">helper</text:span> e <text:span text:style-name="T3">internal </text:span>sarebbe possibile realizzare in C una forma <text:span text:style-name="T1">semplice</text:span> di polimorfismo, ma risulta sempre necessario, al netto dell’utilizzo di macro (che reintrodurrebbero i problemi evidenziati precedentemente), usare nomi univoci per ogni funzione con diversa combinazione di parametri. </text:p>
-   <text:p text:style-name="P18"><text:line-break/><text:line-break/></text:p>
-   <text:h text:style-name="P19" text:outline-level="1">4. Esperimenti, Casi di Uso</text:h>
+   <text:p text:style-name="P16">Per via del <text:span text:style-name="T3">linker </text:span>del linguaggio C, siamo costretti ad anteporre a nome della funzione la classe, come vediamo sopra. Sono state esplorate soluzioni a questo problema, ma sfortunatamente introducevano livelli di complessità oppure sacrificavano a livello di <text:span text:style-name="T3">type checking</text:span>. <text:span text:style-name="T33">Grazie alla duplice struttura </text:span>con <text:span text:style-name="T33">funzion</text:span>i<text:span text:style-name="T33"> </text:span><text:span text:style-name="T13">helper</text:span><text:span text:style-name="T33"> e </text:span><text:span text:style-name="T13">internal </text:span><text:span text:style-name="T33">sarebbe possibile realizzare in C una forma </text:span><text:span text:style-name="T1">semplice</text:span><text:span text:style-name="T33"> di polimorfismo, ma risulta sempre necessario, al netto dell’utilizzo di macro (che reintrodurrebbero i problemi evidenziati precedentemente), usare nomi univoci per ogni funzione con diversa combinazione di parametri. </text:span></text:p>
+   <text:p text:style-name="P19"><text:line-break/><text:line-break/></text:p>
+   <text:h text:style-name="P20" text:outline-level="1">4. Esperimenti, Casi di Uso</text:h>
    <text:list text:style-name="L5">
     <text:list-item>
-     <text:p text:style-name="P20">Descrizione di una run del sistema o, se applicabile, esperimenti qualitativi.</text:p>
+     <text:p text:style-name="P21">Descrizione di una run del sistema o, se applicabile, esperimenti qualitativi.</text:p>
     </text:list-item>
    </text:list>
-   <text:p text:style-name="P21"/>
-   <text:h text:style-name="P19" text:outline-level="1">5. Conclusioni</text:h>
+   <text:p text:style-name="P22"/>
+   <text:h text:style-name="P20" text:outline-level="1">5. Conclusioni</text:h>
    <text:list text:style-name="L6">
     <text:list-item>
-     <text:p text:style-name="P22">Riprendi la <text:span text:style-name="T27">dichiarazione d’intenti al capitolo uno e metti le spunte.</text:span></text:p>
+     <text:p text:style-name="P23">Riprendi la <text:span text:style-name="T27">dichiarazione d’intenti al capitolo uno e metti le spunte.</text:span></text:p>
     </text:list-item>
    </text:list>
   </office:text>
