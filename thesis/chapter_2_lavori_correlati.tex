@@ -1,0 +1,51 @@
+\chapter{Lavori Correlati/Basi}
+\section{Object Oriented C Programming}
+\begin{itemize}
+  \item Perché è stato scelto C per scrivere il programma?
+  \item Perché è importante implementare le basi delle strutture della programmazione OOP in C?
+\end{itemize}
+
+Per approfondire il tema della programmazione OOP in C è stato consultato il libro ``Object-Oriented Programming With ANSI-C'' del professor Axel-Tobias Schreiner. Nonostante non sia stato ritenuto di applicarne interamente gli insegnamenti per semplicità, il testo si è rivelato essere un utile riferimento teorico. La decisione di usare C piuttosto che un linguaggio che fornisce supporto diretto a questo paradigma, come C++ o C\#, nasce da un’esigenza didattica di ``squarciare il velo di Maya'' che spesso avvolge i meccanismi alla base della programmazione orientata agli oggetti. In particolare, si è ritenuto di voler sottolineare come la gestione dell’allocazione dinamica di memoria, strettamente legata all’architettura fisica del calcolatore, sia un aspetto fondamentale della programmazione a basso livello. Colui che per la prima volta decida di approcciare C trova nel semplice uso di \texttt{malloc} e \texttt{free} le prime grandi ``responsabilità'' da programmatore: un obbligazione a gestire autonomamente e responsabilmente una risorsa, che porta a un livello di consapevolezza maggiore sui meccanismi interni e le routine che costituiscono i sistemi operativi.
+
+Scegliendo di modellare consapevolmente concetti che in C++ sono automaticamente gestiti dal compilatore si acquisisce maggiore consapevolezza sui dettagli implementativi e si sottolineano importanti punti per la comprensione di nozioni quali \textit{memory leak}, \textit{dangling pointers}, ciclo di vita, costruttori e distruttori.
+
+\section{Studi teorici di base}
+\begin{itemize}
+  \item Da quali fonti è possibile imparare il funzionamento degli allocatori?
+  \item Quali sono delle soluzioni didatticamente interessanti?
+\end{itemize}
+
+Poiché la memoria dinamicamente allocata è un aspetto cardine del linguaggio C e dei sistemi operativi (e di tutta la programmazione a basso livello), la letteratura didattica a riguardo è ampia e di alta qualità. Di nota per la comprensione del funzionamento e del ruolo dei gestori dinamici della memoria sono i libri ``The C Programming Language'' (capitolo 8.7, ``Example – A Storage Allocator'') di B. Kernighan e D. Ritchie e ``Computer Systems – A Programmer’s Perspective'' (capitolo 9.9, ``Dynamic Memory Allocation'') di R. Bryant. Nel primo libro abbiamo un esempio pratico di implementazione di un allocatore lineare a blocchi di dimensione variabili, attraverso l’uso di una Linked List per mantenere una lista dei blocchi liberi e che, in risposta a una operazione di \texttt{free}, unisce blocchi adiacenti. Questa implementazione molto immediata funge da dimostrazione del fatto che, nelle parole degli autori: ``Sebbene l'allocazione dello storage sia intrinsecamente dipendente dall’architettura fisica, il codice illustra come le dipendenze dalla macchina possano essere controllate e confinate a una parte molto piccola del programma.''
+
+Il secondo volume, a nostro avviso, definisce in modo cristallino quale sia la principale fonte del problema. Secondo Bryant, ``I programmatori ingenui spesso presumono erroneamente che la memoria virtuale sia una risorsa illimitata. In realtà, la quantità totale di memoria virtuale allocata da tutti i processi di un sistema è limitata dalla quantità di spazio di swap su disco. I bravi programmatori sanno che la memoria virtuale è una risorsa finita che deve essere utilizzata in modo efficiente.'' Questa osservazione è più che mai rilevante in contesti come la programmazione \textit{embedded} e \textit{real time}, così come nei sistemi operativi. La reale criticità nel mondo dell’allocazione dinamica non consiste in un debito tecnologico, in limiti intrinseci o in euristiche inefficienti, bensì in cattive abitudini dei programmatori. Il risultato è sottovalutare l’importanza degli allocatori in contesti in cui la loro efficienza non sia strettamente indispensabile, optando piuttosto per scegliere di adoperare artefici di gestione della memoria che sacrificano spazio e prestazioni in cambio di una complessità artificiosa e che risultano essere sibillini e difficilmente applicabili al di fuori del contesto per cui sono stati concepiti.
+
+\begin{quote}
+``Such problems may be hidden because most programmers who encounter severe issues may simply code around them using ad-hoc storage management techniques—or, as is still painfully common, by statically allocating ``enough'' memory for variable-sized structures. These ad-hoc approaches to memory management lead to ‘brittle’ software with hidden limitations (e.g., due to the use of fixed-size arrays). The impact on software clarity, flexibility, maintainability, and reliability is significant, though difficult to estimate. It should not be underestimated, however, because these hidden costs can incur major penalties in productivity—and, to put it plainly, human costs in sheer frustration, anxiety, and general suffering.''
+\end{quote}
+
+L’autore continua, definendo quattro problemi che ogni implementazione di un gestore dinamico di memoria deve risolvere. Essi sono:
+\begin{itemize}
+  \item L’organizzazione dei blocchi liberi in memoria;
+  \item La scelta del blocco corretto a seguito di una richiesta;
+  \item Il meccanismo di \textit{splitting} in blocchi di memoria delle dimensioni necessarie;
+  \item Le modalità di \textit{coalescing} di blocchi liberi per poter soddisfare richieste future.
+\end{itemize}
+
+Illuminante è stato il capitolo ``Dynamic Storage Allocation'' del volume primo di ``The Art of Computer Programming'', D. Knuth.
+
+\section{Riferimenti storici}
+\begin{itemize}
+  \item Quali sono le principali problematiche negli allocatori moderni evidenziate dalla letteratura?
+  \item Quali sono le possibili soluzioni?
+\end{itemize}
+
+L’articolo ``Dynamic Storage Allocation, A Survey and Critical Review'' di P. Wilson et al. è stato preso come riferimento storico: in particolare il capitolo 4 presenta un sunto della letteratura pubblicata sull’argomento negli anni precedenti e delle soluzioni proposte per affrontare il problema, che gli autori sottolineano essere ``per lo più considerato essere già risolto o irrisolvibile''. Un problema che emerge in più punti della letteratura sulla allocazione dinamica di memoria consiste nelle acute differenze tra le modalità con cui generalmente vengono fatti benchmark sintetici delle capacità degli allocatori e quelle con cui negli use cases reali vengono fatte richieste da parte dell’utente. Il carico di lavoro di un allocatore che viene sottoposto a una suite di test non rispecchia le applicazioni nel mondo in cui successivamente esso viene applicato: ciò è dovuto in gran parte alla natura eterogenea delle stesse.
+
+Gli autori continuano, sottolineando che soluzioni di gestione dinamica di memoria efficienti fanno uso di ``regolarità'' nel comportamento del programma. Ottimizzare per il caso più comune risulta dunque essere controproducente rispetto alle applicazioni reali.
+
+\section{Ispirazione per la struttura}
+Il progetto è basato in primo luogo sull’implementazione dello SlabAllocator e BuddyAllocator vista durante le lezioni del corso di Sistemi Operativi tenuto dal professor Grisetti. Tuttavia, la struttura è stata rivisitata e rivista profondamente. Sono stati di riferimento i lavori degli utenti mtrebi e emeryberger, pubblicati su GitHub: il primo per aver fornito chiare indicazioni sul funzionamento e i trade-off di diverse tipologie di allocatori di memoria, il secondo per il lavoro di catalogazione storica, che ha permesso di osservare il percorso compiuto dagli allocatori nel corso del tempo.
+
+Di particolare importanza è stata l’analisi di \texttt{dlmalloc}.
+
+Nessuno conosce le esigenze di gestione dinamica della memoria come il suo creatore, e dunque è appropriato che egli scelga e, se necessario, implementi una soluzione \textit{ad hoc} piuttosto che affidarsi a un sistema \textit{one size fits all}.

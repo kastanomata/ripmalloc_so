@@ -1,0 +1,34 @@
+\chapter{Implementazione di ripmalloc}
+
+Il progetto contenuto nella repository è gestito in quattro cartelle principali. \texttt{bin} e \texttt{build} sono utilizzate durante il processo di compilazione, mentre \texttt{header} e \texttt{src} contengono il codice sorgente nella sua interezza.
+
+\section{Descrizione del sistema}
+
+Il progetto contenuto nella repository è gestito in quattro cartelle principali. \texttt{bin} e \texttt{build} sono utilizzate durante il processo di compilazione, mentre \texttt{header} e \texttt{src} contengono il codice sorgente nella sua interezza.
+
+\subsection{L’interfaccia Allocator}
+
+Il contratto che gli Allocatori devono seguire consiste nell’interfaccia \texttt{Allocator} (definita in \texttt{./header/allocator.h}), che stabilisce le primitive necessarie:
+\begin{itemize}
+  \item l’inizializzazione (\textit{init});
+  \item la distruzione (\textit{dest});
+  \item l’allocazione di memoria (\textit{reserve});
+  \item il rilascio di memoria per uso futuro (\textit{release}).
+\end{itemize}
+Queste operazioni sono progettate per un uso interno: infatti, gli argomenti sono passati attraverso modalità definite dalla libreria di sistema \texttt{<stdarg.h>}. Ciò introduce flessibilità nella nostra implementazione delle funzioni permettendoci di gestire i parametri in modo arbitrario, ma contemporaneamente costituisce un rischio, poiché le verifiche sulla correttezza del tipo e del numero non sono fatte a \textit{compile-time}.
+
+Per ovviare a questo problema e permettere al nostro programma di verificare correttamente che i parametri passati siano validi, introduciamo un \textit{buffer} tra le funzioni interne e l’utente nella forma di funzioni \textit{helper} segnalate come \textit{inline}. Attraverso esse, il programma mantiene la sua flessibilità internamente senza dover sacrificare in sicurezza: la correttezza dei parametri passati alla chiamata è effettuata dal compilatore e contemporaneamente la performance non è eccessivamente impattata da questo passaggio intermedio grazie alla keyword \textit{inline}. Essa indica al compilatore di ottimizzare aggressivamente la funzione, sostituendo alla chiamata il suo corpo e per questo motivo, è importante che queste funzioni \textit{helper} siano brevi e concise, in modo da evitare \textit{code bloat}.
+
+È importante ricordare che \textit{inline} non è che un suggerimento, e non un obbligo, per il compilatore: esistono modalità per forzare questa ottimizzazione, imponendo di applicarla a tutte le chiamate, ma questo potrebbe portare nel lungo termine a una minore ottimizzazione per via della quantità di codice, che renderebbe necessari più \textit{cache swaps} del dovuto. Ulteriori test potrebbero mostrarne l’impatto e con ciò l’importanza di lasciare che sia il compilatore a occuparsi delle ottimizzazioni, ma ciò esula dagli scopi dell’analisi.
+
+Ogni classe che implementa l’interfaccia \texttt{Allocator} deve implementare le proprie funzioni interne, che mantengono la stessa \textit{signature}, e le funzioni \textit{wrapper}, che invece possono avere una \textit{signature} diversa in base alle necessità. Per esempio, nell’allocazione di memoria per uno \textit{SlabAllocator} (che velocemente anticipiamo poter allocare unicamente blocchi di memoria di grandezza omogenea) non sarà necessario specificare la grandezza dell’area richiesta. In più, deve fornire anche una rappresentazione grafica del suo stato ai fini di \textit{debugging} e analisi.
+
+Le funzioni \textit{helper} seguono una nomenclatura più vicina a quella della \textit{libc}, in modo da rendere l’API più intuitiva e immediata. Esse sono:
+\begin{itemize}
+  \item \textit{Allocator\_create} (\textit{wrapper} di \textit{Allocator\_init})
+  \item \textit{Allocator\_destroy} (\textit{wrapper} di \textit{Allocator\_dest})
+  \item \textit{Allocator\_malloc} (\textit{wrapper} di \textit{Allocator\_reserve})
+  \item \textit{Allocator\_free} (\textit{wrapper} di \textit{Allocator\_release})
+\end{itemize}
+
+Per via del \textit{linker} del linguaggio C, siamo costretti ad anteporre al nome della funzione la classe, come vediamo sopra. Sono state esplorate soluzioni a questo problema, ma sfortunatamente introducevano livelli di complessità oppure sacrificavano a livello di \textit{type checking}. Grazie alla duplice struttura con funzioni \textit{helper} e \textit{internal} sarebbe possibile realizzare in C una forma semplice di polimorfismo, ma risulta sempre necessario, al netto dell’utilizzo di \textit{macro} (che reintrodurrebbero i problemi evidenziati precedentemente), usare nomi univoci per ogni funzione con diversa combinazione di parametri.
