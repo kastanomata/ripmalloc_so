@@ -37,8 +37,8 @@ void *SlabAllocator_cleanup(Allocator* alloc, ...);
 void *SlabAllocator_reserve(Allocator* alloc, ...);  
 void *SlabAllocator_release(Allocator* alloc, ...);    
 
-// Helper to initialize a SlabAllocator
-SlabAllocator* SlabAllocator_create(SlabAllocator* a, size_t slab_size, size_t initial_slabs);
+// Helper functions
+SlabAllocator* SlabAllocator_create(SlabAllocator* a, size_t slab_size, size_t n_slabs);
 int SlabAllocator_destroy(SlabAllocator* a);
 void* SlabAllocator_malloc(SlabAllocator* a);
 void SlabAllocator_free(SlabAllocator* a, void* ptr);

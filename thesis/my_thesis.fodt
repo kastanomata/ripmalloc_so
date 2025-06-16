@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <office:document xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:ooo="http://openoffice.org/2004/office" xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:config="urn:oasis:names:tc:opendocument:xmlns:config:1.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:meta="urn:oasis:names:tc:opendocument:xmlns:meta:1.0" xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0" xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0" xmlns:rpt="http://openoffice.org/2005/report" xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0" xmlns:dr3d="urn:oasis:names:tc:opendocument:xmlns:dr3d:1.0" xmlns:svg="urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0" xmlns:chart="urn:oasis:names:tc:opendocument:xmlns:chart:1.0" xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0" xmlns:number="urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0" xmlns:ooow="http://openoffice.org/2004/writer" xmlns:oooc="http://openoffice.org/2004/calc" xmlns:of="urn:oasis:names:tc:opendocument:xmlns:of:1.2" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:tableooo="http://openoffice.org/2009/table" xmlns:calcext="urn:org:documentfoundation:names:experimental:calc:xmlns:calcext:1.0" xmlns:drawooo="http://openoffice.org/2010/draw" xmlns:loext="urn:org:documentfoundation:names:experimental:office:xmlns:loext:1.0" xmlns:field="urn:openoffice:names:experimental:ooo-ms-interop:xmlns:field:1.0" xmlns:math="http://www.w3.org/1998/Math/MathML" xmlns:form="urn:oasis:names:tc:opendocument:xmlns:form:1.0" xmlns:script="urn:oasis:names:tc:opendocument:xmlns:script:1.0" xmlns:formx="urn:openoffice:names:experimental:ooxml-odf-interop:xmlns:form:1.0" xmlns:dom="http://www.w3.org/2001/xml-events" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:grddl="http://www.w3.org/2003/g/data-view#" xmlns:css3t="http://www.w3.org/TR/css3-text/" xmlns:officeooo="http://openoffice.org/2009/office" office:version="1.4" office:mimetype="application/vnd.oasis.opendocument.text">
- <office:meta><meta:creation-date>2025-06-06T12:36:10.770512400</meta:creation-date><dc:date>2025-06-16T11:58:47.563514000</dc:date><meta:editing-duration>PT11H27M59S</meta:editing-duration><meta:editing-cycles>23</meta:editing-cycles><meta:generator>LibreOffice/25.2.4.3$Windows_X86_64 LibreOffice_project/33e196637044ead23f5c3226cde09b47731f7e27</meta:generator><meta:document-statistic meta:table-count="0" meta:image-count="0" meta:object-count="0" meta:page-count="11" meta:paragraph-count="87" meta:word-count="2722" meta:character-count="18961" meta:non-whitespace-character-count="16340"/></office:meta>
+ <office:meta><meta:creation-date>2025-06-06T12:36:10.770512400</meta:creation-date><dc:date>2025-06-16T20:41:41.312484700</dc:date><meta:editing-duration>PT14H6M21S</meta:editing-duration><meta:editing-cycles>30</meta:editing-cycles><meta:generator>LibreOffice/25.2.4.3$Windows_X86_64 LibreOffice_project/33e196637044ead23f5c3226cde09b47731f7e27</meta:generator><meta:document-statistic meta:table-count="0" meta:image-count="0" meta:object-count="0" meta:page-count="14" meta:paragraph-count="102" meta:word-count="3683" meta:character-count="25911" meta:non-whitespace-character-count="22338"/></office:meta>
  <office:settings>
   <config:config-item-set config:name="ooo:view-settings">
-   <config:config-item config:name="ViewAreaTop" config:type="long">124347</config:config-item>
+   <config:config-item config:name="ViewAreaTop" config:type="long">257979</config:config-item>
    <config:config-item config:name="ViewAreaLeft" config:type="long">0</config:config-item>
    <config:config-item config:name="ViewAreaWidth" config:type="long">32634</config:config-item>
    <config:config-item config:name="ViewAreaHeight" config:type="long">14854</config:config-item>
@@ -13,12 +13,12 @@
    <config:config-item-map-indexed config:name="Views">
     <config:config-item-map-entry>
      <config:config-item config:name="ViewId" config:type="string">view2</config:config-item>
-     <config:config-item config:name="ViewLeft" config:type="long">21796</config:config-item>
-     <config:config-item config:name="ViewTop" config:type="long">132747</config:config-item>
+     <config:config-item config:name="ViewLeft" config:type="long">7816</config:config-item>
+     <config:config-item config:name="ViewTop" config:type="long">268139</config:config-item>
      <config:config-item config:name="VisibleLeft" config:type="long">0</config:config-item>
-     <config:config-item config:name="VisibleTop" config:type="long">124347</config:config-item>
+     <config:config-item config:name="VisibleTop" config:type="long">257979</config:config-item>
      <config:config-item config:name="VisibleRight" config:type="long">32632</config:config-item>
-     <config:config-item config:name="VisibleBottom" config:type="long">139199</config:config-item>
+     <config:config-item config:name="VisibleBottom" config:type="long">272831</config:config-item>
      <config:config-item config:name="ZoomType" config:type="short">0</config:config-item>
      <config:config-item config:name="ViewLayoutColumns" config:type="short">1</config:config-item>
      <config:config-item config:name="ViewLayoutBookMode" config:type="boolean">false</config:config-item>
@@ -92,7 +92,7 @@
    <config:config-item config:name="IgnoreTabsAndBlanksForLineCalculation" config:type="boolean">false</config:config-item>
    <config:config-item config:name="IgnoreHiddenCharsForLineCalculation" config:type="boolean">true</config:config-item>
    <config:config-item config:name="TabAtLeftIndentForParagraphsInList" config:type="boolean">false</config:config-item>
-   <config:config-item config:name="Rsid" config:type="int">4611259</config:config-item>
+   <config:config-item config:name="Rsid" config:type="int">5252506</config:config-item>
    <config:config-item config:name="RsidRoot" config:type="int">828735</config:config-item>
    <config:config-item config:name="LoadReadonly" config:type="boolean">false</config:config-item>
    <config:config-item config:name="ClipAsCharacterAnchoredWriterFlyFrames" config:type="boolean">false</config:config-item>
@@ -258,6 +258,9 @@
   <style:style style:name="Emphasis" style:family="text">
    <style:text-properties fo:font-style="italic" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
+  <style:style style:name="Visited_20_Internet_20_Link" style:display-name="Visited Internet Link" style:family="text">
+   <style:text-properties fo:color="#800000" loext:opacity="100%" style:text-underline-style="solid" style:text-underline-width="auto" style:text-underline-color="font-color"/>
+  </style:style>
   <style:style style:name="Frame" style:family="graphic">
    <style:graphic-properties text:anchor-type="paragraph" svg:x="0cm" svg:y="0cm" fo:margin-left="0.201cm" fo:margin-right="0.201cm" fo:margin-top="0.201cm" fo:margin-bottom="0.201cm" style:wrap="parallel" style:number-wrapped-paragraphs="no-limit" style:wrap-contour="false" style:vertical-pos="top" style:vertical-rel="paragraph-content" style:horizontal-pos="center" style:horizontal-rel="paragraph-content" fo:background-color="transparent" draw:fill="none" draw:fill-color="#729fcf" fo:padding="0.15cm" fo:border="0.06pt solid #000000"/>
   </style:style>
@@ -367,158 +370,206 @@
   <style:style style:name="P10" style:family="paragraph" style:parent-style-name="Text_20_body">
    <style:text-properties officeooo:paragraph-rsid="00276e9a"/>
   </style:style>
-  <style:style style:name="P11" style:family="paragraph" style:parent-style-name="Heading_20_3">
+  <style:style style:name="P11" style:family="paragraph" style:parent-style-name="Text_20_body">
+   <style:text-properties officeooo:paragraph-rsid="004e2784"/>
+  </style:style>
+  <style:style style:name="P12" style:family="paragraph" style:parent-style-name="Heading_20_3">
    <style:text-properties officeooo:paragraph-rsid="00276e9a"/>
   </style:style>
-  <style:style style:name="P12" style:family="paragraph" style:parent-style-name="Text_20_body">
+  <style:style style:name="P13" style:family="paragraph" style:parent-style-name="Text_20_body">
    <style:text-properties officeooo:rsid="003a9c28"/>
   </style:style>
-  <style:style style:name="P13" style:family="paragraph" style:parent-style-name="Heading_20_2">
+  <style:style style:name="P14" style:family="paragraph" style:parent-style-name="Heading_20_2">
    <style:text-properties officeooo:rsid="001e5e1a" officeooo:paragraph-rsid="001e5e1a"/>
   </style:style>
-  <style:style style:name="P14" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L3">
+  <style:style style:name="P15" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L3">
    <style:text-properties officeooo:rsid="002448fc" officeooo:paragraph-rsid="002448fc"/>
   </style:style>
-  <style:style style:name="P15" style:family="paragraph" style:parent-style-name="Text_20_body">
+  <style:style style:name="P16" style:family="paragraph" style:parent-style-name="Text_20_body">
    <style:text-properties fo:language="it" fo:country="IT" officeooo:rsid="000e073f" officeooo:paragraph-rsid="00206f41"/>
   </style:style>
-  <style:style style:name="P16" style:family="paragraph" style:parent-style-name="Text_20_body">
+  <style:style style:name="P17" style:family="paragraph" style:parent-style-name="Text_20_body">
    <style:text-properties fo:language="it" fo:country="IT" officeooo:rsid="000e073f" officeooo:paragraph-rsid="00204e41"/>
   </style:style>
-  <style:style style:name="P17" style:family="paragraph" style:parent-style-name="Text_20_body">
+  <style:style style:name="P18" style:family="paragraph" style:parent-style-name="Text_20_body">
    <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="00204e41" officeooo:paragraph-rsid="00204e41" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
   </style:style>
-  <style:style style:name="P18" style:family="paragraph" style:parent-style-name="Heading_20_2">
-   <style:text-properties officeooo:rsid="001e5e1a" officeooo:paragraph-rsid="002adbc0"/>
+  <style:style style:name="P19" style:family="paragraph" style:parent-style-name="Heading_20_2">
+   <style:text-properties officeooo:rsid="004789f2" officeooo:paragraph-rsid="004789f2"/>
   </style:style>
-  <style:style style:name="P19" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L4">
+  <style:style style:name="P20" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L4">
    <style:text-properties officeooo:rsid="002448fc" officeooo:paragraph-rsid="002adbc0"/>
   </style:style>
-  <style:style style:name="P20" style:family="paragraph" style:parent-style-name="Text_20_body">
+  <style:style style:name="P21" style:family="paragraph" style:parent-style-name="Text_20_body">
    <style:text-properties officeooo:paragraph-rsid="0042ef73"/>
   </style:style>
-  <style:style style:name="P21" style:family="paragraph" style:parent-style-name="Text_20_body">
+  <style:style style:name="P22" style:family="paragraph" style:parent-style-name="Text_20_body">
    <style:text-properties officeooo:rsid="002448fc" officeooo:paragraph-rsid="002d9225"/>
   </style:style>
-  <style:style style:name="P22" style:family="paragraph" style:parent-style-name="Text_20_body">
+  <style:style style:name="P23" style:family="paragraph" style:parent-style-name="Text_20_body">
    <style:text-properties officeooo:rsid="002adbc0" officeooo:paragraph-rsid="004419e4"/>
   </style:style>
-  <style:style style:name="P23" style:family="paragraph" style:parent-style-name="Text_20_body">
+  <style:style style:name="P24" style:family="paragraph" style:parent-style-name="Text_20_body">
    <style:text-properties officeooo:rsid="0022ce06" officeooo:paragraph-rsid="004419e4"/>
   </style:style>
-  <style:style style:name="P24" style:family="paragraph" style:parent-style-name="Heading_20_2">
+  <style:style style:name="P25" style:family="paragraph" style:parent-style-name="Heading_20_2">
    <style:text-properties officeooo:rsid="002adbc0" officeooo:paragraph-rsid="002adbc0"/>
   </style:style>
-  <style:style style:name="P25" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L5">
+  <style:style style:name="P26" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L5">
    <style:text-properties officeooo:rsid="00276e9a" officeooo:paragraph-rsid="00276e9a"/>
   </style:style>
-  <style:style style:name="P26" style:family="paragraph" style:parent-style-name="Text_20_body">
+  <style:style style:name="P27" style:family="paragraph" style:parent-style-name="Text_20_body">
    <style:text-properties officeooo:rsid="0022ce06" officeooo:paragraph-rsid="002a2c74"/>
   </style:style>
-  <style:style style:name="P27" style:family="paragraph" style:parent-style-name="Text_20_body">
-   <style:text-properties officeooo:rsid="0022ce06" officeooo:paragraph-rsid="0028206b"/>
-  </style:style>
-  <style:style style:name="P28" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L6">
-   <style:text-properties officeooo:rsid="0022ce06" officeooo:paragraph-rsid="0029499f"/>
+  <style:style style:name="P28" style:family="paragraph" style:parent-style-name="Text_20_body">
+   <style:text-properties officeooo:rsid="0022ce06" officeooo:paragraph-rsid="004789f2"/>
   </style:style>
   <style:style style:name="P29" style:family="paragraph" style:parent-style-name="Text_20_body">
-   <style:text-properties officeooo:rsid="002a2c74" officeooo:paragraph-rsid="002a2c74"/>
+   <style:text-properties officeooo:rsid="0022ce06" officeooo:paragraph-rsid="0028206b"/>
   </style:style>
-  <style:style style:name="P30" style:family="paragraph" style:parent-style-name="Text_20_body">
-   <style:text-properties fo:language="it" fo:country="IT" officeooo:rsid="000e073f" officeooo:paragraph-rsid="0032e1c6"/>
+  <style:style style:name="P30" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L6">
+   <style:text-properties officeooo:rsid="0022ce06" officeooo:paragraph-rsid="0029499f"/>
   </style:style>
   <style:style style:name="P31" style:family="paragraph" style:parent-style-name="Text_20_body">
-   <style:text-properties fo:language="it" fo:country="IT" officeooo:rsid="000e073f" officeooo:paragraph-rsid="003351e3"/>
+   <style:text-properties officeooo:rsid="002a2c74" officeooo:paragraph-rsid="002a2c74"/>
   </style:style>
   <style:style style:name="P32" style:family="paragraph" style:parent-style-name="Text_20_body">
-   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="001e5e1a" officeooo:paragraph-rsid="0032e1c6" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
+   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="001e5e1a" officeooo:paragraph-rsid="004789f2" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
   </style:style>
   <style:style style:name="P33" style:family="paragraph" style:parent-style-name="Text_20_body">
-   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="001e5e1a" officeooo:paragraph-rsid="001e5e1a" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
+   <style:text-properties fo:language="it" fo:country="IT" officeooo:rsid="000e073f" officeooo:paragraph-rsid="0032e1c6"/>
   </style:style>
   <style:style style:name="P34" style:family="paragraph" style:parent-style-name="Text_20_body">
-   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="001480a4" officeooo:paragraph-rsid="000f15f2" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
+   <style:text-properties officeooo:paragraph-rsid="004789f2"/>
   </style:style>
   <style:style style:name="P35" style:family="paragraph" style:parent-style-name="Text_20_body">
+   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="001e5e1a" officeooo:paragraph-rsid="0032e1c6" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
+  </style:style>
+  <style:style style:name="P36" style:family="paragraph" style:parent-style-name="Text_20_body">
+   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="001e5e1a" officeooo:paragraph-rsid="001e5e1a" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
+  </style:style>
+  <style:style style:name="P37" style:family="paragraph" style:parent-style-name="Text_20_body">
+   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="001480a4" officeooo:paragraph-rsid="000f15f2" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
+  </style:style>
+  <style:style style:name="P38" style:family="paragraph" style:parent-style-name="Text_20_body">
    <style:text-properties fo:language="it" fo:country="IT" officeooo:paragraph-rsid="000ca53f"/>
   </style:style>
-  <style:style style:name="P36" style:family="paragraph" style:parent-style-name="Heading_20_1">
+  <style:style style:name="P39" style:family="paragraph" style:parent-style-name="Heading_20_1">
    <style:paragraph-properties fo:break-before="page"/>
    <style:text-properties officeooo:paragraph-rsid="001480a4"/>
   </style:style>
-  <style:style style:name="P37" style:family="paragraph" style:parent-style-name="Text_20_body">
+  <style:style style:name="P40" style:family="paragraph" style:parent-style-name="Text_20_body">
    <style:text-properties officeooo:rsid="001caa85" officeooo:paragraph-rsid="001caa85"/>
   </style:style>
-  <style:style style:name="P38" style:family="paragraph" style:parent-style-name="Text_20_body">
+  <style:style style:name="P41" style:family="paragraph" style:parent-style-name="Text_20_body">
    <style:text-properties fo:font-style="normal" officeooo:rsid="0029499f" officeooo:paragraph-rsid="0029499f" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
-  <style:style style:name="P39" style:family="paragraph" style:parent-style-name="Heading_20_2">
+  <style:style style:name="P42" style:family="paragraph" style:parent-style-name="Heading_20_2">
    <style:text-properties officeooo:rsid="001caa85" officeooo:paragraph-rsid="001caa85"/>
   </style:style>
-  <style:style style:name="P40" style:family="paragraph" style:parent-style-name="Text_20_body" style:master-page-name="">
+  <style:style style:name="P43" style:family="paragraph" style:parent-style-name="Text_20_body" style:master-page-name="">
    <loext:graphic-properties draw:fill="none"/>
    <style:paragraph-properties fo:margin-left="0cm" fo:margin-right="0cm" fo:margin-top="0cm" fo:margin-bottom="0.247cm" style:contextual-spacing="false" fo:line-height="115%" fo:text-align="start" style:justify-single-word="false" fo:text-indent="0cm" style:auto-text-indent="false" style:page-number="auto" fo:background-color="transparent"/>
    <style:text-properties fo:language="it" fo:country="IT" officeooo:paragraph-rsid="000f15f2"/>
   </style:style>
-  <style:style style:name="P41" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L7">
+  <style:style style:name="P44" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L7">
    <loext:graphic-properties draw:fill="none"/>
    <style:paragraph-properties fo:margin-top="0cm" fo:margin-bottom="0.247cm" style:contextual-spacing="false" fo:line-height="115%" fo:text-align="start" style:justify-single-word="false" fo:background-color="transparent"/>
    <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" officeooo:rsid="000f15f2" officeooo:paragraph-rsid="000f15f2" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
-  <style:style style:name="P42" style:family="paragraph" style:parent-style-name="Text_20_body">
+  <style:style style:name="P45" style:family="paragraph" style:parent-style-name="Text_20_body">
    <loext:graphic-properties draw:fill="none"/>
    <style:paragraph-properties fo:margin-top="0cm" fo:margin-bottom="0.247cm" style:contextual-spacing="false" fo:line-height="115%" fo:text-align="start" style:justify-single-word="false" fo:background-color="transparent"/>
    <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" officeooo:rsid="000f3bd6" officeooo:paragraph-rsid="00163e5c" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
-  <style:style style:name="P43" style:family="paragraph" style:parent-style-name="Text_20_body">
+  <style:style style:name="P46" style:family="paragraph" style:parent-style-name="Text_20_body">
    <loext:graphic-properties draw:fill="none"/>
    <style:paragraph-properties fo:margin-top="0cm" fo:margin-bottom="0.247cm" style:contextual-spacing="false" fo:line-height="115%" fo:text-align="start" style:justify-single-word="false" fo:background-color="transparent"/>
    <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" officeooo:rsid="000f3bd6" officeooo:paragraph-rsid="001ade21" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
-  <style:style style:name="P44" style:family="paragraph" style:parent-style-name="Text_20_body">
+  <style:style style:name="P47" style:family="paragraph" style:parent-style-name="Text_20_body">
    <loext:graphic-properties draw:fill="none"/>
    <style:paragraph-properties fo:margin-top="0cm" fo:margin-bottom="0.247cm" style:contextual-spacing="false" fo:line-height="115%" fo:text-align="start" style:justify-single-word="false" fo:background-color="transparent"/>
    <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" officeooo:rsid="001ade21" officeooo:paragraph-rsid="001ade21" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
-  <style:style style:name="P45" style:family="paragraph" style:parent-style-name="Text_20_body">
+  <style:style style:name="P48" style:family="paragraph" style:parent-style-name="Text_20_body">
    <loext:graphic-properties draw:fill="none"/>
    <style:paragraph-properties fo:margin-top="0cm" fo:margin-bottom="0.247cm" style:contextual-spacing="false" fo:line-height="115%" fo:text-align="start" style:justify-single-word="false" fo:background-color="transparent"/>
    <style:text-properties officeooo:paragraph-rsid="001699d4"/>
   </style:style>
-  <style:style style:name="P46" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L8">
+  <style:style style:name="P49" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L8">
    <loext:graphic-properties draw:fill="none"/>
    <style:paragraph-properties fo:margin-top="0cm" fo:margin-bottom="0.247cm" style:contextual-spacing="false" fo:line-height="115%" fo:text-align="start" style:justify-single-word="false" fo:background-color="transparent"/>
    <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" officeooo:rsid="001699d4" officeooo:paragraph-rsid="001699d4" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
-  <style:style style:name="P47" style:family="paragraph" style:parent-style-name="Text_20_body">
+  <style:style style:name="P50" style:family="paragraph" style:parent-style-name="Heading_20_2">
+   <style:text-properties officeooo:paragraph-rsid="004d4af5"/>
+  </style:style>
+  <style:style style:name="P51" style:family="paragraph" style:parent-style-name="Heading_20_2">
+   <style:paragraph-properties fo:break-before="page"/>
+   <style:text-properties officeooo:paragraph-rsid="004d4af5"/>
+  </style:style>
+  <style:style style:name="P52" style:family="paragraph" style:parent-style-name="Text_20_body">
    <style:text-properties officeooo:rsid="0022ce06" officeooo:paragraph-rsid="0038ee1c"/>
   </style:style>
-  <style:style style:name="P48" style:family="paragraph" style:parent-style-name="Text_20_body">
+  <style:style style:name="P53" style:family="paragraph" style:parent-style-name="Text_20_body">
+   <style:text-properties officeooo:rsid="0022ce06" officeooo:paragraph-rsid="00499f7f"/>
+  </style:style>
+  <style:style style:name="P54" style:family="paragraph" style:parent-style-name="Text_20_body">
+   <style:text-properties officeooo:rsid="0022ce06" officeooo:paragraph-rsid="00494af8"/>
+  </style:style>
+  <style:style style:name="P55" style:family="paragraph" style:parent-style-name="Text_20_body">
+   <style:text-properties officeooo:rsid="0050259a" officeooo:paragraph-rsid="0050259a"/>
+  </style:style>
+  <style:style style:name="P56" style:family="paragraph" style:parent-style-name="Text_20_body">
    <style:text-properties officeooo:rsid="0029499f"/>
   </style:style>
-  <style:style style:name="P49" style:family="paragraph" style:parent-style-name="Text_20_body">
+  <style:style style:name="P57" style:family="paragraph" style:parent-style-name="Text_20_body">
    <style:text-properties officeooo:rsid="0029499f" officeooo:paragraph-rsid="003614fa"/>
   </style:style>
-  <style:style style:name="P50" style:family="paragraph" style:parent-style-name="Heading_20_2">
+  <style:style style:name="P58" style:family="paragraph" style:parent-style-name="Heading_20_3">
+   <style:text-properties officeooo:rsid="00494af8" officeooo:paragraph-rsid="00494af8"/>
+  </style:style>
+  <style:style style:name="P59" style:family="paragraph" style:parent-style-name="Heading_20_2">
+   <style:paragraph-properties fo:break-before="page"/>
    <style:text-properties officeooo:paragraph-rsid="0038ee1c"/>
   </style:style>
-  <style:style style:name="P51" style:family="paragraph" style:parent-style-name="Heading_20_3">
+  <style:style style:name="P60" style:family="paragraph" style:parent-style-name="Text_20_body">
+   <style:text-properties officeooo:rsid="004e2784" officeooo:paragraph-rsid="004e2784"/>
+  </style:style>
+  <style:style style:name="P61" style:family="paragraph" style:parent-style-name="Heading_20_3">
    <style:text-properties officeooo:paragraph-rsid="0038ee1c"/>
   </style:style>
-  <style:style style:name="P52" style:family="paragraph" style:parent-style-name="Heading_20_1">
+  <style:style style:name="P62" style:family="paragraph" style:parent-style-name="Heading_20_3">
+   <style:text-properties officeooo:rsid="00494af8" officeooo:paragraph-rsid="004e2784"/>
+  </style:style>
+  <style:style style:name="P63" style:family="paragraph" style:parent-style-name="Text_20_body">
+   <style:text-properties officeooo:paragraph-rsid="0038ee1c"/>
+  </style:style>
+  <style:style style:name="P64" style:family="paragraph" style:parent-style-name="Heading_20_2">
+   <style:paragraph-properties fo:break-before="page"/>
+   <style:text-properties officeooo:paragraph-rsid="004e2784"/>
+  </style:style>
+  <style:style style:name="P65" style:family="paragraph" style:parent-style-name="Heading_20_3">
+   <style:text-properties officeooo:paragraph-rsid="004e2784"/>
+  </style:style>
+  <style:style style:name="P66" style:family="paragraph" style:parent-style-name="Heading_20_1">
    <style:paragraph-properties fo:break-before="page"/>
    <style:text-properties officeooo:paragraph-rsid="000ca53f"/>
   </style:style>
-  <style:style style:name="P53" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L9">
+  <style:style style:name="P67" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L9">
    <style:text-properties officeooo:rsid="000ca53f" officeooo:paragraph-rsid="000ca53f"/>
   </style:style>
-  <style:style style:name="P54" style:family="paragraph" style:parent-style-name="Text_20_body">
+  <style:style style:name="P68" style:family="paragraph" style:parent-style-name="Text_20_body">
+   <style:text-properties officeooo:rsid="00492594" officeooo:paragraph-rsid="00492594"/>
+  </style:style>
+  <style:style style:name="P69" style:family="paragraph" style:parent-style-name="Text_20_body">
    <style:text-properties officeooo:paragraph-rsid="000ca53f"/>
   </style:style>
-  <style:style style:name="P55" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L10">
+  <style:style style:name="P70" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L10">
    <style:text-properties officeooo:rsid="000ca53f" officeooo:paragraph-rsid="000ca53f"/>
   </style:style>
-  <style:style style:name="P56" style:family="paragraph" style:parent-style-name="Text_20_body">
+  <style:style style:name="P71" style:family="paragraph" style:parent-style-name="Text_20_body">
    <style:text-properties style:text-underline-style="none" officeooo:rsid="0040a23e" officeooo:paragraph-rsid="0040a23e"/>
   </style:style>
   <style:style style:name="T1" style:family="text">
@@ -543,289 +594,370 @@
    <style:text-properties fo:font-style="normal" officeooo:rsid="003a9c28" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
   <style:style style:name="T8" style:family="text">
-   <style:text-properties officeooo:rsid="00276e9a"/>
+   <style:text-properties fo:font-style="normal" officeooo:rsid="004e2784" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
   <style:style style:name="T9" style:family="text">
-   <style:text-properties fo:font-style="italic" officeooo:rsid="00140d30" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties officeooo:rsid="004789f2"/>
   </style:style>
   <style:style style:name="T10" style:family="text">
-   <style:text-properties fo:font-style="normal" officeooo:rsid="00140d30" style:font-style-asian="normal" style:font-style-complex="normal"/>
+   <style:text-properties officeooo:rsid="00276e9a"/>
   </style:style>
   <style:style style:name="T11" style:family="text">
-   <style:text-properties fo:font-style="normal" fo:font-weight="normal" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
+   <style:text-properties fo:font-style="italic" officeooo:rsid="00140d30" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T12" style:family="text">
-   <style:text-properties fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="00204e41" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
+   <style:text-properties fo:font-style="normal" officeooo:rsid="00140d30" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
   <style:style style:name="T13" style:family="text">
-   <style:text-properties fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="000f15f2" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
+   <style:text-properties fo:font-style="normal" fo:font-weight="normal" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
   </style:style>
   <style:style style:name="T14" style:family="text">
-   <style:text-properties fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="001f62a4" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
+   <style:text-properties fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="00204e41" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
   </style:style>
   <style:style style:name="T15" style:family="text">
-   <style:text-properties fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="00206f41" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
+   <style:text-properties fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="000f15f2" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
   </style:style>
   <style:style style:name="T16" style:family="text">
-   <style:text-properties fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="0042ef73" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
+   <style:text-properties fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="001f62a4" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
   </style:style>
   <style:style style:name="T17" style:family="text">
-   <style:text-properties fo:font-style="italic" fo:font-weight="normal" officeooo:rsid="00204e41" style:font-style-asian="italic" style:font-weight-asian="normal" style:font-style-complex="italic" style:font-weight-complex="normal"/>
+   <style:text-properties fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="00206f41" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
   </style:style>
   <style:style style:name="T18" style:family="text">
-   <style:text-properties officeooo:rsid="00206f41"/>
+   <style:text-properties fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="0042ef73" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
   </style:style>
   <style:style style:name="T19" style:family="text">
-   <style:text-properties fo:font-style="italic" officeooo:rsid="00206f41" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties fo:font-style="italic" fo:font-weight="normal" officeooo:rsid="00204e41" style:font-style-asian="italic" style:font-weight-asian="normal" style:font-style-complex="italic" style:font-weight-complex="normal"/>
   </style:style>
   <style:style style:name="T20" style:family="text">
-   <style:text-properties officeooo:rsid="002c6932"/>
+   <style:text-properties officeooo:rsid="00206f41"/>
   </style:style>
   <style:style style:name="T21" style:family="text">
-   <style:text-properties officeooo:rsid="001f62a4"/>
+   <style:text-properties fo:font-style="italic" officeooo:rsid="00206f41" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T22" style:family="text">
-   <style:text-properties officeooo:rsid="002adbc0"/>
+   <style:text-properties officeooo:rsid="002c6932"/>
   </style:style>
   <style:style style:name="T23" style:family="text">
-   <style:text-properties officeooo:rsid="0022ce06"/>
+   <style:text-properties officeooo:rsid="001f62a4"/>
   </style:style>
   <style:style style:name="T24" style:family="text">
-   <style:text-properties fo:font-style="italic" officeooo:rsid="0022ce06" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties officeooo:rsid="002adbc0"/>
   </style:style>
   <style:style style:name="T25" style:family="text">
-   <style:text-properties fo:font-style="normal" officeooo:rsid="0022ce06" style:font-style-asian="normal" style:font-style-complex="normal"/>
+   <style:text-properties officeooo:rsid="0022ce06"/>
   </style:style>
   <style:style style:name="T26" style:family="text">
-   <style:text-properties fo:font-style="normal" officeooo:rsid="0042ef73" style:font-style-asian="normal" style:font-style-complex="normal"/>
+   <style:text-properties fo:font-style="italic" officeooo:rsid="0022ce06" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T27" style:family="text">
-   <style:text-properties fo:font-style="normal" officeooo:rsid="002c6932" style:font-style-asian="normal" style:font-style-complex="normal"/>
+   <style:text-properties fo:font-style="normal" officeooo:rsid="0022ce06" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
   <style:style style:name="T28" style:family="text">
-   <style:text-properties fo:font-style="italic" officeooo:rsid="002c6932" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties fo:font-style="normal" officeooo:rsid="0042ef73" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
   <style:style style:name="T29" style:family="text">
-   <style:text-properties fo:font-style="normal" officeooo:rsid="002adbc0" style:font-style-asian="normal" style:font-style-complex="normal"/>
+   <style:text-properties fo:font-style="normal" officeooo:rsid="002c6932" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
   <style:style style:name="T30" style:family="text">
-   <style:text-properties fo:font-style="italic" officeooo:rsid="002adbc0" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties fo:font-style="italic" officeooo:rsid="002c6932" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T31" style:family="text">
-   <style:text-properties fo:font-style="normal" officeooo:rsid="002d9225" style:font-style-asian="normal" style:font-style-complex="normal"/>
+   <style:text-properties fo:font-style="normal" officeooo:rsid="002adbc0" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
   <style:style style:name="T32" style:family="text">
-   <style:text-properties fo:font-style="normal" officeooo:rsid="002c5219" style:font-style-asian="normal" style:font-style-complex="normal"/>
+   <style:text-properties fo:font-style="italic" officeooo:rsid="002adbc0" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T33" style:family="text">
-   <style:text-properties fo:font-style="normal" officeooo:rsid="0030706b" style:font-style-asian="normal" style:font-style-complex="normal"/>
+   <style:text-properties fo:font-style="normal" officeooo:rsid="002d9225" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
   <style:style style:name="T34" style:family="text">
-   <style:text-properties fo:font-style="italic" officeooo:rsid="0028206b" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties fo:font-style="normal" officeooo:rsid="002c5219" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
   <style:style style:name="T35" style:family="text">
-   <style:text-properties officeooo:rsid="002448fc"/>
+   <style:text-properties fo:font-style="normal" officeooo:rsid="0030706b" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
   <style:style style:name="T36" style:family="text">
-   <style:text-properties officeooo:rsid="0042ef73"/>
+   <style:text-properties fo:font-style="italic" officeooo:rsid="0028206b" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T37" style:family="text">
-   <style:text-properties fo:font-style="italic" officeooo:rsid="0042ef73" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties officeooo:rsid="002448fc"/>
   </style:style>
   <style:style style:name="T38" style:family="text">
-   <style:text-properties fo:font-style="italic" officeooo:rsid="004419e4" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties officeooo:rsid="0042ef73"/>
   </style:style>
   <style:style style:name="T39" style:family="text">
-   <style:text-properties officeooo:rsid="00326d32"/>
+   <style:text-properties fo:font-style="italic" officeooo:rsid="0042ef73" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T40" style:family="text">
-   <style:text-properties officeooo:rsid="004419e4"/>
+   <style:text-properties fo:font-style="italic" officeooo:rsid="004419e4" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T41" style:family="text">
-   <style:text-properties fo:font-style="normal" officeooo:rsid="004419e4" style:font-style-asian="normal" style:font-style-complex="normal"/>
+   <style:text-properties officeooo:rsid="00326d32"/>
   </style:style>
   <style:style style:name="T42" style:family="text">
-   <style:text-properties officeooo:rsid="0025c807"/>
+   <style:text-properties officeooo:rsid="004419e4"/>
   </style:style>
   <style:style style:name="T43" style:family="text">
-   <style:text-properties fo:font-style="italic"/>
+   <style:text-properties fo:font-style="normal" officeooo:rsid="004419e4" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
   <style:style style:name="T44" style:family="text">
-   <style:text-properties fo:font-style="normal" officeooo:rsid="0025c807" style:font-style-asian="normal" style:font-style-complex="normal"/>
+   <style:text-properties fo:font-style="normal" officeooo:rsid="00465cbb" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
   <style:style style:name="T45" style:family="text">
-   <style:text-properties fo:font-style="italic" officeooo:rsid="0025c807" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties officeooo:rsid="0025c807"/>
   </style:style>
   <style:style style:name="T46" style:family="text">
-   <style:text-properties fo:font-style="normal" officeooo:rsid="002a2c74" style:font-style-asian="normal" style:font-style-complex="normal"/>
+   <style:text-properties fo:font-style="italic"/>
   </style:style>
   <style:style style:name="T47" style:family="text">
-   <style:text-properties fo:font-style="normal" officeooo:rsid="00276e9a" style:font-style-asian="normal" style:font-style-complex="normal"/>
+   <style:text-properties fo:font-style="normal" officeooo:rsid="0025c807" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
   <style:style style:name="T48" style:family="text">
-   <style:text-properties fo:font-style="normal" officeooo:rsid="0028206b" style:font-style-asian="normal" style:font-style-complex="normal"/>
+   <style:text-properties fo:font-style="italic" officeooo:rsid="0025c807" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T49" style:family="text">
-   <style:text-properties officeooo:rsid="0028206b"/>
+   <style:text-properties fo:font-style="normal" officeooo:rsid="002a2c74" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
   <style:style style:name="T50" style:family="text">
-   <style:text-properties fo:font-style="italic" officeooo:rsid="00276e9a" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties fo:font-style="normal" officeooo:rsid="00276e9a" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
   <style:style style:name="T51" style:family="text">
-   <style:text-properties fo:font-style="normal" officeooo:rsid="0029499f" style:font-style-asian="normal" style:font-style-complex="normal"/>
+   <style:text-properties fo:font-style="normal" officeooo:rsid="0028206b" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
   <style:style style:name="T52" style:family="text">
-   <style:text-properties fo:font-style="italic" officeooo:rsid="0029499f" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties officeooo:rsid="0028206b"/>
   </style:style>
   <style:style style:name="T53" style:family="text">
-   <style:text-properties officeooo:rsid="0032e1c6"/>
+   <style:text-properties fo:font-style="italic" officeooo:rsid="00276e9a" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T54" style:family="text">
-   <style:text-properties officeooo:rsid="000f15f2"/>
+   <style:text-properties fo:font-style="normal" officeooo:rsid="0029499f" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
   <style:style style:name="T55" style:family="text">
-   <style:text-properties officeooo:rsid="001480a4"/>
+   <style:text-properties fo:font-style="italic" officeooo:rsid="00465cbb" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T56" style:family="text">
-   <style:text-properties fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="001480a4" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
+   <style:text-properties fo:font-style="normal" officeooo:rsid="004789f2" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
   <style:style style:name="T57" style:family="text">
-   <style:text-properties fo:font-style="italic" fo:font-weight="normal" officeooo:rsid="001480a4" style:font-style-asian="italic" style:font-weight-asian="normal" style:font-style-complex="italic" style:font-weight-complex="normal"/>
+   <style:text-properties fo:font-style="italic" officeooo:rsid="0029499f" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T58" style:family="text">
-   <style:text-properties fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="0032e1c6" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
+   <style:text-properties officeooo:rsid="0032e1c6"/>
   </style:style>
   <style:style style:name="T59" style:family="text">
-   <style:text-properties fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="003351e3" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
-  </style:style>
-  <style:style style:name="T60" style:family="text">
    <style:text-properties fo:font-style="italic" officeooo:rsid="0032e1c6" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
-  <style:style style:name="T61" style:family="text">
+  <style:style style:name="T60" style:family="text">
    <style:text-properties fo:font-style="italic" officeooo:rsid="00326d32" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
+  <style:style style:name="T61" style:family="text">
+   <style:text-properties officeooo:rsid="000f15f2"/>
+  </style:style>
   <style:style style:name="T62" style:family="text">
-   <style:text-properties fo:font-style="normal" officeooo:rsid="003cf8ee" style:font-style-asian="normal" style:font-style-complex="normal"/>
+   <style:text-properties fo:language="it" fo:country="IT" officeooo:rsid="001480a4"/>
   </style:style>
   <style:style style:name="T63" style:family="text">
-   <style:text-properties officeooo:rsid="003cf8ee"/>
+   <style:text-properties fo:language="it" fo:country="IT" officeooo:rsid="0032e1c6"/>
   </style:style>
   <style:style style:name="T64" style:family="text">
-   <style:text-properties officeooo:rsid="001caa85"/>
+   <style:text-properties fo:language="it" fo:country="IT" officeooo:rsid="004789f2"/>
   </style:style>
   <style:style style:name="T65" style:family="text">
-   <style:text-properties fo:font-style="italic" officeooo:rsid="001caa85" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="000f15f2" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
   </style:style>
   <style:style style:name="T66" style:family="text">
-   <style:text-properties fo:font-style="italic" officeooo:rsid="001699d4" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="001480a4" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
   </style:style>
   <style:style style:name="T67" style:family="text">
-   <style:text-properties fo:font-style="italic" officeooo:rsid="000f15f2" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="italic" fo:font-weight="normal" officeooo:rsid="001480a4" style:font-style-asian="italic" style:font-weight-asian="normal" style:font-style-complex="italic" style:font-weight-complex="normal"/>
   </style:style>
   <style:style style:name="T68" style:family="text">
-   <style:text-properties fo:font-style="normal" officeooo:rsid="000f15f2" style:font-style-asian="normal" style:font-style-complex="normal"/>
+   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="0032e1c6" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
   </style:style>
   <style:style style:name="T69" style:family="text">
-   <style:text-properties fo:font-style="normal" officeooo:rsid="001caa85" style:font-style-asian="normal" style:font-style-complex="normal"/>
+   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="003351e3" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
   </style:style>
   <style:style style:name="T70" style:family="text">
-   <style:text-properties officeooo:rsid="000f3bd6"/>
+   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="004789f2" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
   </style:style>
   <style:style style:name="T71" style:family="text">
-   <style:text-properties fo:font-style="italic" officeooo:rsid="000f3bd6" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties fo:font-style="normal" officeooo:rsid="004edab7" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
   <style:style style:name="T72" style:family="text">
-   <style:text-properties officeooo:rsid="00101f48"/>
+   <style:text-properties fo:font-style="normal" officeooo:rsid="003cf8ee" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
   <style:style style:name="T73" style:family="text">
-   <style:text-properties fo:font-style="italic" officeooo:rsid="00101f48" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties fo:font-style="italic" officeooo:rsid="004edab7" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T74" style:family="text">
-   <style:text-properties fo:font-style="italic" officeooo:rsid="00163e5c" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties officeooo:rsid="004edab7"/>
   </style:style>
   <style:style style:name="T75" style:family="text">
-   <style:text-properties officeooo:rsid="00163e5c"/>
+   <style:text-properties officeooo:rsid="00492594"/>
   </style:style>
   <style:style style:name="T76" style:family="text">
-   <style:text-properties fo:font-style="normal"/>
+   <style:text-properties officeooo:rsid="003cf8ee"/>
   </style:style>
   <style:style style:name="T77" style:family="text">
-   <style:text-properties fo:font-style="italic" officeooo:rsid="001167aa" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties officeooo:rsid="001caa85"/>
   </style:style>
   <style:style style:name="T78" style:family="text">
-   <style:text-properties officeooo:rsid="001167aa"/>
+   <style:text-properties fo:font-style="italic" officeooo:rsid="001caa85" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T79" style:family="text">
-   <style:text-properties officeooo:rsid="001ade21"/>
+   <style:text-properties fo:font-style="italic" officeooo:rsid="001699d4" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T80" style:family="text">
-   <style:text-properties fo:font-style="italic" officeooo:rsid="001ade21" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties fo:font-style="italic" officeooo:rsid="000f15f2" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T81" style:family="text">
-   <style:text-properties style:text-underline-style="none"/>
+   <style:text-properties fo:font-style="normal" officeooo:rsid="000f15f2" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
   <style:style style:name="T82" style:family="text">
-   <style:text-properties fo:font-style="italic" style:text-underline-style="none" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties fo:font-style="normal" officeooo:rsid="001caa85" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
   <style:style style:name="T83" style:family="text">
-   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" officeooo:rsid="001699d4" style:font-style-asian="normal" style:font-style-complex="normal"/>
+   <style:text-properties officeooo:rsid="000f3bd6"/>
   </style:style>
   <style:style style:name="T84" style:family="text">
-   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="italic" officeooo:rsid="001699d4" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties fo:font-style="italic" officeooo:rsid="000f3bd6" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T85" style:family="text">
-   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" officeooo:rsid="001ade21" style:font-style-asian="normal" style:font-style-complex="normal"/>
+   <style:text-properties officeooo:rsid="00101f48"/>
   </style:style>
   <style:style style:name="T86" style:family="text">
-   <style:text-properties fo:font-style="italic" officeooo:rsid="00171e5c" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties fo:font-style="italic" officeooo:rsid="00101f48" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T87" style:family="text">
-   <style:text-properties officeooo:rsid="001699d4"/>
+   <style:text-properties fo:font-style="italic" officeooo:rsid="00163e5c" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T88" style:family="text">
-   <style:text-properties fo:font-style="italic" fo:font-weight="normal" style:font-style-asian="italic" style:font-weight-asian="normal" style:font-style-complex="italic" style:font-weight-complex="normal"/>
+   <style:text-properties officeooo:rsid="00163e5c"/>
   </style:style>
   <style:style style:name="T89" style:family="text">
-   <style:text-properties fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="003614fa" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
+   <style:text-properties fo:font-style="normal"/>
   </style:style>
   <style:style style:name="T90" style:family="text">
-   <style:text-properties fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="0037fa1f" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
+   <style:text-properties fo:font-style="italic" officeooo:rsid="001167aa" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T91" style:family="text">
-   <style:text-properties fo:font-style="italic" fo:font-weight="normal" officeooo:rsid="0037fa1f" style:font-style-asian="italic" style:font-weight-asian="normal" style:font-style-complex="italic" style:font-weight-complex="normal"/>
+   <style:text-properties officeooo:rsid="001167aa"/>
   </style:style>
   <style:style style:name="T92" style:family="text">
-   <style:text-properties fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="003bcdbb" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
+   <style:text-properties officeooo:rsid="001ade21"/>
   </style:style>
   <style:style style:name="T93" style:family="text">
-   <style:text-properties fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="0038ee1c" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
+   <style:text-properties fo:font-style="italic" officeooo:rsid="001ade21" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T94" style:family="text">
-   <style:text-properties fo:font-weight="normal" style:font-weight-asian="normal" style:font-weight-complex="normal"/>
+   <style:text-properties officeooo:rsid="004d4af5"/>
   </style:style>
   <style:style style:name="T95" style:family="text">
-   <style:text-properties fo:font-weight="normal" officeooo:rsid="003614fa" style:font-weight-asian="normal" style:font-weight-complex="normal"/>
+   <style:text-properties style:text-underline-style="none"/>
   </style:style>
   <style:style style:name="T96" style:family="text">
-   <style:text-properties fo:font-style="italic" fo:font-weight="normal" officeooo:rsid="003614fa" style:font-style-asian="italic" style:font-weight-asian="normal" style:font-style-complex="italic" style:font-weight-complex="normal"/>
+   <style:text-properties fo:font-style="italic" style:text-underline-style="none" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T97" style:family="text">
-   <style:text-properties officeooo:rsid="003614fa"/>
+   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" officeooo:rsid="001699d4" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
   <style:style style:name="T98" style:family="text">
-   <style:text-properties fo:font-style="italic" officeooo:rsid="003614fa" style:font-style-asian="italic" style:font-style-complex="italic"/>
+   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="italic" officeooo:rsid="001699d4" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T99" style:family="text">
-   <style:text-properties fo:font-style="normal" officeooo:rsid="003614fa" style:font-style-asian="normal" style:font-style-complex="normal"/>
+   <style:text-properties fo:language="it" fo:country="IT" fo:font-style="normal" officeooo:rsid="001ade21" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
   <style:style style:name="T100" style:family="text">
-   <style:text-properties fo:font-style="normal" officeooo:rsid="0037fa1f" style:font-style-asian="normal" style:font-style-complex="normal"/>
+   <style:text-properties fo:font-style="italic" officeooo:rsid="00171e5c" style:font-style-asian="italic" style:font-style-complex="italic"/>
   </style:style>
   <style:style style:name="T101" style:family="text">
-   <style:text-properties officeooo:rsid="0038ee1c"/>
+   <style:text-properties officeooo:rsid="001699d4"/>
   </style:style>
   <style:style style:name="T102" style:family="text">
+   <style:text-properties fo:font-style="italic" fo:font-weight="normal" style:font-style-asian="italic" style:font-weight-asian="normal" style:font-style-complex="italic" style:font-weight-complex="normal"/>
+  </style:style>
+  <style:style style:name="T103" style:family="text">
+   <style:text-properties fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="003614fa" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
+  </style:style>
+  <style:style style:name="T104" style:family="text">
+   <style:text-properties fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="00494af8" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
+  </style:style>
+  <style:style style:name="T105" style:family="text">
+   <style:text-properties fo:font-style="italic" fo:font-weight="normal" officeooo:rsid="00494af8" style:font-style-asian="italic" style:font-weight-asian="normal" style:font-style-complex="italic" style:font-weight-complex="normal"/>
+  </style:style>
+  <style:style style:name="T106" style:family="text">
+   <style:text-properties fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="0037fa1f" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
+  </style:style>
+  <style:style style:name="T107" style:family="text">
+   <style:text-properties fo:font-style="italic" fo:font-weight="normal" officeooo:rsid="0037fa1f" style:font-style-asian="italic" style:font-weight-asian="normal" style:font-style-complex="italic" style:font-weight-complex="normal"/>
+  </style:style>
+  <style:style style:name="T108" style:family="text">
+   <style:text-properties fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="003bcdbb" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
+  </style:style>
+  <style:style style:name="T109" style:family="text">
+   <style:text-properties fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="00492594" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
+  </style:style>
+  <style:style style:name="T110" style:family="text">
+   <style:text-properties fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="00499f7f" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
+  </style:style>
+  <style:style style:name="T111" style:family="text">
+   <style:text-properties fo:font-style="italic" fo:font-weight="normal" officeooo:rsid="00499f7f" style:font-style-asian="italic" style:font-weight-asian="normal" style:font-style-complex="italic" style:font-weight-complex="normal"/>
+  </style:style>
+  <style:style style:name="T112" style:family="text">
+   <style:text-properties fo:font-style="italic" fo:font-weight="normal" officeooo:rsid="00492594" style:font-style-asian="italic" style:font-weight-asian="normal" style:font-style-complex="italic" style:font-weight-complex="normal"/>
+  </style:style>
+  <style:style style:name="T113" style:family="text">
+   <style:text-properties fo:font-style="normal" fo:font-weight="normal" officeooo:rsid="004acad6" style:font-style-asian="normal" style:font-weight-asian="normal" style:font-style-complex="normal" style:font-weight-complex="normal"/>
+  </style:style>
+  <style:style style:name="T114" style:family="text">
+   <style:text-properties fo:font-weight="normal" officeooo:rsid="004acad6" style:font-weight-asian="normal" style:font-weight-complex="normal"/>
+  </style:style>
+  <style:style style:name="T115" style:family="text">
+   <style:text-properties officeooo:rsid="003614fa"/>
+  </style:style>
+  <style:style style:name="T116" style:family="text">
+   <style:text-properties fo:font-style="italic" officeooo:rsid="003614fa" style:font-style-asian="italic" style:font-style-complex="italic"/>
+  </style:style>
+  <style:style style:name="T117" style:family="text">
+   <style:text-properties fo:font-style="normal" officeooo:rsid="003614fa" style:font-style-asian="normal" style:font-style-complex="normal"/>
+  </style:style>
+  <style:style style:name="T118" style:family="text">
+   <style:text-properties fo:font-style="normal" officeooo:rsid="0037fa1f" style:font-style-asian="normal" style:font-style-complex="normal"/>
+  </style:style>
+  <style:style style:name="T119" style:family="text">
+   <style:text-properties fo:font-style="italic" officeooo:rsid="0037fa1f" style:font-style-asian="italic" style:font-style-complex="italic"/>
+  </style:style>
+  <style:style style:name="T120" style:family="text">
+   <style:text-properties officeooo:rsid="004b53ba"/>
+  </style:style>
+  <style:style style:name="T121" style:family="text">
+   <style:text-properties fo:font-weight="normal" style:font-weight-asian="normal" style:font-weight-complex="normal"/>
+  </style:style>
+  <style:style style:name="T122" style:family="text">
+   <style:text-properties fo:font-weight="normal" officeooo:rsid="00494af8" style:font-weight-asian="normal" style:font-weight-complex="normal"/>
+  </style:style>
+  <style:style style:name="T123" style:family="text">
+   <style:text-properties fo:font-weight="normal" officeooo:rsid="0029499f" style:font-weight-asian="normal" style:font-weight-complex="normal"/>
+  </style:style>
+  <style:style style:name="T124" style:family="text">
+   <style:text-properties fo:font-weight="normal" officeooo:rsid="003614fa" style:font-weight-asian="normal" style:font-weight-complex="normal"/>
+  </style:style>
+  <style:style style:name="T125" style:family="text">
+   <style:text-properties fo:font-style="italic" fo:font-weight="normal" officeooo:rsid="003614fa" style:font-style-asian="italic" style:font-weight-asian="normal" style:font-style-complex="italic" style:font-weight-complex="normal"/>
+  </style:style>
+  <style:style style:name="T126" style:family="text">
+   <style:text-properties officeooo:rsid="0038ee1c"/>
+  </style:style>
+  <style:style style:name="T127" style:family="text">
    <style:text-properties fo:font-style="normal" officeooo:rsid="0038ee1c" style:font-style-asian="normal" style:font-style-complex="normal"/>
+  </style:style>
+  <style:style style:name="T128" style:family="text">
+   <style:text-properties fo:font-style="italic" officeooo:rsid="004e2784" style:font-style-asian="italic" style:font-style-complex="italic"/>
+  </style:style>
+  <style:style style:name="T129" style:family="text">
+   <style:text-properties fo:font-style="normal" officeooo:rsid="00494af8" style:font-style-asian="normal" style:font-style-complex="normal"/>
   </style:style>
   <text:list-style style:name="L1">
    <text:list-level-style-number text:level="1" text:style-name="Numbering_20_Symbols" loext:num-list-format="%1%." style:num-suffix="." style:num-format="1">
@@ -1489,147 +1621,165 @@
    </text:list>
    <text:p text:style-name="P9">Nessuno conosce le esigenze di gestione dinamica della memoria come il suo creatore, e dunque è appropriato che egli scelga e, se necessario, implementi una soluzione <text:span text:style-name="T3">ad hoc</text:span><text:span text:style-name="T4"> piuttosto che affidarsi a un sistema </text:span><text:span text:style-name="T3">one size fits all</text:span><text:span text:style-name="T4">.</text:span></text:p>
    <text:p text:style-name="P10"><text:span text:style-name="Citation"><text:span text:style-name="T5">“</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T6">M</text:span></text:span><text:span text:style-name="Citation">emory is the new disk and disk is the new tape.” – </text:span><text:span text:style-name="Citation"><text:span text:style-name="T7">Jim Gray</text:span></text:span></text:p>
-   <text:h text:style-name="P11" text:outline-level="3"><text:span text:style-name="Citation"><text:span text:style-name="T4">Mutator, Allocator, Collector</text:span></text:span></text:h>
-   <text:p text:style-name="P12">From the previous lectures we know that a garbage-collected program is manipulated by the three main modules known as <text:span text:style-name="Emphasis">Mutator, Allocator,</text:span> and <text:span text:style-name="Emphasis">Collector</text:span>.</text:p>
-   <text:p text:style-name="P12"><text:span text:style-name="Strong_20_Emphasis">Mutator</text:span> is our <text:span text:style-name="Emphasis">user-program</text:span>, where we create objects for own purposes. All the other modules should <text:span text:style-name="Emphasis">respect</text:span> the Mutator’s view on the object graph. For example, under no circumstances a <text:span text:style-name="Strong_20_Emphasis">Collector</text:span> can reclaim an <text:span text:style-name="Emphasis">alive</text:span> object.</text:p>
-   <text:p text:style-name="P12">Mutator however doesn’t allocate objects by itself. Instead it delegates this generic task to the <text:span text:style-name="Strong_20_Emphasis">Allocator</text:span> module — and this is exactly the topic of our discussion today.</text:p>
+   <text:p text:style-name="P11"><text:span text:style-name="Citation"><text:span text:style-name="T8">Costo del debugging e della visualizzazione dei dati</text:span></text:span></text:p>
+   <text:h text:style-name="P12" text:outline-level="3"><text:span text:style-name="Citation"><text:span text:style-name="T4">Mutator, Allocator, Collector</text:span></text:span></text:h>
+   <text:p text:style-name="P13">From the previous lectures we know that a garbage-collected program is manipulated by the three main modules known as <text:span text:style-name="Emphasis">Mutator, Allocator,</text:span> and <text:span text:style-name="Emphasis">Collector</text:span>.</text:p>
+   <text:p text:style-name="P13"><text:span text:style-name="Strong_20_Emphasis">Mutator</text:span> is our <text:span text:style-name="Emphasis">user-program</text:span>, where we create objects for own purposes. All the other modules should <text:span text:style-name="Emphasis">respect</text:span> the Mutator’s view on the object graph. For example, under no circumstances a <text:span text:style-name="Strong_20_Emphasis">Collector</text:span> can reclaim an <text:span text:style-name="Emphasis">alive</text:span> object.</text:p>
+   <text:p text:style-name="P13">Mutator however doesn’t allocate objects by itself. Instead it delegates this generic task to the <text:span text:style-name="Strong_20_Emphasis">Allocator</text:span> module — and this is exactly the topic of our discussion today.</text:p>
    <text:p text:style-name="P10"><text:span text:style-name="Citation"><text:span text:style-name="T7"/></text:span></text:p>
    <text:h text:style-name="P6" text:outline-level="1" text:is-list-header="true">2. Lavori Correlati/Basi</text:h>
-   <text:h text:style-name="P13" text:outline-level="2">Object Oriented C Programming</text:h>
+   <text:h text:style-name="P14" text:outline-level="2">Object Oriented C Programming: <text:span text:style-name="T9">perché?</text:span></text:h>
    <text:list text:style-name="L3">
     <text:list-item>
-     <text:p text:style-name="P14">Perché è stato scelto C per scrivere il programma?</text:p>
+     <text:p text:style-name="P15">Perché è stato scelto C per scrivere il programma?</text:p>
     </text:list-item>
     <text:list-item>
-     <text:p text:style-name="P14">Perché è importante implementare le <text:span text:style-name="T8">basi delle</text:span> strutture della programmazione OOP <text:span text:style-name="T8">in C</text:span>?</text:p>
+     <text:p text:style-name="P15">Perché è importante implementare le <text:span text:style-name="T10">basi delle</text:span> strutture della programmazione OOP <text:span text:style-name="T10">in C</text:span>?</text:p>
     </text:list-item>
    </text:list>
-   <text:p text:style-name="P15">Per approfondire il tema della programmazione OOP in C è stato consultato <text:span text:style-name="T3">il </text:span><text:span text:style-name="T9">libro “</text:span><text:span text:style-name="T3">Object-Oriented Programming With ANSI-C” </text:span><text:span text:style-name="T10">del professor </text:span><text:span text:style-name="T11">Axel-Tobias Schreiner. </text:span><text:span text:style-name="T12">N</text:span><text:span text:style-name="T11">onostante non sia stato ritenuto d</text:span><text:span text:style-name="T13">i</text:span><text:span text:style-name="T11"> applicarne interamente gli insegnamenti per semplicità, </text:span><text:span text:style-name="T12">il testo si è rivelato essere un utile riferimento teorico. </text:span><text:span text:style-name="T14">La decisione di usare C piuttosto che </text:span><text:span text:style-name="T12">un linguaggio</text:span><text:span text:style-name="T14"> </text:span><text:span text:style-name="T12">che fornisce supporto diretto a questo paradigma, come</text:span><text:span text:style-name="T14"> C++ </text:span><text:span text:style-name="T15">o C#,</text:span><text:span text:style-name="T14"> nasce da un’esigenza didattica di “squarciare il velo di Ma</text:span><text:span text:style-name="T12">y</text:span><text:span text:style-name="T14">a” </text:span><text:span text:style-name="T12">che spesso avvolge i meccanismi alla base della programmazione orientata agli oggetti</text:span><text:span text:style-name="T14">. </text:span></text:p>
-   <text:p text:style-name="P16"><text:span text:style-name="T12">In particolare, s</text:span><text:span text:style-name="T14">i è ritenuto di voler sottolineare </text:span><text:span text:style-name="T12">come la gestione del</text:span><text:span text:style-name="T14">l’allocazione </text:span><text:span text:style-name="T12">dinamica </text:span><text:span text:style-name="T14">di memoria, strettamente legat</text:span><text:span text:style-name="T12">a</text:span><text:span text:style-name="T14"> all’</text:span><text:span text:style-name="T12">architettura </text:span><text:span text:style-name="T14">fisic</text:span><text:span text:style-name="T12">a</text:span><text:span text:style-name="T14"> del calcolatore, </text:span><text:span text:style-name="T12">sia un aspetto fondamentale della programmazione a basso livello. Colui che per la prima volta decida di approcciare </text:span><text:span text:style-name="T16">il linguaggio </text:span><text:span text:style-name="T12">C trova nel semplice uso di </text:span><text:span text:style-name="T17">malloc</text:span><text:span text:style-name="T12"> e </text:span><text:span text:style-name="T17">free </text:span><text:span text:style-name="T12">le prime grandi “responsabilità” da programmatore: un obbligazione a gestire autonomamente e responsabilmente una risorsa, che porta a un livello di consapevolezza maggiore </text:span><text:span text:style-name="T15">sui meccanismi interni e le routine che costituiscono i sistemi operativi</text:span><text:span text:style-name="T12">.</text:span></text:p>
-   <text:p text:style-name="P17">Scegliendo di modellare consapevolmente concetti che in C++ sono automaticamente gestiti dal compilatore si acquisisce maggiore consapevolezza sui dettagli implementativi e si <text:span text:style-name="T18">sottolineano importanti punti per la comprensione di nozioni quali </text:span><text:span text:style-name="T19">memory leak</text:span><text:span text:style-name="T18">, </text:span><text:span text:style-name="T19">dangling pointers</text:span><text:span text:style-name="T18">, ciclo di vita, costruttori e distruttori. </text:span></text:p>
-   <text:h text:style-name="P18" text:outline-level="2">Riferimenti storici</text:h>
+   <text:p text:style-name="P16">Per approfondire il tema della programmazione OOP in C è stato consultato <text:span text:style-name="T3">il </text:span><text:span text:style-name="T11">libro “</text:span><text:span text:style-name="T3">Object-Oriented Programming With ANSI-C” </text:span><text:span text:style-name="T12">del professor </text:span><text:span text:style-name="T13">Axel-Tobias Schreiner. </text:span><text:span text:style-name="T14">N</text:span><text:span text:style-name="T13">onostante non sia stato ritenuto d</text:span><text:span text:style-name="T15">i</text:span><text:span text:style-name="T13"> applicarne interamente gli insegnamenti per semplicità, </text:span><text:span text:style-name="T14">il testo si è rivelato essere un utile riferimento teorico. </text:span><text:span text:style-name="T16">La decisione di usare C piuttosto che </text:span><text:span text:style-name="T14">un linguaggio</text:span><text:span text:style-name="T16"> </text:span><text:span text:style-name="T14">che fornisce supporto diretto a questo paradigma, come</text:span><text:span text:style-name="T16"> C++ </text:span><text:span text:style-name="T17">o C#,</text:span><text:span text:style-name="T16"> nasce da un’esigenza didattica di “squarciare il velo di Ma</text:span><text:span text:style-name="T14">y</text:span><text:span text:style-name="T16">a” </text:span><text:span text:style-name="T14">che spesso avvolge i meccanismi alla base della programmazione orientata agli oggetti</text:span><text:span text:style-name="T16">. </text:span></text:p>
+   <text:p text:style-name="P17"><text:span text:style-name="T14">In particolare, s</text:span><text:span text:style-name="T16">i è ritenuto di voler sottolineare </text:span><text:span text:style-name="T14">come la gestione del</text:span><text:span text:style-name="T16">l’allocazione </text:span><text:span text:style-name="T14">dinamica </text:span><text:span text:style-name="T16">di memoria, strettamente legat</text:span><text:span text:style-name="T14">a</text:span><text:span text:style-name="T16"> all’</text:span><text:span text:style-name="T14">architettura </text:span><text:span text:style-name="T16">fisic</text:span><text:span text:style-name="T14">a</text:span><text:span text:style-name="T16"> del calcolatore, </text:span><text:span text:style-name="T14">sia un aspetto fondamentale della programmazione a basso livello. Colui che per la prima volta decida di approcciare </text:span><text:span text:style-name="T18">il linguaggio </text:span><text:span text:style-name="T14">C trova nel semplice uso di </text:span><text:span text:style-name="T19">malloc</text:span><text:span text:style-name="T14"> e </text:span><text:span text:style-name="T19">free </text:span><text:span text:style-name="T14">le prime grandi “responsabilità” da programmatore: un obbligazione a gestire autonomamente e responsabilmente una risorsa, che porta a un livello di consapevolezza maggiore </text:span><text:span text:style-name="T17">sui meccanismi interni e le routine che costituiscono i sistemi operativi</text:span><text:span text:style-name="T14">.</text:span></text:p>
+   <text:p text:style-name="P18">Scegliendo di modellare consapevolmente concetti che in C++ sono automaticamente gestiti dal compilatore si acquisisce maggiore consapevolezza sui dettagli implementativi e si <text:span text:style-name="T20">sottolineano importanti punti per la comprensione di nozioni quali </text:span><text:span text:style-name="T21">memory leak</text:span><text:span text:style-name="T20">, </text:span><text:span text:style-name="T21">dangling pointers</text:span><text:span text:style-name="T20">, ciclo di vita, costruttori e distruttori. </text:span></text:p>
+   <text:h text:style-name="P19" text:outline-level="2">Letteratura scientifica sull’allocazione dinamica</text:h>
    <text:list text:style-name="L4">
     <text:list-item>
-     <text:p text:style-name="P19">Quali sono le principali problematiche negli allocatori moderni evidenziate dalla letteratura?</text:p>
+     <text:p text:style-name="P20">Quali sono le principali problematiche negli allocatori moderni evidenziate dalla letteratura?</text:p>
     </text:list-item>
     <text:list-item>
-     <text:p text:style-name="P19">Quali sono le possibili soluzioni?</text:p>
+     <text:p text:style-name="P20">Quali sono le possibili soluzioni?</text:p>
     </text:list-item>
    </text:list>
-   <text:p text:style-name="P20"><text:span text:style-name="T2">L’articolo </text:span>“<text:span text:style-name="T3">Dynamic Storage Allocation, A Survey and Critical Review</text:span>” <text:span text:style-name="T2">di P. Wilson et al. </text:span>è<text:span text:style-name="T2"> stato </text:span><text:span text:style-name="T20">adottato</text:span><text:span text:style-name="T2"> come riferimento storico: in particolare il capitolo 4 presenta </text:span><text:span text:style-name="T21">un sunto della</text:span><text:span text:style-name="T2"> letteratura pubblicata sull’argomento </text:span><text:span text:style-name="T21">negli anni precedenti </text:span><text:span text:style-name="T18">e delle soluzioni proposte per affrontare il problema, che gli autori sottolineano </text:span><text:span text:style-name="T22">argutamente</text:span><text:span text:style-name="T18"> essere </text:span><text:span text:style-name="Citation"><text:span text:style-name="T18">“per lo più considerato essere già risolto o irrisolvibile”</text:span></text:span><text:span text:style-name="T21">. </text:span><text:span text:style-name="T23">Un </text:span><text:span text:style-name="T20">punto critico </text:span><text:span text:style-name="T23">che emerge </text:span><text:span text:style-name="T20">infatti </text:span><text:span text:style-name="T23">in più punti della letteratura </text:span><text:span text:style-name="T20">riguarda le </text:span><text:span text:style-name="T23">differenze tra </text:span><text:span text:style-name="T20">i</text:span><text:span text:style-name="T23"> </text:span><text:span text:style-name="T24">benchmark</text:span><text:span text:style-name="T25"> </text:span><text:span text:style-name="T26">sintetici</text:span><text:span text:style-name="T25"> </text:span><text:span text:style-name="T27">usati per valutare gli allocatori e i carichi di lavoro reali. Le </text:span><text:span text:style-name="T28">suite </text:span><text:span text:style-name="T27">di test, infatti, raramente riflettono </text:span><text:span text:style-name="T26">le profonde correlazioni e le sistematiche interazioni tra allocazioni e deallocazioni. La mancata comprensione di questi collegamenti causa incomprensioni e interpretazioni errate dei risultati di questi test, che sono dunque inadatti a rappresentare l’efficienza degli allocatori nel mondo reale.</text:span></text:p>
-   <text:p text:style-name="P21"><text:span text:style-name="T29">Le conseguenze di quest</text:span><text:span text:style-name="T27">a divergenza</text:span><text:span text:style-name="T29"> sono immediate: l’allocazione dinamica è considerat</text:span><text:span text:style-name="T27">a</text:span><text:span text:style-name="T29"> un problema “risolto” per chi </text:span><text:span text:style-name="T27">abbia abbondanti</text:span><text:span text:style-name="T29"> risorse computazionali </text:span><text:span text:style-name="T27">a disposizione </text:span><text:span text:style-name="T26">e</text:span><text:span text:style-name="T27"> contemporaneamente </text:span><text:span text:style-name="T29">“irrisolvibile” </text:span><text:span text:style-name="T27">in contesti dove </text:span><text:span text:style-name="T29">vi siano importanti limitazioni</text:span><text:span text:style-name="T30"> </text:span><text:span text:style-name="T29">temporali o spaziali. A </text:span><text:span text:style-name="T31">tal proposito</text:span><text:span text:style-name="T29">, lo studio </text:span><text:span text:style-name="T30">“Real-Time Performance of Dynamic Memory Allocation </text:span><text:soft-page-break/><text:span text:style-name="T30">Algorithms”</text:span><text:span text:style-name="T29"> di I. Puaut </text:span><text:span text:style-name="T27">offre un contributo prezioso</text:span><text:span text:style-name="T29">, </text:span><text:span text:style-name="T31">svolgendo</text:span><text:span text:style-name="T27"> </text:span><text:span text:style-name="T29">il pregevole lavoro di </text:span><text:span text:style-name="T32">combinare test </text:span><text:span text:style-name="T31">(</text:span><text:span text:style-name="T32">reali e sintetici</text:span><text:span text:style-name="T31">)</text:span><text:span text:style-name="T32"> </text:span><text:span text:style-name="T26">con</text:span><text:span text:style-name="T32"> </text:span><text:span text:style-name="T26">precisi studi </text:span><text:span text:style-name="T29">analitic</text:span><text:span text:style-name="T26">i.</text:span><text:span text:style-name="T29"> </text:span><text:span text:style-name="T31">Nessuna possibilità è lasciata inesplorat</text:span><text:span text:style-name="T26">a </text:span><text:span text:style-name="T31">ed è </text:span><text:span text:style-name="T26">dimostrato che, in determinate condizioni, è</text:span><text:span text:style-name="T31"> possibile realmente predire il comportamento degli allocatori di memoria in casi dove </text:span><text:span text:style-name="T26">è </text:span><text:span text:style-name="T31">essenziale che essi rispettino determinati parametri per giustificar</text:span><text:span text:style-name="T26">ne</text:span><text:span text:style-name="T31"> l’applicazione.</text:span></text:p>
-   <text:p text:style-name="P22"><text:span text:style-name="T27">Le conclusioni delle esperienze di Puant </text:span><text:span text:style-name="T31">confermano</text:span><text:span text:style-name="T27"> le tesi di Wilson: </text:span><text:span text:style-name="T31">l’inefficienza non</text:span><text:span text:style-name="T27"> </text:span><text:span text:style-name="T33">risiede </text:span><text:span text:style-name="T31">negli allocatori </text:span><text:span text:style-name="T33">stessi</text:span><text:span text:style-name="T27">, quanto </text:span><text:span text:style-name="T31">nella </text:span><text:span text:style-name="T27">mancata comprensione del loro funzionamento. </text:span><text:span text:style-name="T26">Il timore nella percepita inefficienza dell’allocazione dinamica </text:span><text:span text:style-name="T31">porta a scelte inappropriate</text:span><text:span text:style-name="T27">. </text:span><text:span text:style-name="T26">Essa </text:span><text:span text:style-name="T31">presenta </text:span><text:span text:style-name="T26">certamente </text:span><text:span text:style-name="T31">diverse sfide, ma attraverso caute valutazioni è possibile </text:span><text:span text:style-name="T33">applicarla anche laddove tradizionalmente </text:span><text:span text:style-name="T26">viene preferita </text:span><text:span text:style-name="T33">l’allocazione statica. </text:span></text:p>
-   <text:p text:style-name="P23"><text:span text:style-name="Citation"><text:span text:style-name="T3">“Such problems may </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T34">be</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T3"> hidden because most programmers who encounter severe issues </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T34">may simply code around them using</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T3"> ad-hoc storage management techniques—or, as is still painfully common, by statically allocating “enough” memory for variable-sized structures. These ad-hoc approaches to memory management lead to ‘brittle’ software with hidden limitations (e.g., due to the use of fixed-size arrays). The impact on software clarity, flexibility, maintainability, and reliability is significant, though difficult to </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T34">estimate</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T3">. </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T34">It </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T3">should not be underestimated, </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T34">however, because</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T3"> these hidden costs can incur major penalties in productivity—and, </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T34">to put it</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T3"> plainly, human costs in sheer frustration, anxiety, and general suffering.</text:span></text:span><text:span text:style-name="T34">”</text:span></text:p>
-   <text:p text:style-name="P22"><text:span text:style-name="T35">Gli autori </text:span><text:span text:style-name="T36">del</text:span><text:span text:style-name="T37"> </text:span><text:span text:style-name="T38">survey</text:span><text:span text:style-name="T37"> </text:span><text:span text:style-name="T35">continuano, sottolineando che soluzioni efficienti </text:span><text:span text:style-name="T39">per la </text:span><text:span text:style-name="T35">gestione dinamica di memoria fanno uso di “regolarità” nel comportamento del programma. </text:span><text:span text:style-name="T40">Infatti, osservando come viene allocata e deallocata la memoria è possibile </text:span><text:span text:style-name="T39">scegliere </text:span><text:span text:style-name="T40">la corretta politica di gestione </text:span><text:span text:style-name="T39">per il proprio caso d’uso. </text:span><text:span text:style-name="T40">Non esiste dunque una soluzione “</text:span><text:span text:style-name="T38">set and forget</text:span><text:span text:style-name="T41">” e invece risulta essere appropriato dedicare risorse all’esplorazione di diverse soluzioni. Successivamente l’articolo definisce una chiara tassonomia delle principali specie di allocatori, che vedremo successivamente nel capitolo terzo.</text:span></text:p>
-   <text:h text:style-name="P24" text:outline-level="2">Didattica degli allocatori di memoria</text:h>
+   <text:p text:style-name="P21"><text:span text:style-name="T2">L’articolo </text:span>“<text:span text:style-name="T3">Dynamic Storage Allocation, A Survey and Critical Review</text:span>” <text:span text:style-name="T2">di P. Wilson et al. </text:span>è<text:span text:style-name="T2"> stato </text:span><text:span text:style-name="T22">adottato</text:span><text:span text:style-name="T2"> come riferimento storico: in particolare il capitolo 4 presenta </text:span><text:span text:style-name="T23">un sunto della</text:span><text:span text:style-name="T2"> letteratura pubblicata sull’argomento </text:span><text:span text:style-name="T23">negli anni precedenti </text:span><text:span text:style-name="T20">e delle soluzioni proposte per affrontare il problema, che gli autori sottolineano </text:span><text:span text:style-name="T24">argutamente</text:span><text:span text:style-name="T20"> essere </text:span><text:span text:style-name="Citation"><text:span text:style-name="T20">“per lo più considerato essere già risolto o irrisolvibile”</text:span></text:span><text:span text:style-name="T23">. </text:span><text:span text:style-name="T25">Un </text:span><text:span text:style-name="T22">punto critico </text:span><text:span text:style-name="T25">che emerge </text:span><text:span text:style-name="T22">infatti </text:span><text:span text:style-name="T25">in più punti della letteratura </text:span><text:span text:style-name="T22">riguarda le </text:span><text:span text:style-name="T25">differenze tra </text:span><text:span text:style-name="T22">i</text:span><text:span text:style-name="T25"> </text:span><text:span text:style-name="T26">benchmark</text:span><text:span text:style-name="T27"> </text:span><text:span text:style-name="T28">sintetici</text:span><text:span text:style-name="T27"> </text:span><text:span text:style-name="T29">usati per valutare gli allocatori e i carichi di lavoro reali. Le </text:span><text:span text:style-name="T30">suite </text:span><text:span text:style-name="T29">di test, infatti, raramente riflettono </text:span><text:span text:style-name="T28">le profonde correlazioni e le sistematiche interazioni tra allocazioni e deallocazioni. La mancata comprensione di questi collegamenti causa incomprensioni e interpretazioni errate dei risultati di questi test, che sono dunque inadatti a rappresentare l’efficienza degli allocatori nel mondo reale.</text:span></text:p>
+   <text:p text:style-name="P22"><text:span text:style-name="T31">Le conseguenze di quest</text:span><text:span text:style-name="T29">a divergenza</text:span><text:span text:style-name="T31"> sono immediate: l’allocazione dinamica è considerat</text:span><text:span text:style-name="T29">a</text:span><text:span text:style-name="T31"> un problema “risolto” per chi </text:span><text:span text:style-name="T29">abbia abbondanti</text:span><text:span text:style-name="T31"> risorse computazionali </text:span><text:span text:style-name="T29">a disposizione </text:span><text:span text:style-name="T28">e</text:span><text:span text:style-name="T29"> contemporaneamente </text:span><text:span text:style-name="T31">“irrisolvibile” </text:span><text:span text:style-name="T29">in contesti dove </text:span><text:span text:style-name="T31">vi siano importanti limitazioni</text:span><text:span text:style-name="T32"> </text:span><text:span text:style-name="T31">temporali o spaziali. A </text:span><text:span text:style-name="T33">tal proposito</text:span><text:span text:style-name="T31">, lo studio </text:span><text:span text:style-name="T32">“Real-Time Performance of Dynamic Memory Allocation </text:span><text:soft-page-break/><text:span text:style-name="T32">Algorithms”</text:span><text:span text:style-name="T31"> di I. Puaut </text:span><text:span text:style-name="T29">offre un contributo prezioso</text:span><text:span text:style-name="T31">, </text:span><text:span text:style-name="T33">svolgendo</text:span><text:span text:style-name="T29"> </text:span><text:span text:style-name="T31">il pregevole lavoro di </text:span><text:span text:style-name="T34">combinare test </text:span><text:span text:style-name="T33">(</text:span><text:span text:style-name="T34">reali e sintetici</text:span><text:span text:style-name="T33">)</text:span><text:span text:style-name="T34"> </text:span><text:span text:style-name="T28">con</text:span><text:span text:style-name="T34"> </text:span><text:span text:style-name="T28">precisi studi </text:span><text:span text:style-name="T31">analitic</text:span><text:span text:style-name="T28">i.</text:span><text:span text:style-name="T31"> </text:span><text:span text:style-name="T33">Nessuna possibilità è lasciata inesplorat</text:span><text:span text:style-name="T28">a </text:span><text:span text:style-name="T33">ed è </text:span><text:span text:style-name="T28">dimostrato che, in determinate condizioni, è</text:span><text:span text:style-name="T33"> possibile realmente predire il comportamento degli allocatori di memoria in casi dove </text:span><text:span text:style-name="T28">è </text:span><text:span text:style-name="T33">essenziale che essi rispettino determinati parametri per giustificar</text:span><text:span text:style-name="T28">ne</text:span><text:span text:style-name="T33"> l’applicazione.</text:span></text:p>
+   <text:p text:style-name="P23"><text:span text:style-name="T29">Le conclusioni delle esperienze di Puant </text:span><text:span text:style-name="T33">confermano</text:span><text:span text:style-name="T29"> le tesi di Wilson: </text:span><text:span text:style-name="T33">l’inefficienza non</text:span><text:span text:style-name="T29"> </text:span><text:span text:style-name="T35">risiede </text:span><text:span text:style-name="T33">negli allocatori </text:span><text:span text:style-name="T35">stessi</text:span><text:span text:style-name="T29">, quanto </text:span><text:span text:style-name="T33">nella </text:span><text:span text:style-name="T29">mancata comprensione del loro funzionamento. </text:span><text:span text:style-name="T28">Il timore nella percepita inefficienza dell’allocazione dinamica </text:span><text:span text:style-name="T33">porta a scelte inappropriate</text:span><text:span text:style-name="T29">. </text:span><text:span text:style-name="T28">Essa </text:span><text:span text:style-name="T33">presenta </text:span><text:span text:style-name="T28">certamente </text:span><text:span text:style-name="T33">diverse sfide, ma attraverso caute valutazioni è possibile </text:span><text:span text:style-name="T35">applicarla anche laddove tradizionalmente </text:span><text:span text:style-name="T28">viene preferita </text:span><text:span text:style-name="T35">l’allocazione statica. </text:span></text:p>
+   <text:p text:style-name="P24"><text:span text:style-name="Citation"><text:span text:style-name="T3">“Such problems may </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T36">be</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T3"> hidden because most programmers who encounter severe issues </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T36">may simply code around them using</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T3"> ad-hoc storage management techniques—or, as is still painfully common, by statically allocating “enough” memory for variable-sized structures. These ad-hoc approaches to memory management lead to ‘brittle’ software with hidden limitations (e.g., due to the use of fixed-size arrays). The impact on software clarity, flexibility, maintainability, and reliability is significant, though difficult to </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T36">estimate</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T3">. </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T36">It </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T3">should not be underestimated, </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T36">however, because</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T3"> these hidden costs can incur major penalties in productivity—and, </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T36">to put it</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T3"> plainly, human costs in sheer frustration, anxiety, and general suffering.</text:span></text:span><text:span text:style-name="T36">”</text:span></text:p>
+   <text:p text:style-name="P23"><text:span text:style-name="T37">Gli autori </text:span><text:span text:style-name="T38">del</text:span><text:span text:style-name="T39"> </text:span><text:span text:style-name="T40">survey</text:span><text:span text:style-name="T39"> </text:span><text:span text:style-name="T37">continuano, sottolineando che soluzioni efficienti </text:span><text:span text:style-name="T41">per la </text:span><text:span text:style-name="T37">gestione dinamica di memoria fanno uso di “regolarità” nel comportamento del programma. </text:span><text:span text:style-name="T42">Infatti, osservando come viene allocata e deallocata la memoria è possibile </text:span><text:span text:style-name="T41">scegliere </text:span><text:span text:style-name="T42">la corretta politica di gestione </text:span><text:span text:style-name="T41">per il proprio caso d’uso. </text:span><text:span text:style-name="T42">Non esiste dunque una soluzione “</text:span><text:span text:style-name="T40">set and forget</text:span><text:span text:style-name="T43">” e invece risulta essere appropriato dedicare risorse all’esplorazione di diverse soluzioni. </text:span><text:span text:style-name="T44">Successivamente</text:span><text:span text:style-name="T43"> l’articolo definisce una chiara tassonomia delle principali specie di allocatori, </text:span><text:span text:style-name="T44">la quale avremo modo di approfondire </text:span><text:span text:style-name="T43">nel capitolo terzo.</text:span></text:p>
+   <text:h text:style-name="P25" text:outline-level="2">Didattica degli allocatori</text:h>
    <text:list text:style-name="L5">
     <text:list-item>
-     <text:p text:style-name="P25">Da quali fonti è possibile imparare il funzionamento degli allocatori?</text:p>
+     <text:p text:style-name="P26">Da quali fonti è possibile imparare il funzionamento degli allocatori?</text:p>
     </text:list-item>
     <text:list-item>
-     <text:p text:style-name="P25">Quali sono delle soluzioni didatticamente interessanti?</text:p>
+     <text:p text:style-name="P26">Quali sono delle soluzioni didatticamente interessanti?</text:p>
     </text:list-item>
    </text:list>
-   <text:p text:style-name="P26"><text:span text:style-name="T42">Poiché la memoria dinamicamente allocata è un aspetto cardine del linguaggio C e dei sistemi operativi (e di tutta la programmazione a basso livello), la letteratura didattica a riguardo è ampia. </text:span><text:span text:style-name="T35">Di nota per la comprensione del funzionamento e del ruolo dei </text:span><text:span text:style-name="T42">gestori dinamici della memoria</text:span><text:span text:style-name="T35"> </text:span><text:span text:style-name="T42">sono i libri </text:span><text:span text:style-name="T43">“The C Programming Language” </text:span><text:span text:style-name="T44">(capitolo 8.7, “Example – A Storage Allocator”) di B. Kernighan e D. Ritchie e </text:span><text:span text:style-name="T45">“Computer Systems – A Programmer’s Perspective” </text:span><text:span text:style-name="T44">(capitolo 9.9, “Dynamic Memory Allocation”) di R. Bryant. </text:span><text:span text:style-name="T4">Illuminante è stato il capitolo “</text:span><text:span text:style-name="T3">Dynamic Storage Allocation</text:span><text:span text:style-name="T4">” del volume primo di “</text:span><text:span text:style-name="T3">The Art of Computer Programming</text:span><text:span text:style-name="T4">”, </text:span><text:span text:style-name="T46">di</text:span><text:span text:style-name="T4"> D. Knuth. </text:span><text:span text:style-name="T29">Quest’ultimo volume va nel dettaglio spiegando l’analisi matematica che supporta le euristiche comunemente adottate nel progetto degli allocatori di memoria, fornendo chiari esempi e illustrazioni.</text:span></text:p>
-   <text:p text:style-name="P26"><text:span text:style-name="T44">Nel libro </text:span><text:span text:style-name="T46">di </text:span><text:span text:style-name="T44">Kernighan </text:span><text:span text:style-name="T46">e </text:span><text:span text:style-name="T44">Ritchie abbiamo un esempio pratico di implementazione di un allocatore lineare a blocchi di dimensione variabili, attraverso l’uso di una Linked List per mantenere un </text:span><text:span text:style-name="T41">indice</text:span><text:span text:style-name="T44"> dei blocchi liberi e che, in risposta a una operazione di </text:span><text:span text:style-name="T45">free</text:span><text:span text:style-name="T44">, unisce blocchi adiacenti. Questa implementazione </text:span><text:span text:style-name="T41">descritta dagli stessi autori come “semplice e immediata” </text:span><text:span text:style-name="T44">funge da dimostrazione </text:span><text:soft-page-break/><text:span text:style-name="T44">del fatto che </text:span><text:span text:style-name="Citation"><text:span text:style-name="T42">“</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T40">s</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T42">ebbene l’allocazione dello storage sia intrinsecamente dipendente dall</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T8">’architettura fisic</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T42">a, il codice </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T8">i</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T42">llustra come le dipendenze dalla macchina possano essere controllate e confinate a una parte molto piccola del programma.”</text:span></text:span></text:p>
-   <text:p text:style-name="P27"><text:span text:style-name="Citation"><text:span text:style-name="T47">Il secondo volume </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T41">citato, ad opera di Bryant</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T47">, a nostro </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T48">avviso</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T47">, definisce in modo cristallino </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T48">quale sia la principale fonte del problema</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T47">. Secondo </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T41">l’autore</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T47">, </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T8">“I programmatori ingenui spesso presumono erroneamente che la memoria virtuale sia una risorsa illimitata. In realtà, la quantità totale di memoria virtuale allocata da tutti i processi di un sistema è limitata dalla quantità di spazio di swap su disco. I bravi programmatori sanno che la memoria virtuale è una risorsa finita che deve essere utilizzata in modo efficiente.” </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T49">Q</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T48">uesta osservazione </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T47">è più che </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T48">mai rilevante in</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T47"> contesti come la programmazione </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T50">embedded</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T47"> e </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T50">real time</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T47">, così come </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T48">nei </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T47">sistemi operativi. </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T48">La reale criticità nel mondo dell’allocazione dinamica non consiste in un debito tecnologico, in limiti intrinseci o in euristiche inefficienti, bensì in cattive abitudini dei programmatori. Il risultato è sottovalutare l’importanza degli allocatori in contesti in cui la loro efficienza non sia strettamente indispensabile, optando piuttosto per scegliere di adoperare artefici di gestione della memoria che sacrificano spazio e prestazioni in cambio di una complessità artificiosa e che risultano essere sibillini e difficilmente applicabili al di fuori del contesto per cui sono stati concepiti.</text:span></text:span></text:p>
-   <text:p text:style-name="P27"><text:span text:style-name="Citation"><text:span text:style-name="T48">L’autore continua </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T51">definendo </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T46">i </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T51">quattro problemi che ogni implementazione di un gestore dinamico di memoria deve </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T46">risolvere.</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T51"> Essi sono:</text:span></text:span></text:p>
+   <text:p text:style-name="P27"><text:span text:style-name="T45">Poiché la memoria dinamicamente allocata è un aspetto cardine del linguaggio C e dei sistemi operativi (e di tutta la programmazione a basso livello), la letteratura didattica a riguardo è ampia. </text:span><text:span text:style-name="T37">Di nota per la comprensione del funzionamento e del ruolo dei </text:span><text:span text:style-name="T45">gestori dinamici della memoria</text:span><text:span text:style-name="T37"> </text:span><text:span text:style-name="T45">sono i libri </text:span><text:span text:style-name="T46">“The C Programming Language” </text:span><text:span text:style-name="T47">(capitolo 8.7, “Example – A Storage Allocator”) di B. Kernighan e D. Ritchie e </text:span><text:span text:style-name="T48">“Computer Systems – A Programmer’s Perspective” </text:span><text:span text:style-name="T47">(capitolo 9.9, “Dynamic Memory Allocation”) di R. Bryant. </text:span><text:span text:style-name="T4">Illuminante è stato il capitolo “</text:span><text:span text:style-name="T3">Dynamic Storage Allocation</text:span><text:span text:style-name="T4">” del volume primo di “</text:span><text:span text:style-name="T3">The Art of Computer Programming</text:span><text:span text:style-name="T4">”, </text:span><text:span text:style-name="T49">di</text:span><text:span text:style-name="T4"> D. Knuth. </text:span><text:span text:style-name="T31">Quest’ultimo volume va nel dettaglio spiegando l’analisi matematica che supporta le euristiche comunemente adottate nel progetto degli allocatori di memoria, fornendo chiari esempi e illustrazioni.</text:span></text:p>
+   <text:p text:style-name="P27"><text:span text:style-name="T47">Nel libro </text:span><text:span text:style-name="T49">di </text:span><text:span text:style-name="T47">Kernighan </text:span><text:span text:style-name="T49">e </text:span><text:span text:style-name="T47">Ritchie abbiamo un esempio pratico di implementazione di un allocatore lineare a blocchi di dimensione variabili, attraverso l’uso di una Linked List per mantenere un </text:span><text:span text:style-name="T43">indice</text:span><text:span text:style-name="T47"> dei blocchi liberi e che, in risposta a una operazione di </text:span><text:span text:style-name="T48">free</text:span><text:span text:style-name="T47">, unisce blocchi adiacenti. Questa implementazione </text:span><text:span text:style-name="T43">descritta dagli stessi autori come “semplice e immediata” </text:span><text:span text:style-name="T47">funge da dimostrazione </text:span><text:soft-page-break/><text:span text:style-name="T47">del fatto che </text:span><text:span text:style-name="Citation"><text:span text:style-name="T45">“</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T42">s</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T45">ebbene l’allocazione dello storage sia intrinsecamente dipendente dall</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T10">’architettura fisic</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T45">a, il codice </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T10">i</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T45">llustra come le dipendenze dalla macchina possano essere controllate e confinate a una parte molto piccola del programma.”</text:span></text:span></text:p>
+   <text:p text:style-name="P28"><text:span text:style-name="Citation"><text:span text:style-name="T50">Il secondo volume </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T43">citato, ad opera di Bryant</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T50">, definisce </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T50">a nostro </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T51">avviso </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T50">in modo cristallino </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T51">quale sia la principale fonte del problema</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T50">. Secondo </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T43">l’autore</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T50">,</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T10">“I programmatori ingenui spesso presumono erroneamente che la memoria virtuale sia una risorsa illimitata. In realtà, la quantità totale di memoria virtuale allocata da tutti i processi di un sistema è limitata dalla quantità di spazio di swap su disco. I bravi programmatori sanno che la memoria virtuale è una risorsa finita che deve essere utilizzata in modo efficiente.” </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T52">Q</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T51">uesta osservazione </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T50">è più che </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T51">mai rilevante in</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T50"> contesti come la programmazione </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T53">embedded</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T50"> e </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T53">real time</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T50">, così come </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T51">ne</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T44">lla progettazione di </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T50">sistemi operativi.</text:span></text:span></text:p>
+   <text:p text:style-name="P28"><text:span text:style-name="Citation"><text:span text:style-name="T51">La reale criticità nel mondo dell’allocazione dinamica non consiste in un debito tecnologico, in limiti intrinseci o in euristiche inefficienti, bensì in cattive abitudini dei programmatori. Il risultato </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T44">di questa percezione </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T44">è apparente nell’assenza di riconoscimento </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T44">dell’</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T51">importanza de</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T44">gli </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T51">allocatori </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T44">quando </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T51">la loro efficienza non sia strettamente indispensabile. </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T44">Nei contesti in cui invece essa lo sia, viene spesso scelto </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T51">di adoperare artefici di gestione della memoria </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T44">che evitano la componente dinamica, sacrificando </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T51">spazio e prestazioni in cambio di una complessità </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T44">sibillina e </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T51">artificiosa, </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T44">che li rende di difficile manutenzione </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T51">e </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T44">applicabilità </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T51">al di fuori del contesto per cui sono stati concepiti.</text:span></text:span></text:p>
+   <text:p text:style-name="P29"><text:span text:style-name="Citation"><text:span text:style-name="T51">L’autore continua </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T54">definendo </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T49">i </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T54">quattro problemi che ogni implementazione di un gestore dinamico di memoria deve </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T49">risolvere.</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T54"> </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T44">Sottolineiamo che queste necessità si manifestano nel caso in cui si decida che l’allocatore debba essere </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T55">general use,</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T44"> che sono l’oggetto di analisi in corso. In casi particolari, </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T56">si può decidere di sacrificare la generalità dell’allocatore in cambio di risultati migliori</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T44">. </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T54">Essi sono:</text:span></text:span></text:p>
    <text:list text:style-name="L6">
     <text:list-item>
-     <text:p text:style-name="P28"><text:span text:style-name="Citation"><text:span text:style-name="T51">L’organizzazione dei blocchi liberi in memoria;</text:span></text:span></text:p>
+     <text:p text:style-name="P30"><text:span text:style-name="Citation"><text:span text:style-name="T54">L’organizzazione dei blocchi liberi in memoria;</text:span></text:span></text:p>
     </text:list-item>
     <text:list-item>
-     <text:p text:style-name="P28"><text:span text:style-name="Citation"><text:span text:style-name="T51">La scelta del blocco corretto a seguito di una richiesta;</text:span></text:span></text:p>
+     <text:p text:style-name="P30"><text:span text:style-name="Citation"><text:span text:style-name="T54">La scelta del blocco corretto a seguito di una richiesta;</text:span></text:span></text:p>
     </text:list-item>
     <text:list-item>
-     <text:p text:style-name="P28"><text:span text:style-name="Citation"><text:span text:style-name="T51">Il meccanismo di </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T52">splitting </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T51">in blocchi di memoria delle dimensioni necessarie;</text:span></text:span></text:p>
+     <text:p text:style-name="P30"><text:span text:style-name="Citation"><text:span text:style-name="T54">Il meccanismo di </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T57">splitting </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T54">in blocchi di memoria delle dimensioni necessarie;</text:span></text:span></text:p>
     </text:list-item>
     <text:list-item>
-     <text:p text:style-name="P28"><text:span text:style-name="Citation"><text:span text:style-name="T51">Le modalità di </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T52">coalescing </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T51">di blocchi liberi per poter soddisfare richieste future.</text:span></text:span></text:p>
+     <text:p text:style-name="P30"><text:span text:style-name="Citation"><text:span text:style-name="T54">Le modalità di </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T57">coalescing </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T54">di blocchi liberi per poter soddisfare richieste future.</text:span></text:span></text:p>
     </text:list-item>
    </text:list>
-   <text:p text:style-name="P29">Nel corso delle descrizioni della nostra implementazione, descriveremo come li abbiamo affrontati, sottolineando il costo della nostra soluzione e i <text:span text:style-name="T4">compromessi accettati</text:span>.</text:p>
-   <text:h text:style-name="P13" text:outline-level="2">Ispirazione per la struttura</text:h>
-   <text:p text:style-name="P30">Il progetto <text:span text:style-name="T53">si basa principalmente</text:span> sull’implementazione dello SlabAllocator e BuddyAllocator vista durante le lezioni del corso di Sistemi Operativi tenuto dal professor Grisetti. <text:span text:style-name="T54">Tuttavia, la struttura </text:span><text:span text:style-name="T53">presenta sostanziali differenze, che rendono le procedure leggermente diverse</text:span><text:span text:style-name="T54">. </text:span></text:p>
-   <text:p text:style-name="P31"><text:span text:style-name="T55">Sono stati di riferimento </text:span><text:span text:style-name="T53">per lo sviluppo </text:span><text:span text:style-name="T55">i lavori degli utenti mtrebi e emeryberger, pubblicati su GitHub: il primo </text:span><text:span text:style-name="T53">ha </text:span><text:span text:style-name="T13">fornito chiare indicazioni sul funzionamento </text:span><text:span text:style-name="T56">e i</text:span><text:span text:style-name="T57"> </text:span><text:span text:style-name="T58">compromessi tra </text:span><text:span text:style-name="T56">diverse tipologie di </text:span><text:span text:style-name="T13">allocatori di memoria, </text:span><text:span text:style-name="T58">mentre </text:span><text:span text:style-name="T56">il secondo </text:span><text:span text:style-name="T58">ha offerto una preziosa analisi stori</text:span><text:span text:style-name="T59">ca</text:span><text:span text:style-name="T56">, </text:span><text:span text:style-name="T58">catalogando diversi popolari algoritmi di allocazione che si sono succeduti nel corso del tempo. Questo </text:span><text:span text:style-name="T56">ha permesso di </text:span><text:span text:style-name="T58">osservare l’evoluzione </text:span><text:span text:style-name="T56">nel </text:span><text:span text:style-name="T58">tempo </text:span><text:span text:style-name="T59">delle soluzioni per l’allocazione dinamica di memoria.</text:span></text:p>
-   <text:p text:style-name="P32">Di particolare importanza è stata l’analisi di <text:span text:style-name="T3">dlmalloc, </text:span><text:span text:style-name="T39">l’allocatore di memoria sviluppato da Doug Lea intorno agli anni novanta del secolo scorso. </text:span><text:span text:style-name="T53">Esso ha fornito le basi per</text:span><text:span text:style-name="T60"> ptmalloc</text:span><text:span text:style-name="T53">, una </text:span><text:span text:style-name="T60">fork</text:span><text:span text:style-name="T53"> modificata per essere</text:span><text:span text:style-name="T60"> thread-safe</text:span><text:span text:style-name="T53"> da</text:span><text:span text:style-name="T61"> </text:span><text:span text:style-name="T39">Wolfram Gloger </text:span><text:span text:style-name="T53">e che successivamente è </text:span><text:span text:style-name="T39">stat</text:span><text:span text:style-name="T53">a </text:span><text:span text:style-name="T39">adottat</text:span><text:span text:style-name="T53">a</text:span><text:span text:style-name="T39"> dalla </text:span><text:span text:style-name="T61">glibc</text:span><text:span text:style-name="T39"> (GNU C library). Studiare questa implementazione è stato </text:span><text:span text:style-name="T53">particolarmente utile </text:span><text:span text:style-name="T39">in quanto rappresenta un esempio di allocatore dinamico di memoria con </text:span><text:span text:style-name="T61">chunk </text:span><text:span text:style-name="T39">di </text:span><text:span text:style-name="T53">dimensioni </text:span><text:span text:style-name="T39">variabil</text:span><text:span text:style-name="T53">i</text:span><text:span text:style-name="T39"> largamente adoperat</text:span><text:span text:style-name="T53">o</text:span><text:span text:style-name="T39"> e documentat</text:span><text:span text:style-name="T53">o</text:span><text:span text:style-name="T39">. </text:span><text:span text:style-name="T53">Inoltre, è stato interessante studiare come il problema </text:span><text:soft-page-break/><text:span text:style-name="T53">dell’accesso concorrente sia stato risolto attraverso mutex e “arene”, nonostante nella nostra implementazione non siano state integrate primitive per il multithreading.</text:span></text:p>
-   <text:p text:style-name="P33"/>
-   <text:p text:style-name="P34"/>
+   <text:p text:style-name="P31">Nel corso delle descrizioni <text:span text:style-name="T9">del nostro progetto</text:span>, descriveremo come li abbiamo affrontati <text:span text:style-name="T9">in tutti le specifiche implementazioni</text:span>, sottolineando il costo della nostra soluzione, <text:span text:style-name="T9">così come</text:span> i <text:span text:style-name="T4">compromessi accettati</text:span>. </text:p>
+   <text:p text:style-name="P32">Di particolare importanza è stata l’analisi di <text:span text:style-name="T3">dlmalloc, </text:span><text:span text:style-name="T41">l’allocatore di memoria sviluppato da Doug Lea intorno agli anni novanta del secolo scorso. </text:span><text:span text:style-name="T58">Esso ha fornito le basi per</text:span><text:span text:style-name="T59"> ptmalloc</text:span><text:span text:style-name="T58">, una </text:span><text:span text:style-name="T59">fork</text:span><text:span text:style-name="T58"> modificata per essere</text:span><text:span text:style-name="T59"> thread-safe</text:span><text:span text:style-name="T58"> da</text:span><text:span text:style-name="T60"> </text:span><text:span text:style-name="T41">Wolfram Gloger </text:span><text:span text:style-name="T58">e che successivamente è </text:span><text:span text:style-name="T41">stat</text:span><text:span text:style-name="T58">a </text:span><text:span text:style-name="T41">adottat</text:span><text:span text:style-name="T58">a</text:span><text:span text:style-name="T41"> dalla </text:span><text:span text:style-name="T60">glibc</text:span><text:span text:style-name="T41"> (GNU C library). Studiare questa implementazione è stato </text:span><text:span text:style-name="T58">particolarmente utile </text:span><text:span text:style-name="T41">in quanto rappresenta un esempio di allocatore dinamico di memoria con </text:span><text:span text:style-name="T60">chunk </text:span><text:span text:style-name="T41">di </text:span><text:span text:style-name="T58">dimensioni </text:span><text:span text:style-name="T41">variabil</text:span><text:span text:style-name="T58">i</text:span><text:span text:style-name="T41"> largamente adoperat</text:span><text:span text:style-name="T58">o</text:span><text:span text:style-name="T41"> e documentat</text:span><text:span text:style-name="T58">o</text:span><text:span text:style-name="T41">. </text:span><text:span text:style-name="T58">Inoltre, è stato interessante studiare come il problema dell’accesso concorrente sia stato risolto attraverso mutex e “arene”, nonostante nella nostra implementazione non siano state integrate </text:span><text:span text:style-name="T9">soluzioni per affrontare il problema del</text:span><text:span text:style-name="T58"> multithreading.</text:span></text:p>
+   <text:h text:style-name="P14" text:outline-level="2">Ispirazione per la struttura</text:h>
+   <text:p text:style-name="P33">Il progetto <text:span text:style-name="T58">si basa principalmente</text:span> sull’implementazione dello SlabAllocator e BuddyAllocator vista durante le lezioni del corso di Sistemi Operativi tenuto dal professor Grisetti. <text:span text:style-name="T61">Tuttavia, la struttura </text:span><text:soft-page-break/><text:span text:style-name="T58">presenta sostanziali differenze, che rendono le procedure leggermente diverse</text:span><text:span text:style-name="T61">. </text:span><text:span text:style-name="T9">Sono esplorate più nel dettaglio nel capitolo successivo.</text:span></text:p>
+   <text:p text:style-name="P34"><text:span text:style-name="T62">Sono stati di riferimento </text:span><text:span text:style-name="T63">per lo sviluppo </text:span><text:span text:style-name="T64">le pubblicazioni dell’utente mtrebi [[</text:span><text:a xlink:type="simple" xlink:href="https://github.com/mtrebi/memory-allocators" text:style-name="Internet_20_link" text:visited-style-name="Visited_20_Internet_20_Link"><text:span text:style-name="T64">https://github.com/mtrebi/memory-allocators</text:span></text:a><text:span text:style-name="T64">]] e di Emery Berger, professore presso l’Università di </text:span>Massachusetts Amherst <text:span text:style-name="T9">[[</text:span><text:a xlink:type="simple" xlink:href="https://github.com/emeryberger/Malloc-Implementations" text:style-name="Internet_20_link" text:visited-style-name="Visited_20_Internet_20_Link"><text:span text:style-name="T9">https://github.com/emeryberger/Malloc-Implementations</text:span></text:a><text:span text:style-name="T9">]] su Github</text:span><text:span text:style-name="T62">: il primo </text:span><text:span text:style-name="T63">ha </text:span><text:span text:style-name="T65">fornito chiare indicazioni sul funzionamento </text:span><text:span text:style-name="T66">e i</text:span><text:span text:style-name="T67"> </text:span><text:span text:style-name="T68">compromessi tra </text:span><text:span text:style-name="T66">diverse tipologie di </text:span><text:span text:style-name="T65">allocatori di memoria, </text:span><text:span text:style-name="T68">mentre </text:span><text:span text:style-name="T66">il secondo </text:span><text:span text:style-name="T68">ha offerto una preziosa analisi stori</text:span><text:span text:style-name="T69">ca</text:span><text:span text:style-name="T66">, </text:span><text:span text:style-name="T68">catalogando diversi popolari algoritmi di allocazione che si sono succeduti nel corso del tempo. </text:span><text:span text:style-name="T70">Ciò</text:span><text:span text:style-name="T68"> </text:span><text:span text:style-name="T66">ha permesso di </text:span><text:span text:style-name="T68">osservare l’evoluzione </text:span><text:span text:style-name="T66">nel </text:span><text:span text:style-name="T68">tempo </text:span><text:span text:style-name="T69">delle soluzioni per l’allocazione dinamica di memoria.</text:span></text:p>
    <text:p text:style-name="P35"/>
-   <text:h text:style-name="P36" text:outline-level="1" text:is-list-header="true">3. <text:span text:style-name="T1">Implementazione di ripmalloc</text:span></text:h>
-   <text:p text:style-name="P37">Il progetto contenuto nella <text:span text:style-name="T3">repository </text:span><text:span text:style-name="T4">è gestito in quattro cartelle principali. </text:span><text:span text:style-name="T3">Bin </text:span><text:span text:style-name="T4">e </text:span><text:span text:style-name="T3">build </text:span><text:span text:style-name="T4">sono utilizzate durante il processo di compilazione, mentre </text:span><text:span text:style-name="T62">il codice sorgente è contenuto in </text:span><text:span text:style-name="T3">header</text:span><text:span text:style-name="T4"> e </text:span><text:span text:style-name="T3">src,</text:span><text:span text:style-name="T4"> </text:span><text:span text:style-name="T62">rispettivamente i file .h e .c. </text:span><text:span text:style-name="T51">Vengono stabiliti ora alcuni punti di preambolo alle nostre implementazioni. </text:span></text:p>
-   <text:p text:style-name="P38">In primo luogo, possono essere soddisfatte internamente solo richieste di memoria di dimensioni contenute nei parametri di creazione dell’allocatore. </text:p>
-   <text:p text:style-name="P38">La dimensione dell’area di memoria dinamicamente gestita non cambia. L’allocatore non reclama ulteriore memoria dal sistema operativo a seguito di una richiesta che non può essere soddisfatta, <text:span text:style-name="T63">e invece ritorna un valore invalido per segnalare la mancata allocazione</text:span>. </text:p>
-   <text:h text:style-name="P39" text:outline-level="2">L’interfaccia Allocator</text:h>
-   <text:p text:style-name="P40"><text:span text:style-name="T64">Il contratto che gli Allocatori devono seguire consiste nell’interfaccia </text:span><text:span text:style-name="T65">Allocator</text:span><text:span text:style-name="T54"> </text:span><text:span text:style-name="T64">(</text:span><text:span text:style-name="T54">definita in ./</text:span><text:span text:style-name="T66">header/a</text:span><text:span text:style-name="T67">llocator.h</text:span><text:span text:style-name="T65">)</text:span><text:span text:style-name="T68">, che stabilisce le primitive </text:span><text:span text:style-name="T69">necessarie</text:span><text:span text:style-name="T68">:</text:span></text:p>
+   <text:p text:style-name="P36"/>
+   <text:p text:style-name="P37"/>
+   <text:p text:style-name="P38"/>
+   <text:h text:style-name="P39" text:outline-level="1" text:is-list-header="true">3. <text:span text:style-name="T1">Implementazione di ripmalloc</text:span></text:h>
+   <text:p text:style-name="P40">Il progetto contenuto nella <text:span text:style-name="T3">repository </text:span><text:span text:style-name="T4">è gestito in quattro cartelle principali. </text:span><text:span text:style-name="T3">Bin </text:span><text:span text:style-name="T4">e </text:span><text:span text:style-name="T3">build </text:span><text:span text:style-name="T71">contengono i risultati del</text:span><text:span text:style-name="T4"> processo di compilazione, mentre </text:span><text:span text:style-name="T72">il codice sorgente è contenuto in </text:span><text:span text:style-name="T3">header</text:span><text:span text:style-name="T4"> e </text:span><text:span text:style-name="T3">src.</text:span><text:span text:style-name="T4"> </text:span><text:span text:style-name="T71">Il programma contiene anche delle basilari implementazioni delle strutture dati per esso necessarie: una semplice </text:span><text:span text:style-name="T73">double linked </text:span><text:span text:style-name="T71">list e una </text:span><text:span text:style-name="T73">bitmap. </text:span><text:span text:style-name="T71">La loro struttura è volutamente molto semplice per evitare costi di tempo aggiuntivi e non è d’interesse ai fini di questa analisi. Di ogni funzionalità viene accertato il comportamento desiderato attraverso una serie di test. </text:span></text:p>
+   <text:p text:style-name="P41"><text:span text:style-name="T74">Notiamo che tutte le implementazioni descritte successivamente condividono alcune caratteristiche, quali la possibilità di soddisfare unicamente </text:span>richieste di memoria di dimensioni contenute nei parametri di creazione dell’allocatore. La dimensione dell’area di memoria dinamicamente gestita <text:span text:style-name="T75">infatti</text:span> non cambia <text:span text:style-name="T75">nell’eventualità che venga fatta un’allocazione impossibile da soddisfare</text:span>. L’allocatore non reclama ulteriore memoria dal sistema operativo <text:span text:style-name="T75">neppure </text:span>a seguito di richiest<text:span text:style-name="T75">e </text:span>che <text:span text:style-name="T75">potrebbero essere soddisfatte se memoria fosse rilasciata ad esso. I</text:span><text:span text:style-name="T76">nvece </text:span><text:span text:style-name="T75">in entrambi i casi viene gestito l’errore ritornando al richiedente </text:span><text:span text:style-name="T76">un valore invalido per segnalare </text:span><text:span text:style-name="T75">l’insuccesso</text:span>. </text:p>
+   <text:h text:style-name="P42" text:outline-level="2">L’interfaccia Allocator</text:h>
+   <text:p text:style-name="P43"><text:span text:style-name="T77">Il contratto che gli Allocatori devono seguire consiste nell’interfaccia </text:span><text:span text:style-name="T78">Allocator</text:span><text:span text:style-name="T61"> </text:span><text:span text:style-name="T77">(</text:span><text:span text:style-name="T61">definita in ./</text:span><text:span text:style-name="T79">header/a</text:span><text:span text:style-name="T80">llocator.h</text:span><text:span text:style-name="T78">)</text:span><text:span text:style-name="T81">, che stabilisce le primitive </text:span><text:span text:style-name="T82">necessarie</text:span><text:span text:style-name="T81">:</text:span></text:p>
    <text:list text:style-name="L7">
     <text:list-item>
-     <text:p text:style-name="P41">l’<text:span text:style-name="T70">inizializzazione</text:span> <text:span text:style-name="T70">(</text:span><text:span text:style-name="T71">init</text:span><text:span text:style-name="T70">)</text:span>;</text:p>
+     <text:p text:style-name="P44">l’<text:span text:style-name="T83">inizializzazione</text:span> <text:span text:style-name="T83">(</text:span><text:span text:style-name="T84">init</text:span><text:span text:style-name="T83">)</text:span>;</text:p>
     </text:list-item>
     <text:list-item>
-     <text:p text:style-name="P41">la distruzione <text:span text:style-name="T70">(</text:span><text:span text:style-name="T71">dest</text:span><text:span text:style-name="T70">)</text:span>;</text:p>
+     <text:p text:style-name="P44">la distruzione <text:span text:style-name="T83">(</text:span><text:span text:style-name="T84">dest</text:span><text:span text:style-name="T83">)</text:span>;</text:p>
     </text:list-item>
     <text:list-item>
-     <text:p text:style-name="P41">l’allocazione di memoria <text:span text:style-name="T70">(</text:span><text:span text:style-name="T71">reserve</text:span><text:span text:style-name="T70">)</text:span>;</text:p>
+     <text:p text:style-name="P44">l’allocazione di memoria <text:span text:style-name="T83">(</text:span><text:span text:style-name="T84">reserve</text:span><text:span text:style-name="T83">)</text:span>;</text:p>
     </text:list-item>
     <text:list-item>
-     <text:p text:style-name="P41">il rilascio di memoria per uso futuro <text:span text:style-name="T70">(</text:span><text:span text:style-name="T71">release</text:span><text:span text:style-name="T70">)</text:span>.</text:p>
+     <text:p text:style-name="P44">il rilascio di memoria per uso futuro <text:span text:style-name="T83">(</text:span><text:span text:style-name="T84">release</text:span><text:span text:style-name="T83">)</text:span>.</text:p>
     </text:list-item>
    </text:list>
-   <text:p text:style-name="P42">Queste operazioni sono progettate per un uso interno: infatti, gli argomenti sono passati attraverso modalità definite dalla libreria di sistema &lt;<text:span text:style-name="T3">stdarg.h</text:span>&gt;. <text:span text:style-name="T72">Ciò introduce flessibilità nella nostra implementazione delle funzioni permettendoci di gestire i parametri in modo arbitrario, ma contemporaneamente costituisce un rischio, poiché le verifiche sulla correttezza del tipo e del numero non sono fatte a </text:span><text:span text:style-name="T73">compile-time.</text:span><text:span text:style-name="T72"> </text:span></text:p>
-   <text:p text:style-name="P43"><text:span text:style-name="T72">Per ovviare a questo problema e permettere al nostro programma di verificare correttamente che i parametri passati siano validi, introduciamo un </text:span><text:span text:style-name="T73">buffer</text:span><text:span text:style-name="T72"> tra le funzioni interne e l’utente nella forma di funzioni </text:span><text:span text:style-name="T74">helper </text:span><text:span text:style-name="T75">segnalate come </text:span><office:annotation office:name="__Annotation__0_3804777247" loext:resolved="false">
+   <text:p text:style-name="P45">Queste operazioni sono progettate per un uso interno: infatti, gli argomenti sono passati attraverso modalità definite dalla libreria di sistema &lt;<text:span text:style-name="T3">stdarg.h</text:span>&gt;. <text:span text:style-name="T85">Ciò introduce flessibilità nella nostra implementazione delle funzioni permettendoci di gestire i parametri in modo arbitrario, ma contemporaneamente costituisce un rischio, poiché le verifiche sulla correttezza del tipo e del numero non sono fatte a </text:span><text:span text:style-name="T86">compile-time.</text:span><text:span text:style-name="T85"> </text:span></text:p>
+   <text:p text:style-name="P46"><text:span text:style-name="T85">Per ovviare a questo problema e permettere al nostro programma di verificare correttamente che i parametri passati siano validi, introduciamo un </text:span><text:span text:style-name="T86">buffer</text:span><text:span text:style-name="T85"> tra le funzioni interne e l’utente nella forma di funzioni </text:span><text:span text:style-name="T87">helper </text:span><text:span text:style-name="T88">segnalate come </text:span><office:annotation office:name="__Annotation__0_3804777247" loext:resolved="false">
      <dc:creator>Unknown Author</dc:creator>
      <dc:date>2025-06-06T13:18:59.476805900</dc:date>
-     <text:p text:style-name="Comment">TODO: Add <text:span text:style-name="T43">inline</text:span> <text:span text:style-name="T76">keyword </text:span>to internal functions</text:p>
-    </office:annotation><text:span text:style-name="T77">inline</text:span><office:annotation-end office:name="__Annotation__0_3804777247"/><text:span text:style-name="T77">. </text:span><text:span text:style-name="T78">Attraverso esse, il programma mantiene la sua flessibilità internamente senza dover sacrificare in sicurezza: </text:span><text:span text:style-name="T75">la correttezza dei parametri passati alla chiamata è effettuata dal compilatore e contemporaneamente l</text:span><text:span text:style-name="T78">a performance non è eccessivamente impattata da questo passaggio intermedio </text:span><text:span text:style-name="T75">grazie alla</text:span><text:span text:style-name="T78"> keyword </text:span><text:span text:style-name="T77">inline</text:span><text:span text:style-name="T78">. </text:span><text:span text:style-name="T75">Essa </text:span><text:span text:style-name="T78">indica al compilatore di ottimizzare aggressivamente la funzione, </text:span><text:span text:style-name="T75">sostituendo alla chiamata il suo corpo e per questo motivo, è importante che queste funzioni </text:span><text:span text:style-name="T74">helper</text:span><text:span text:style-name="T75"> siano brevi e concise, in modo da evitare</text:span><text:span text:style-name="T74"> code bloat</text:span><text:span text:style-name="T75">.</text:span><text:span text:style-name="T74"> </text:span></text:p>
-   <text:p text:style-name="P43"><text:span text:style-name="T79">È importante ricordare che </text:span><text:span text:style-name="T80">inline</text:span><text:span text:style-name="T79"> non è che un suggerimento, e non un obbligo, per il compilatore: esistono modalità per forzare questa ottimizzazione, imponendo di applicarla a tutte le chiamate, ma questo potrebbe portare nel lungo termine a una minore ottimizzazione per via della quantità di codice, che renderebbe necessari </text:span><office:annotation office:name="__Annotation__217_4260686598" loext:resolved="false">
-     <dc:creator>Unknown Author</dc:creator>
-     <dc:date>2025-06-06T16:47:46.235593700</dc:date>
-     <text:p text:style-name="Comment">Troppo informale!</text:p>
-     <text:p text:style-name="Comment"/>
-    </office:annotation><text:span text:style-name="T79">più </text:span><text:span text:style-name="T80">cache swaps </text:span><text:span text:style-name="T79">del dovuto</text:span><office:annotation-end office:name="__Annotation__217_4260686598"/><text:span text:style-name="T79">. Ulteriori test potrebbero mostrarne l’impatto e con ciò l’importanza di lasciare che sia il compilatore a occuparsi delle ottimizzazioni, ma ciò esula dagli scopi dell’analisi.</text:span></text:p>
-   <text:p text:style-name="P44">Ogni classe che implementa l’interfaccia Allocator deve implementare le proprie funzioni <text:span text:style-name="T81">interne, che mantengono la stessa </text:span><text:span text:style-name="T82">signature, </text:span><text:span text:style-name="T81">e le funzioni </text:span><text:span text:style-name="T82">wrapper</text:span><text:span text:style-name="T81">, che invece possono avere una </text:span><text:span text:style-name="T82">signature</text:span><text:span text:style-name="T81"> </text:span><text:soft-page-break/><text:span text:style-name="T81">diversa in base alle necessità. Per esempio, nell’allocazione di memoria per uno SlabAllocator (che velocemente anticipiamo poter allocare unicamente blocchi di memoria di grandezza omogenea) non sarà necessario specificare la grandezza dell’area richiesta. In più, deve fornire anche una rappresentazione grafica del suo stato ai fini di </text:span><text:span text:style-name="T82">debugging </text:span><text:span text:style-name="T81">e analisi.</text:span></text:p>
-   <text:p text:style-name="P45"><text:span text:style-name="T83">Le funzioni </text:span><text:span text:style-name="T84">helper </text:span><text:span text:style-name="T83">seguono una nomenclatura più vicina a quella della </text:span><text:span text:style-name="T84">libc</text:span><text:span text:style-name="T83">, in modo da rendere l’API più </text:span><text:span text:style-name="T85">intuitiva e immediata</text:span><text:span text:style-name="T83">. Esse sono:</text:span></text:p>
+     <text:p text:style-name="Comment">TODO: Add <text:span text:style-name="T46">inline</text:span> <text:span text:style-name="T89">keyword </text:span>to internal functions</text:p>
+    </office:annotation><text:span text:style-name="T90">inline</text:span><office:annotation-end office:name="__Annotation__0_3804777247"/><text:span text:style-name="T90">. </text:span><text:span text:style-name="T91">Attraverso esse, il programma mantiene la sua flessibilità internamente senza dover sacrificare in sicurezza: </text:span><text:span text:style-name="T88">la correttezza dei parametri passati alla chiamata è effettuata dal compilatore e contemporaneamente l</text:span><text:span text:style-name="T91">a performance non è eccessivamente impattata da questo passaggio intermedio </text:span><text:span text:style-name="T88">grazie alla</text:span><text:span text:style-name="T91"> keyword </text:span><text:span text:style-name="T90">inline</text:span><text:span text:style-name="T91">. </text:span><text:span text:style-name="T88">Essa </text:span><text:span text:style-name="T91">indica al compilatore di ottimizzare aggressivamente la funzione, </text:span><text:span text:style-name="T88">sostituendo alla chiamata il suo corpo e per questo motivo, è importante che queste funzioni </text:span><text:span text:style-name="T87">helper</text:span><text:span text:style-name="T88"> siano brevi e concise, in modo da evitare</text:span><text:span text:style-name="T87"> code bloat</text:span><text:span text:style-name="T88">.</text:span><text:span text:style-name="T87"> </text:span></text:p>
+   <text:p text:style-name="P46"><text:span text:style-name="T92">È importante ricordare che </text:span><text:span text:style-name="T93">inline</text:span><text:span text:style-name="T92"> non è che un suggerimento, e non un obbligo, per il compilatore: esistono modalità per forzare questa ottimizzazione, imponendo di applicarla a tutte le chiamate, ma questo potrebbe portare nel lungo termine a una minore ottimizzazione per via della quantità di codice, che renderebbe necessari più </text:span><text:span text:style-name="T93">cache swaps </text:span><text:span text:style-name="T92">del </text:span><text:span text:style-name="T94">necessario</text:span><text:span text:style-name="T92">. Ulteriori test potrebbero </text:span><text:soft-page-break/><text:span text:style-name="T92">mostrarne l’impatto e con ciò l’importanza di lasciare che sia il compilatore a occuparsi delle ottimizzazioni, ma ciò esula dagli scopi dell’analisi.</text:span></text:p>
+   <text:p text:style-name="P47">Ogni classe che implementa l’interfaccia Allocator deve implementare le proprie funzioni <text:span text:style-name="T95">interne, che mantengono la stessa </text:span><text:span text:style-name="T96">signature, </text:span><text:span text:style-name="T95">e le funzioni </text:span><text:span text:style-name="T96">wrapper</text:span><text:span text:style-name="T95">, che invece possono avere una </text:span><text:span text:style-name="T96">signature</text:span><text:span text:style-name="T95"> diversa in base alle necessità. Per esempio, nell’allocazione di memoria per uno SlabAllocator (che velocemente anticipiamo poter allocare unicamente blocchi di memoria di grandezza omogenea) non sarà necessario specificare la grandezza dell’area richiesta. In più, deve fornire anche una rappresentazione grafica del suo stato ai fini di </text:span><text:span text:style-name="T96">debugging </text:span><text:span text:style-name="T95">e analisi.</text:span></text:p>
+   <text:p text:style-name="P48"><text:span text:style-name="T97">Le funzioni </text:span><text:span text:style-name="T98">helper </text:span><text:span text:style-name="T97">seguono una nomenclatura più vicina a quella della </text:span><text:span text:style-name="T98">libc</text:span><text:span text:style-name="T97">, in modo da rendere l’API più </text:span><text:span text:style-name="T99">intuitiva e immediata</text:span><text:span text:style-name="T97">. Esse sono:</text:span></text:p>
    <text:list text:style-name="L8">
     <text:list-item>
-     <text:p text:style-name="P46"><text:span text:style-name="T3">Allocator_create</text:span> (wrapper di <text:span text:style-name="T3">Allocator_init</text:span>)</text:p>
+     <text:p text:style-name="P49"><text:span text:style-name="T3">Allocator_create</text:span> (wrapper di <text:span text:style-name="T3">Allocator_init</text:span>)</text:p>
     </text:list-item>
     <text:list-item>
-     <text:p text:style-name="P46"><text:span text:style-name="T3">Allocator_destroy</text:span> (wrapper di <text:span text:style-name="T3">Allocator_dest</text:span>)</text:p>
+     <text:p text:style-name="P49"><text:span text:style-name="T3">Allocator_destroy</text:span> (wrapper di <text:span text:style-name="T3">Allocator_dest</text:span>)</text:p>
     </text:list-item>
     <text:list-item>
-     <text:p text:style-name="P46"><text:span text:style-name="T3">Allocator_malloc</text:span> (wrapper di <text:span text:style-name="T3">Allocator_reserve</text:span>)</text:p>
+     <text:p text:style-name="P49"><text:span text:style-name="T3">Allocator_malloc</text:span> (wrapper di <text:span text:style-name="T3">Allocator_reserve</text:span>)</text:p>
     </text:list-item>
     <text:list-item>
-     <text:p text:style-name="P46"><text:span text:style-name="T3">Allocator_free</text:span> (wrapper di <text:span text:style-name="T3">Allocator_</text:span><text:span text:style-name="T86">release</text:span>) </text:p>
+     <text:p text:style-name="P49"><text:span text:style-name="T3">Allocator_free</text:span> (wrapper di <text:span text:style-name="T3">Allocator_</text:span><text:span text:style-name="T100">release</text:span>) </text:p>
     </text:list-item>
    </text:list>
-   <text:p text:style-name="P44">Per via del <text:span text:style-name="T3">linker </text:span>del linguaggio C, siamo costretti ad anteporre a nome della funzione la classe, come vediamo sopra. Sono state esplorate soluzioni a questo problema, ma sfortunatamente introducevano livelli di complessità oppure sacrificavano a livello di <text:span text:style-name="T3">type checking</text:span>. <text:span text:style-name="T87">Grazie alla duplice struttura </text:span>con <text:span text:style-name="T87">funzion</text:span>i<text:span text:style-name="T87"> </text:span><text:span text:style-name="T66">helper</text:span><text:span text:style-name="T87"> e </text:span><text:span text:style-name="T66">internal </text:span><text:span text:style-name="T87">sarebbe possibile realizzare in C una forma </text:span><text:span text:style-name="T1">semplice</text:span><text:span text:style-name="T87"> di polimorfismo, ma risulta sempre necessario, al netto dell’utilizzo di macro (che reintrodurrebbero i problemi evidenziati precedentemente), usare nomi univoci per ogni funzione con diversa combinazione di parametri. </text:span></text:p>
-   <text:h text:style-name="Heading_20_2" text:outline-level="2" text:is-list-header="true">La classe SlabAllocator</text:h>
-   <text:p text:style-name="P47"><text:span text:style-name="Citation"><text:span text:style-name="Strong_20_Emphasis"><text:span text:style-name="T11">Lo </text:span></text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="Strong_20_Emphasis"><text:span text:style-name="T88">slab allocator</text:span></text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T11"> è un allocatore pensato per richieste di memoria di taglia costante. La sua struttura interna e la sua natura lo rendono particolarmente efficiente al costo di poc</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T89">a</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T11"> flessibilità. Ciò lo rende particolarmente adatto quando sono necessarie allocazioni di memoria di dimensione fissa, un evento che si verifica frequentemente nei sistemi operativi. </text:span></text:span></text:p>
-   <text:p text:style-name="P47"><text:span text:style-name="Citation"><text:span text:style-name="T90">Una delle prime implementazioni di slab allocator viene descritta nell’articolo di Jeff Bonwick </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T91">“The Slab Allocator: An Object-Caching Kernel Memory Allocator” </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T90">del 1</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T92">9</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T90">94. Per qualche motivo, nonostante l’articolo di Bonwick sia uscito un anno prima dello studio di Wilson sugli allocatori, </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T93">all’interno dell’altrimenti completa indagine di Wilson non viene fatta menzione di Bonwick e della sua soluzione.</text:span></text:span></text:p>
-   <text:p text:style-name="P48"><text:span text:style-name="T94">L’operazione di </text:span><text:span text:style-name="Strong_20_Emphasis"><text:span text:style-name="T94">allocazione</text:span></text:span><text:span text:style-name="T94"> ha un </text:span><text:span text:style-name="Strong_20_Emphasis"><text:span text:style-name="T94">costo costante</text:span></text:span><text:span text:style-name="T94">, così come quella di </text:span><text:span text:style-name="Strong_20_Emphasis"><text:span text:style-name="T94">liberazione</text:span></text:span><text:span text:style-name="T94"> di un blocco. Grazie alla sua struttura particolare, l’allocatore </text:span><text:span text:style-name="Strong_20_Emphasis"><text:span text:style-name="T94">slab</text:span></text:span><text:span text:style-name="T94"> </text:span><text:span text:style-name="Strong_20_Emphasis"><text:span text:style-name="T95">non può mai presentare frammentazione esterna</text:span></text:span><text:span text:style-name="T94">: poiché tutti i blocchi hanno la stessa dimensione, </text:span><text:span text:style-name="T95">se è presente almeno uno </text:span><text:span text:style-name="T96">slab</text:span><text:span text:style-name="T89"> di memoria libero, la richiesta dell’utente può essere esaudita</text:span><text:span text:style-name="T94">.</text:span></text:p>
-   <text:p text:style-name="P48"><text:span text:style-name="T94">La </text:span><text:span text:style-name="Strong_20_Emphasis"><text:span text:style-name="T94">frammentazione interna</text:span></text:span><text:span text:style-name="T94"> viene invece limitata dal programmatore, che, conoscendo le proprie necessità, può scegliere la dimensione del blocco più appropriata per i propri scopi.</text:span></text:p>
-   <text:h text:style-name="Heading_20_3" text:outline-level="3">Funzionamento dello <text:span text:style-name="T97">SlabAllocator</text:span></text:h>
-   <text:p text:style-name="P48">I blocchi liberi di memoria sono organizzati in una <text:span text:style-name="Strong_20_Emphasis">linked list</text:span>, la cui lunghezza massima è pari al numero totale di blocchi disponibili. Questo valore è determinato dalla dimensione dell’area di memoria riservata per l’allocatore, divisa per la dimensione di un singolo blocco.</text:p>
-   <text:p text:style-name="P49"><text:soft-page-break/>Poiché tutti i blocchi hanno la stessa dimensione, <text:span text:style-name="T97">alla richiesta non è necessario stabilire quale blocco sia più opportuno allocatore</text:span>: la suddivisione avviene <text:span text:style-name="Strong_20_Emphasis">a priori</text:span> durante l’inizializzazione dell’allocatore, e i blocchi non vengono mai riuniti. <text:span text:style-name="T97">Quando un blocco viene rilasciato, viene semplicemente inserito nella lista per uso futuro.</text:span> <text:span text:style-name="T97">Questo algoritmo potrebbe essere chiamato </text:span><text:span text:style-name="T98">first fit</text:span><text:span text:style-name="T99">, ma in verità poiché ogni blocco ha la stessa dimensione, </text:span><text:span text:style-name="T100">non viene seguito un pattern standard di allocazione e invece il comportamento dello slab allocator è prevedibile.</text:span></text:p>
-   <text:p text:style-name="P48">Ogni blocco contiene al suo interno un <text:span text:style-name="Strong_20_Emphasis">puntatore</text:span> all’area di memoria che rappresenta l’elemento corrispondente nella lista. All’utente viene restituito il puntatore all’inizio dell’area, che può quindi gestire liberamente.</text:p>
-   <text:h text:style-name="P50" text:outline-level="2" text:is-list-header="true">La classe <text:span text:style-name="T101">Buddy</text:span>Allocator</text:h>
-   <text:h text:style-name="P51" text:outline-level="3"><text:span text:style-name="Citation"><text:span text:style-name="T51">Funzionamento del </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T102">Buddy</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T99">Allocator</text:span></text:span></text:h>
-   <text:h text:style-name="P52" text:outline-level="1">4. Esperimenti, Casi d’<text:span text:style-name="T64">Uso</text:span></text:h>
+   <text:p text:style-name="P47">Per via del <text:span text:style-name="T3">linker </text:span>del linguaggio C, siamo costretti ad anteporre a nome della funzione la classe, come vediamo sopra. Sono state esplorate soluzioni a questo problema, ma sfortunatamente introducevano livelli di complessità oppure sacrificavano a livello di <text:span text:style-name="T3">type checking</text:span>. <text:span text:style-name="T101">Grazie alla duplice struttura </text:span>con <text:span text:style-name="T101">funzion</text:span>i<text:span text:style-name="T101"> </text:span><text:span text:style-name="T79">helper</text:span><text:span text:style-name="T101"> e </text:span><text:span text:style-name="T79">internal </text:span><text:span text:style-name="T101">sarebbe possibile realizzare in C una forma </text:span><text:span text:style-name="T1">semplice</text:span><text:span text:style-name="T101"> di polimorfismo, ma risulta sempre necessario, al netto dell’utilizzo di macro (che reintrodurrebbero i problemi evidenziati precedentemente), usare nomi univoci per ogni funzione con diversa combinazione di parametri. </text:span></text:p>
+   <text:h text:style-name="P50" text:outline-level="2" text:is-list-header="true"/>
+   <text:h text:style-name="P51" text:outline-level="2">La classe SlabAllocator</text:h>
+   <text:p text:style-name="P52"><text:span text:style-name="Citation"><text:span text:style-name="Strong_20_Emphasis"><text:span text:style-name="T13">Lo </text:span></text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="Strong_20_Emphasis"><text:span text:style-name="T102">slab allocator</text:span></text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T13"> è un allocatore pensato per richieste di memoria di taglia costante. La sua struttura interna e la sua natura lo rendono particolarmente efficiente al costo di poc</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T103">a</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T13"> flessibilità. Ciò lo rende particolarmente adatto quando sono necessarie allocazioni di memoria di dimensione fissa. </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T104">Il nome “</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T105">slab</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T104">” fa riferimento infatti a questa “fetta” di memoria, che spesso rappresenta un oggetto di taglia fissa (ad esempio, un istanza di una classe). </text:span></text:span></text:p>
+   <text:p text:style-name="P53"><text:span text:style-name="Citation"><text:span text:style-name="T106">Una delle prime implementazioni di slab allocator viene descritta nell’articolo di Jeff Bonwick </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T107">“The Slab Allocator: An Object-Caching Kernel Memory Allocator” </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T106">del 1</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T108">9</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T106">94. </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T109">In esso vengono elencati i benefici di una soluzione che, rispetto a quella da noi implementata, risulta ben più complessa e strutturata. </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T110">Egli infatti si cura di approfondire la relazione tra il suo algoritmo e il </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T111">Translation Lookaside Buffer</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T110">, fornendo chiare evidenze dell’attenzione posta non solo nell’approccio teorico, ma anche all’efficienza nell’applicazione reale.</text:span></text:span></text:p>
+   <text:p text:style-name="P53"><text:span text:style-name="Citation"><text:span text:style-name="T110">Lo </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T111">slab allocator </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T110">trae </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T109">beneficio non solo dalla taglia definita dei</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T112"> chunk</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T109">, ma anche dalla conoscenza della struttura dei dati che verrà allocata</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T112"> </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T109">nella memoria richiesta </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T110">(</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T109">dichiarata </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T104">alla creazione</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T109"> dell’allocatore</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T110">). I blocchi liberi vengono già </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T110">inizializzati come oggetti e mantengono la loro struttura alla restituzione del blocco, evitando così di dover spendere risorse per riorganizzare la memoria alla prossima richiesta. </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T113">L’idea consiste nel </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T114">“preservare la porzione invariante dello stato iniziale di un oggetto nell’intervallo tra gli usi, in modo che essa non debba essere distrutta e ricreata ogni volta che l’oggetto è usato.”</text:span></text:span></text:p>
+   <text:p text:style-name="P53"><text:span text:style-name="Citation"><office:annotation office:name="__Annotation__1825_2663059288" loext:resolved="true">
+      <dc:creator>Unknown Author</dc:creator>
+      <dc:date>2025-06-16T13:49:08.149569000</dc:date>
+      <text:p text:style-name="Comment">????</text:p>
+      <text:p text:style-name="Comment"/>
+     </office:annotation></text:span><text:span text:style-name="Citation"><text:span text:style-name="T110">Non scendiamo </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T113">ulteriormente</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T110"> nei dettagli dell’allocatore di Bonwick per semplicità, ma notiamo che per quanto possa sembrare a posteriori </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T113">non significativa</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T110">, l’eleganza della sua soluzione è </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T113">notevole</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T110">. </text:span></text:span><office:annotation-end office:name="__Annotation__1825_2663059288"/><text:span text:style-name="Citation"><text:span text:style-name="T104">Nella nostra implementazione, il </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T105">caching</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T104"> della struttura interna dell’oggetto non viene applicato </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T113">e l</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T104">’utente è lasciato libero di gestire liberamente lo </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T105">slab </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T104">assegnato. </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T110">Chiaramente, ne risente l’efficienza della soluzione applicata da Bonwick. Ciononostante, a scopo didattico la procedura dimostra </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T113">come </text:span></text:span></text:p>
+   <text:p text:style-name="P54"><text:span text:style-name="Citation"><text:span text:style-name="T104">La specializzazione della soluzione applicata da Bonwick la rende ideale per l’utilizzo all’interno di sistemi operativi. Difatti, la prima implementazione di questo modello compare nel</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T105"> kernel</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T104"> di</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T105"> SunOS 5.4</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T104">. Successivamente, vediamo comparire per uso interno a molti altri</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T105"> kernel</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T104">, compreso quello di</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T105"> FreeBSD</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T104"> (5.0)</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T105"> e Linux</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T104"> (a partire dalla versione 2.1.23), dove comparirà anche a livello di utente.</text:span></text:span></text:p>
+   <text:h text:style-name="Heading_20_3" text:outline-level="3">Funzionamento dello <text:span text:style-name="T115">SlabAllocator</text:span></text:h>
+   <text:p text:style-name="P55">L’inizializzazione richiede come parametri la grandezza della slab e </text:p>
+   <text:p text:style-name="P56">I blocchi liberi di memoria sono organizzati in una <text:span text:style-name="Strong_20_Emphasis">linked list</text:span>, la cui lunghezza massima è pari al numero totale di blocchi disponibili, determinato dalla dimensione dell’area di memoria riservata per l’allocatore, divisa per la dimensione di un singolo blocco.</text:p>
+   <text:p text:style-name="P57">Poiché tutti i blocchi hanno la stessa dimensione, <text:span text:style-name="T115">alla richiesta non è necessario stabilire quale blocco sia più opportuno allocatore</text:span>: la suddivisione avviene <text:span text:style-name="Strong_20_Emphasis">a priori</text:span> durante l’inizializzazione dell’allocatore, e i blocchi non vengono mai riuniti. <text:span text:style-name="T115">Quando un blocco viene rilasciato, viene semplicemente inserito nella lista per uso futuro.</text:span> <text:span text:style-name="T115">Questo algoritmo potrebbe essere chiamato </text:span><text:span text:style-name="T116">first fit</text:span><text:span text:style-name="T117">, ma in verità poiché ogni blocco ha la stessa dimensione, </text:span><text:span text:style-name="T118">non viene seguito un pattern standard di allocazione e invece il comportamento dello </text:span><text:span text:style-name="T119">slab allocator</text:span><text:span text:style-name="T118"> è prevedibile.</text:span></text:p>
+   <text:p text:style-name="P56"><text:soft-page-break/>Ogni blocco <text:span text:style-name="T120">assegnato in risposta a una richiesta contiene prima il</text:span> <text:span text:style-name="Strong_20_Emphasis"><text:span text:style-name="T121">puntatore</text:span></text:span><text:span text:style-name="T121"> </text:span>all’area di memoria che rappresenta l’elemento corrispondente nella lista, <text:span text:style-name="T120">e poi inizia l’area che l’utente può gestire</text:span>. All’utente viene restituito il puntatore all’inizio dell’area <text:span text:style-name="T120">di memoria liberamente modificabile</text:span>. </text:p>
+   <text:h text:style-name="P58" text:outline-level="3">Efficienza dello SlabAllocator</text:h>
+   <text:p text:style-name="P54"><text:span text:style-name="T122">Descriviamo ora più nel dettaglio la complessità computazionale delle operazioni compiute dall’allocatore. L’</text:span><text:span text:style-name="Strong_20_Emphasis"><text:span text:style-name="T123">allocazione</text:span></text:span><text:span text:style-name="T123"> ha un </text:span><text:span text:style-name="Strong_20_Emphasis"><text:span text:style-name="T123">costo costante</text:span></text:span><text:span text:style-name="T123">, così come </text:span><text:span text:style-name="T122">la</text:span><text:span text:style-name="T123"> </text:span><text:span text:style-name="Strong_20_Emphasis"><text:span text:style-name="T123">liberazione</text:span></text:span><text:span text:style-name="T123"> di un blocco, </text:span><text:span text:style-name="T114">poiché i</text:span><text:span text:style-name="T122">n entrambi i casi, viene semplicemente manipolata la testa di una linked list contenente i riferimenti ai blocchi liberi.</text:span><text:span text:style-name="T123"> </text:span><text:span text:style-name="T114">I blocchi non sono in alcun modo manipolati: la loro grandezza rimane costante e questo elimina completamente i costi legati alle operazioni di divisione e unione.</text:span></text:p>
+   <text:p text:style-name="P54"><text:span text:style-name="T123">Grazie alla sua struttura particolare, l’allocatore </text:span><text:span text:style-name="Strong_20_Emphasis"><text:span text:style-name="T123">slab</text:span></text:span><text:span text:style-name="T123"> </text:span><text:span text:style-name="Strong_20_Emphasis"><text:span text:style-name="T124">non può mai presentare frammentazione esterna</text:span></text:span><text:span text:style-name="T123">: poiché tutti i blocchi hanno la stessa dimensione, </text:span><text:span text:style-name="T124">se è presente almeno uno </text:span><text:span text:style-name="T125">slab</text:span><text:span text:style-name="T103"> di memoria libero, la richiesta dell’utente </text:span><text:span text:style-name="T113">potrà</text:span><text:span text:style-name="T103"> essere esaudita </text:span><text:span text:style-name="T113">e non può mai esistere memoria libera che l’utente non può chiedere di utilizzare</text:span><text:span text:style-name="T103">. </text:span><text:span text:style-name="T123">La </text:span><text:span text:style-name="Strong_20_Emphasis"><text:span text:style-name="T123">frammentazione interna</text:span></text:span><text:span text:style-name="T123"> viene invece limitata dal programmatore, che, conoscendo le proprie necessità, può scegliere </text:span><text:span text:style-name="T114">all’inizializzazione dell’allocatore</text:span><text:span text:style-name="T123"> la dimensione del blocco più appropriata per i propri scopi.</text:span></text:p>
+   <text:h text:style-name="P59" text:outline-level="2" text:is-list-header="true">La classe <text:span text:style-name="T126">Buddy</text:span>Allocator</text:h>
+   <text:p text:style-name="P60">Il problema dell’allocazione di memoria con richieste di grandezza generica è ancora aperto. Diverse soluzioni sono state proposte nel corso del tempo. Inizialmente, l’area di memoria gestita veniva suddivisa secondo necessità in blocchi di dimensioni variabili, che organizzati in liste venivano esplorati con costo lineare per trovare il <text:span text:style-name="T3">best fit</text:span>. Questa soluzione, famosamente esplorata da Knuth, perde in scalabilità e risulta essere particolarmente inefficiente quando il numero di blocchi nella lista aumenta. Il costo è dunque per la maggior parte in tempo, con una minima frammentazione. </text:p>
+   <text:p text:style-name="P60">L’evoluzione di questo algoritmo va nella direzione opposta: gestire più efficacemente i blocchi liberi, investendo più spazio nell’organizzazione, permette di ottenere velocità maggiori. La memoria disponibile viene suddivisa in blocchi raccolti in liste in base alla loro taglia. Al momento della richiesta, viene esplorato il livello che meglio potrebbe esaudirla, e laddove non siano trovati all’interno della lista corrispondente blocchi adatti viene ricursivamente controllato il livello “superiore”. Il blocco eventualmente individuato è suddiviso e la memoria in eccesso (quella che non risulta necessaria per soddisfare la richiesta di memoria) è organizzata in un nuovo <text:span text:style-name="T3">chuck </text:span><text:span text:style-name="T4">libero che viene riposto nella lista corretta secondo la sua grandezza. Questo meccanismo viene chiamato nell’articolo di Wilson et al. “</text:span><text:span text:style-name="T3">segregated free lists”. </text:span></text:p>
+   <text:p text:style-name="P60">L’allocatore <text:span text:style-name="T3">buddy</text:span><text:span text:style-name="T4"> è descritto nella stessa pubblicazione come un “caso particolare” di questa tipologia di allocatori. La differenza consiste nelle politiche di </text:span><text:span text:style-name="T3">splitting </text:span><text:span text:style-name="T4">e </text:span><text:span text:style-name="T3">coalescing</text:span><text:span text:style-name="T4">. Se la metodologia descritta nel paragrafo precedente non stabilisce esplicitamente se, come o quando i blocchi liberi debbano essere riuniti e aggiunti alle </text:span><text:span text:style-name="T3">free lists</text:span><text:span text:style-name="T4"> di grandezza maggiore, i </text:span><text:span text:style-name="T3">buddy systems </text:span><text:span text:style-name="T4">invece stabiliscono un sistema gerarchico in cui quando è necessario dividere un blocco (chiamato</text:span><text:span text:style-name="T3"> parent</text:span><text:span text:style-name="T4">)</text:span><text:span text:style-name="T3"> </text:span><text:span text:style-name="T4">per soddisfare una richiesta, i blocchi così ottenuti diventano </text:span><text:span text:style-name="T3">buddies </text:span><text:span text:style-name="T4">della stessa dimensione. Al rilascio da parte dell’utente, il blocco controlla il suo</text:span><text:span text:style-name="T3"> buddy</text:span><text:span text:style-name="T4"> e verifica se esso sia a sua volta libero. Nell’eventualità che entrambi i</text:span><text:span text:style-name="T3"> buddies</text:span><text:span text:style-name="T4"> siano contemporaneamente non riservati dall’utente, essi vengono riunificati nel blocco</text:span><text:span text:style-name="T3"> parent</text:span><text:span text:style-name="T4"> da cui derivano. </text:span><text:span text:style-name="T3"><text:s/></text:span></text:p>
+   <text:h text:style-name="P61" text:outline-level="3"><text:span text:style-name="Citation"><text:span text:style-name="T54">Funzionamento del </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T127">Buddy</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T117">Allocator</text:span></text:span></text:h>
+   <text:p text:style-name="P11"><text:span text:style-name="Citation"><text:span text:style-name="T8">Dalla descrizione del sistema </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T128">buddy</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T8">, notiamo facilmente che la struttura dati delineata corrisponde a un albero binario. Infatti, ogni nodo (blocco di memoria) tranne la radice possiede un singolo genitore e un </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T128">buddy</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T8">. Esso può inoltre a sua volta essere scomposto in ulteriori due nodi liberi. Un vantaggio della struttura binaria è che il </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T128">buddy </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T8">corrisponde sempre con il blocco adiacente (precedente o successivo). Conoscendo la taglia del blocco e l’indirizzo di partenza, potremmo raggiungere l’header del </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T128">buddy </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T8">senza bisogno di immagazzinare questa informazione nell’header. Ciononostante, per facilitare la visualizzazione dell’occupazione di memoria e dello stato dell’allocatore, si è ritenuto di salvare questa informazione, così come anche l’indirizzo del </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T128">parent</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T8">.</text:span></text:span></text:p>
+   <text:h text:style-name="P62" text:outline-level="3"><text:span text:style-name="Citation"><text:span text:style-name="T129">Efficienza </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T54">del </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T127">Buddy</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T117">Allocator</text:span></text:span></text:h>
+   <text:p text:style-name="P63"><text:span text:style-name="Citation"><text:span text:style-name="T117"/></text:span></text:p>
+   <text:h text:style-name="P64" text:outline-level="2"><text:span text:style-name="Citation"><text:span text:style-name="T8">La classe BitmapBuddyAllocator</text:span></text:span></text:h>
+   <text:h text:style-name="P65" text:outline-level="3"><text:span text:style-name="Citation"><text:span text:style-name="T54">Funzionamento del </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T8">Bitmap</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T127">Buddy</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T117">Allocator</text:span></text:span></text:h>
+   <text:h text:style-name="P62" text:outline-level="3"><text:span text:style-name="Citation"><text:span text:style-name="T129">Efficienza </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T54">del </text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T8">Bitmap</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T127">Buddy</text:span></text:span><text:span text:style-name="Citation"><text:span text:style-name="T117">Allocator</text:span></text:span></text:h>
+   <text:h text:style-name="P66" text:outline-level="1">4. Esperimenti, Casi d’<text:span text:style-name="T77">Uso</text:span></text:h>
    <text:list text:style-name="L9">
     <text:list-item>
-     <text:p text:style-name="P53">Descrizione di una run del sistema o, se applicabile, esperimenti qualitativi.</text:p>
+     <text:p text:style-name="P67">Descrizione di una run del sistema o, se applicabile, esperimenti qualitativi.</text:p>
     </text:list-item>
    </text:list>
-   <text:p text:style-name="P54"/>
-   <text:h text:style-name="P52" text:outline-level="1">5. Conclusioni</text:h>
+   <text:p text:style-name="P68">Ramps, peaks and plateaus.</text:p>
+   <text:p text:style-name="P69"/>
+   <text:h text:style-name="P66" text:outline-level="1">5. Conclusioni</text:h>
    <text:list text:style-name="L10">
     <text:list-item>
-     <text:p text:style-name="P55">Riprendi la <text:span text:style-name="T81">dichiarazione d’intenti al capitolo uno e metti le spunte.</text:span></text:p>
+     <text:p text:style-name="P70">Riprendi la <text:span text:style-name="T95">dichiarazione d’intenti al capitolo uno e metti le spunte.</text:span></text:p>
     </text:list-item>
    </text:list>
-   <text:p text:style-name="P56">Deferred coalescing</text:p>
+   <text:p text:style-name="P71">Deferred coalescing</text:p>
   </office:text>
  </office:body>
 </office:document>
