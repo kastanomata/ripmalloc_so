@@ -21,3 +21,4 @@
 #include <test/test_bitmap_buddy_allocator.h>
 
 #include <helpers/freeform.h>
+#include <helpers/benchmark.h>
