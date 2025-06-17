@@ -285,6 +285,8 @@ static int test_invalid_releases() {
     
     // Test invalid pointer release
     char invalid_ptr[64];
+    memset(invalid_ptr, 0, sizeof(invalid_ptr));  // Not allocated by BuddyAllocator
+    // Attempt to free a pointer not managed by BuddyAllocator
     BuddyAllocator_free(&allocator, invalid_ptr);  // Should not crash
     
     assert(BuddyAllocator_destroy(&allocator) == 0);

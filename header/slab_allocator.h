@@ -29,20 +29,19 @@ struct SlabAllocator {
     unsigned int free_list_size_max;
 };
 
-// Constructor/Destructor
+// Core allocator interface
 void *SlabAllocator_init(Allocator* alloc, ...);
 void *SlabAllocator_cleanup(Allocator* alloc, ...);
-
-// Allocation/Free methods
 void *SlabAllocator_reserve(Allocator* alloc, ...);  
 void *SlabAllocator_release(Allocator* alloc, ...);    
 
-// Print methods
+// Debug methods
 void SlabAllocator_print_state(SlabAllocator* a);
 void SlabAllocator_print_memory_map(SlabAllocator* a);
 void print_slab_info(SlabAllocator* a, unsigned int slab_index);
 
-// Helper functions
+// Callable methods
+
 // Create a new SlabAllocator
 inline SlabAllocator* SlabAllocator_create(SlabAllocator* a, size_t slab_size, size_t n_slabs) {
     #ifdef VERBOSE
@@ -69,7 +68,6 @@ inline SlabAllocator* SlabAllocator_create(SlabAllocator* a, size_t slab_size, s
     #endif
     return a;
 }
-
 // Destroy a SlabAllocator
 inline int SlabAllocator_destroy(SlabAllocator* a) {
     #ifdef VERBOSE
@@ -82,7 +80,7 @@ inline int SlabAllocator_destroy(SlabAllocator* a) {
         return -1;
     }
     
-    void* result = SlabAllocator_cleanup((Allocator*)a);
+    void* result = ((Allocator*)a)->dest((Allocator*)a);
     if (!result) return -1;
     
     #ifdef VERBOSE
@@ -90,11 +88,11 @@ inline int SlabAllocator_destroy(SlabAllocator* a) {
     #endif
     return 0;
 }
-
+// Allocate a slab
 inline void* SlabAllocator_malloc(SlabAllocator* a) {
     return ((Allocator*)a)->malloc((Allocator*)a);
 }
-
+// Free a slab
 inline void SlabAllocator_free(SlabAllocator* a, void* ptr) {
     ((Allocator*)a)->free((Allocator*)a, ptr);
 }

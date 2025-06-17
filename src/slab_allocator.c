@@ -255,8 +255,6 @@ void *SlabAllocator_release(Allocator* alloc, ...) {
     return (void*)1;
 }
 
-
-
 void SlabAllocator_print_state(SlabAllocator* a) {
     printf("\tSlabAllocator Info:\n");
     printf("\tSlab Size: %zu\n", a->slab_size);
