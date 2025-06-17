@@ -1,0 +1,5 @@
+% initialize slab allocator
+i,bitmap
+% bitmap allocator parameters
+% BitmapBuddyAllocator* BitmapBuddyAllocator_create(BitmapBuddyAllocator* alloc, size_t total_size, int num_levels);
+p,4096,5

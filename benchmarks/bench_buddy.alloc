@@ -1,0 +1,5 @@
+% initialize buddy allocator
+i,buddy
+% buddy allocator parameters
+% inline BuddyAllocator* BuddyAllocator_create(BuddyAllocator* a, size_t total_size, int num_levels)
+p,4096,5

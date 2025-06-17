@@ -1,0 +1,5 @@
+% initialize slab allocator
+i,slab
+% slab allocator parameters
+% inline SlabAllocator* SlabAllocator_create(SlabAllocator* a, size_t slab_size, size_t n_slabs) 
+p,44,200
