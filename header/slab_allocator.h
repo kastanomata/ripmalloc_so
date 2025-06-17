@@ -37,11 +37,64 @@ void *SlabAllocator_cleanup(Allocator* alloc, ...);
 void *SlabAllocator_reserve(Allocator* alloc, ...);  
 void *SlabAllocator_release(Allocator* alloc, ...);    
 
-// Helper functions
-SlabAllocator* SlabAllocator_create(SlabAllocator* a, size_t slab_size, size_t n_slabs);
-int SlabAllocator_destroy(SlabAllocator* a);
-void* SlabAllocator_malloc(SlabAllocator* a);
-void SlabAllocator_free(SlabAllocator* a, void* ptr);
+// Print methods
 void SlabAllocator_print_state(SlabAllocator* a);
 void SlabAllocator_print_memory_map(SlabAllocator* a);
 void print_slab_info(SlabAllocator* a, unsigned int slab_index);
+
+// Helper functions
+// Create a new SlabAllocator
+inline SlabAllocator* SlabAllocator_create(SlabAllocator* a, size_t slab_size, size_t n_slabs) {
+    #ifdef VERBOSE
+    printf("\tCreating new SlabAllocator...\n");
+    #endif
+    
+    // Validate input parameters
+    if (!a || slab_size == 0 || n_slabs == 0) {
+        #ifdef DEBUG
+        printf(RED "ERROR: Failed to create: invalid parameters!\n" RESET);
+        #endif
+        return NULL;
+    }
+
+    // memset(a, 0, sizeof(SlabAllocator));
+    if (!SlabAllocator_init((Allocator*)a, slab_size, n_slabs)) {
+        #ifdef DEBUG
+        printf(RED "ERROR: Failed to initialize SlabAllocator!\n" RESET);
+        #endif
+        return NULL;
+    }
+    #ifdef VERBOSE
+    printf("\tSuccessfully created SlabAllocator\n");
+    #endif
+    return a;
+}
+
+// Destroy a SlabAllocator
+inline int SlabAllocator_destroy(SlabAllocator* a) {
+    #ifdef VERBOSE
+    printf("\tDestroying SlabAllocator instance...\n");
+    #endif
+    if (!a) {
+        #ifdef DEBUG
+        printf(RED "ERROR: NULL allocator passed to SlabAllocator_destroy\n" RESET);
+        #endif
+        return -1;
+    }
+    
+    void* result = SlabAllocator_cleanup((Allocator*)a);
+    if (!result) return -1;
+    
+    #ifdef VERBOSE
+    printf("\tSlabAllocator instance destroyed\n");
+    #endif
+    return 0;
+}
+
+inline void* SlabAllocator_malloc(SlabAllocator* a) {
+    return ((Allocator*)a)->malloc((Allocator*)a);
+}
+
+inline void SlabAllocator_free(SlabAllocator* a, void* ptr) {
+    ((Allocator*)a)->free((Allocator*)a, ptr);
+}
