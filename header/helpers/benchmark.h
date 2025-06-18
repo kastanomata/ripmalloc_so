@@ -16,6 +16,11 @@
 #define PROJECT_FOLDER "."
 #define BENCHMARK_FOLDER "./benchmarks"
 
-
+union GeneralAllocator {
+  SlabAllocator slab;
+  BuddyAllocator buddy;
+  BitmapBuddyAllocator bitmap;
+};
 
 int benchmark();
+

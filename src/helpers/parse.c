@@ -55,36 +55,35 @@ union AllocatorConfigData parse_allocator_create_parameters(FILE *file, struct A
   if (!token || strcmp(token, "p") != 0) {
     fprintf(stderr, "Invalid allocator parameters format: %s\n", line);
   }
-  union AllocatorConfigData data = {0};  // Initialize to zero
+  union AllocatorConfigData data = {0}; 
   if (config->type == SLAB_ALLOCATOR) {
-    // Parse slab parameters
     token = strtok(NULL, ",");
     if (!token) {
       fprintf(stderr, "No slab size specified\n");
-      return data;  // Return empty data
+      return data; 
     }
     data.slab.slab_size = strtoul(token, NULL, 10);
     
     token = strtok(NULL, ",");
     if (!token) {
       fprintf(stderr, "No number of slabs specified\n");
-      return data;  // Return empty data
+      return data; 
     }
     data.slab.n_slabs = strtoul(token, NULL, 10);
   
   } else if (config->type == BUDDY_ALLOCATOR || config->type == BITMAP_BUDDY_ALLOCATOR) {
-    // Parse buddy parameters
+    // Parse buddy allocator parameters
     token = strtok(NULL, ",");
     if (!token) {
       fprintf(stderr, "No total size specified for buddy allocator\n");
-      return data;  // Return empty data
+      return data;
     }
     data.buddy.total_size = strtoul(token, NULL, 10);
     
     token = strtok(NULL, ",");
     if (!token) {
       fprintf(stderr, "No max levels specified for buddy allocator\n");
-      return data;  // Return empty data
+      return data;
     }
     data.buddy.max_levels = strtoul(token, NULL, 10);
     
@@ -92,5 +91,9 @@ union AllocatorConfigData parse_allocator_create_parameters(FILE *file, struct A
     fprintf(stderr, "Unknown allocator type for parameters: %d\n", config->type);
   }
   
-  return data;  // Success
+  return data;
+}
+
+int parse_allocator_request() {
+  return 0;
 }
