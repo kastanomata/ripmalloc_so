@@ -1,34 +1,101 @@
 \chapter{Implementazione di ripmalloc}
 
-Il progetto contenuto nella repository è gestito in quattro cartelle principali. \texttt{bin} e \texttt{build} sono utilizzate durante il processo di compilazione, mentre \texttt{header} e \texttt{src} contengono il codice sorgente nella sua interezza.
+Il progetto contenuto nella repository è gestito in quattro cartelle principali. \texttt{bin} e \texttt{build} contengono i risultati del processo di compilazione, mentre il codice sorgente è contenuto in \texttt{header} e \texttt{src}. Il programma contiene anche delle basilari implementazioni delle strutture dati per esso necessarie: una semplice double linked list e una bitmap. La loro struttura è volutamente molto semplice per evitare costi di tempo aggiuntivi e non è d’interesse ai fini di questa analisi. Di ogni funzionalità viene accertato il comportamento desiderato attraverso una serie di test.
 
-\section{Descrizione del sistema}
+Notiamo che tutte le implementazioni descritte successivamente condividono alcune caratteristiche, quali la possibilità di soddisfare unicamente richieste di memoria di dimensioni contenute nei parametri di creazione dell’allocatore. La dimensione dell’area di memoria dinamicamente gestita infatti non cambia nell’eventualità che venga fatta un’allocazione impossibile da soddisfare. L’allocatore non reclama ulteriore memoria dal sistema operativo neppure a seguito di richieste che potrebbero essere soddisfatte se memoria fosse rilasciata ad esso. Invece in entrambi i casi viene gestito l’errore ritornando al richiedente un valore invalido per segnalare l’insuccesso.
 
-Il progetto contenuto nella repository è gestito in quattro cartelle principali. \texttt{bin} e \texttt{build} sono utilizzate durante il processo di compilazione, mentre \texttt{header} e \texttt{src} contengono il codice sorgente nella sua interezza.
-
-\subsection{L’interfaccia Allocator}
+\section{L’interfaccia Allocator}
 
 Il contratto che gli Allocatori devono seguire consiste nell’interfaccia \texttt{Allocator} (definita in \texttt{./header/allocator.h}), che stabilisce le primitive necessarie:
 \begin{itemize}
-  \item l’inizializzazione (\textit{init});
-  \item la distruzione (\textit{dest});
-  \item l’allocazione di memoria (\textit{reserve});
-  \item il rilascio di memoria per uso futuro (\textit{release}).
+  \item l’inizializzazione (\texttt{init});
+  \item la distruzione (\texttt{dest});
+  \item l’allocazione di memoria (\texttt{reserve});
+  \item il rilascio di memoria per uso futuro (\texttt{release}).
 \end{itemize}
-Queste operazioni sono progettate per un uso interno: infatti, gli argomenti sono passati attraverso modalità definite dalla libreria di sistema \texttt{<stdarg.h>}. Ciò introduce flessibilità nella nostra implementazione delle funzioni permettendoci di gestire i parametri in modo arbitrario, ma contemporaneamente costituisce un rischio, poiché le verifiche sulla correttezza del tipo e del numero non sono fatte a \textit{compile-time}.
 
-Per ovviare a questo problema e permettere al nostro programma di verificare correttamente che i parametri passati siano validi, introduciamo un \textit{buffer} tra le funzioni interne e l’utente nella forma di funzioni \textit{helper} segnalate come \textit{inline}. Attraverso esse, il programma mantiene la sua flessibilità internamente senza dover sacrificare in sicurezza: la correttezza dei parametri passati alla chiamata è effettuata dal compilatore e contemporaneamente la performance non è eccessivamente impattata da questo passaggio intermedio grazie alla keyword \textit{inline}. Essa indica al compilatore di ottimizzare aggressivamente la funzione, sostituendo alla chiamata il suo corpo e per questo motivo, è importante che queste funzioni \textit{helper} siano brevi e concise, in modo da evitare \textit{code bloat}.
+\begin{lstlisting}[language=C, caption={Definizione dell'interfaccia Allocator}]
+ // Forward declaration
+ typedef struct Allocator Allocator;
+ // Define function pointer types
+ typedef void* (*InitFunc)(Allocator*, ...);
+ typedef void* (*DestructorFunc)(Allocator*, ...);
+ typedef void* (*MallocFunc)(Allocator*, ...);  
+ typedef void* (*FreeFunc)(Allocator*, ...);       
+ // Allocator structure
+ struct Allocator {
+   InitFunc init; 
+   DestructorFunc dest;
+   MallocFunc malloc;
+   FreeFunc free; 
+ };
+\end{lstlisting}
 
-È importante ricordare che \textit{inline} non è che un suggerimento, e non un obbligo, per il compilatore: esistono modalità per forzare questa ottimizzazione, imponendo di applicarla a tutte le chiamate, ma questo potrebbe portare nel lungo termine a una minore ottimizzazione per via della quantità di codice, che renderebbe necessari più \textit{cache swaps} del dovuto. Ulteriori test potrebbero mostrarne l’impatto e con ciò l’importanza di lasciare che sia il compilatore a occuparsi delle ottimizzazioni, ma ciò esula dagli scopi dell’analisi.
+Queste operazioni sono progettate per un uso interno: infatti, gli argomenti sono passati attraverso modalità definite dalla libreria di sistema \texttt{<stdarg.h>}. Ciò introduce flessibilità nella nostra implementazione delle funzioni permettendoci di gestire i parametri in modo arbitrario, ma contemporaneamente costituisce un rischio, poiché le verifiche sulla correttezza del tipo e del numero non sono fatte a compile-time.
 
-Ogni classe che implementa l’interfaccia \texttt{Allocator} deve implementare le proprie funzioni interne, che mantengono la stessa \textit{signature}, e le funzioni \textit{wrapper}, che invece possono avere una \textit{signature} diversa in base alle necessità. Per esempio, nell’allocazione di memoria per uno \textit{SlabAllocator} (che velocemente anticipiamo poter allocare unicamente blocchi di memoria di grandezza omogenea) non sarà necessario specificare la grandezza dell’area richiesta. In più, deve fornire anche una rappresentazione grafica del suo stato ai fini di \textit{debugging} e analisi.
+Per ovviare a questo problema e permettere al nostro programma di verificare correttamente che i parametri passati siano validi, introduciamo un buffer tra le funzioni interne e l’utente nella forma di funzioni helper segnalate come \texttt{inline}. Attraverso esse, il programma mantiene la sua flessibilità internamente senza dover sacrificare in sicurezza: la correttezza dei parametri passati alla chiamata è effettuata dal compilatore e contemporaneamente la performance non è eccessivamente impattata da questo passaggio intermedio grazie alla keyword \texttt{inline}. Essa indica al compilatore di ottimizzare aggressivamente la funzione, sostituendo alla chiamata il suo corpo e per questo motivo, è importante che queste funzioni helper siano brevi e concise, in modo da evitare code bloat.
 
-Le funzioni \textit{helper} seguono una nomenclatura più vicina a quella della \textit{libc}, in modo da rendere l’API più intuitiva e immediata. Esse sono:
+È importante ricordare che \texttt{inline} non è che un suggerimento, e non un obbligo, per il compilatore: esistono modalità per forzare questa ottimizzazione, imponendo di applicarla a tutte le chiamate, ma questo potrebbe portare nel lungo termine a una minore ottimizzazione per via della quantità di codice, che renderebbe necessari più cache swaps del necessario. Ulteriori test potrebbero mostrarne l’impatto e con ciò l’importanza di lasciare che sia il compilatore a occuparsi delle ottimizzazioni, ma ciò esula dagli scopi dell’analisi.
+
+Ogni classe che implementa l’interfaccia \texttt{Allocator} deve implementare le proprie funzioni interne, che mantengono la stessa signature, e le funzioni wrapper, che invece possono avere una signature diversa in base alle necessità. Per esempio, nell’allocazione di memoria per uno \texttt{SlabAllocator} (che velocemente anticipiamo poter allocare unicamente blocchi di memoria di grandezza omogenea) non sarà necessario specificare la grandezza dell’area richiesta. In più, deve fornire anche una rappresentazione grafica del suo stato ai fini di debugging e analisi.
+
+Le funzioni helper seguono una nomenclatura più vicina a quella della \texttt{libc}, in modo da rendere l’API più intuitiva e immediata. Esse sono:
 \begin{itemize}
-  \item \textit{Allocator\_create} (\textit{wrapper} di \textit{Allocator\_init})
-  \item \textit{Allocator\_destroy} (\textit{wrapper} di \textit{Allocator\_dest})
-  \item \textit{Allocator\_malloc} (\textit{wrapper} di \textit{Allocator\_reserve})
-  \item \textit{Allocator\_free} (\textit{wrapper} di \textit{Allocator\_release})
+  \item \texttt{Allocator\_create} (wrapper di \texttt{Allocator\_init})
+  \item \texttt{Allocator\_destroy} (wrapper di \texttt{Allocator\_dest})
+  \item \texttt{Allocator\_malloc} (wrapper di \texttt{Allocator\_reserve})
+  \item \texttt{Allocator\_free} (wrapper di \texttt{Allocator\_release})
 \end{itemize}
 
-Per via del \textit{linker} del linguaggio C, siamo costretti ad anteporre al nome della funzione la classe, come vediamo sopra. Sono state esplorate soluzioni a questo problema, ma sfortunatamente introducevano livelli di complessità oppure sacrificavano a livello di \textit{type checking}. Grazie alla duplice struttura con funzioni \textit{helper} e \textit{internal} sarebbe possibile realizzare in C una forma semplice di polimorfismo, ma risulta sempre necessario, al netto dell’utilizzo di \textit{macro} (che reintrodurrebbero i problemi evidenziati precedentemente), usare nomi univoci per ogni funzione con diversa combinazione di parametri.
+Per via del linker del linguaggio C, siamo costretti ad anteporre a nome della funzione la classe, come vediamo sopra. Sono state esplorate soluzioni a questo problema, ma sfortunatamente introducevano livelli di complessità oppure sacrificavano a livello di type checking. Grazie alla duplice struttura con funzioni helper e internal sarebbe possibile realizzare in C una forma semplice di polimorfismo, ma risulta sempre necessario, al netto dell’utilizzo di macro (che reintrodurrebbero i problemi evidenziati precedentemente), usare nomi univoci per ogni funzione con diversa combinazione di parametri.
+
+\section{La classe SlabAllocator}
+
+Lo slab allocator è un allocatore pensato per richieste di memoria di taglia costante. La sua struttura interna e la sua natura lo rendono particolarmente efficiente al costo di poca flessibilità. Ciò lo rende particolarmente adatto quando sono necessarie allocazioni di memoria di dimensione fissa. Il nome ``slab'' fa riferimento infatti a questa ``fetta'' di memoria, che spesso rappresenta un oggetto di taglia fissa (ad esempio, un'istanza di una classe).
+
+Una delle prime implementazioni di slab allocator viene descritta nell’articolo di Jeff Bonwick ``The Slab Allocator: An Object-Caching Kernel Memory Allocator'' del 1994. In esso vengono elencati i benefici di una soluzione che, rispetto a quella da noi implementata, risulta ben più complessa e strutturata. Egli infatti si cura di approfondire la relazione tra il suo algoritmo e il Translation Lookaside Buffer, fornendo chiare evidenze dell’attenzione posta non solo nell’approccio teorico, ma anche all’efficienza nell’applicazione reale.
+
+Lo slab allocator trae beneficio non solo dalla taglia definita dei chunk, ma anche dalla conoscenza della struttura dei dati che verrà allocata nella memoria richiesta (dichiarata alla creazione dell’allocatore). I blocchi liberi vengono già inizializzati come oggetti e mantengono la loro struttura alla restituzione del blocco, evitando così di dover spendere risorse per riorganizzare la memoria alla prossima richiesta. L’idea consiste nel ``preservare la porzione invariante dello stato iniziale di un oggetto nell’intervallo tra gli usi, in modo che essa non debba essere distrutta e ricreata ogni volta che l’oggetto è usato.''
+
+Non scendiamo ulteriormente nei dettagli dell’allocatore di Bonwick per semplicità, ma notiamo che per quanto possa sembrare a posteriori non significativa, l’eleganza della sua soluzione è notevole. Nella nostra implementazione, il caching della struttura interna dell’oggetto non viene applicato e l’utente è lasciato libero di gestire liberamente lo slab assegnato. Chiaramente, ne risente l’efficienza della soluzione applicata da Bonwick. Ciononostante, a scopo didattico la procedura dimostra come la specializzazione della soluzione applicata da Bonwick la rende ideale per l’utilizzo all’interno di sistemi operativi. Difatti, la prima implementazione di questo modello compare nel kernel di SunOS 5.4. Successivamente, vediamo comparire per uso interno a molti altri kernel, compreso quello di FreeBSD (5.0) e Linux (a partire dalla versione 2.1.23), dove comparirà anche a livello di utente.
+
+\subsection{Funzionamento dello SlabAllocator}
+
+Come stabilito precedentemente, l’utente non usa le funzioni interne per accedere alle funzionalità dell’allocatore, ma bensì adopera gli helper delineati sotto:
+
+\begin{lstlisting}[language=C, caption={Helper functions per SlabAllocator}, breaklines=true]
+ // Helper functions
+ SlabAllocator* SlabAllocator_create(SlabAllocator* a, 
+                  size_t slab_size, size_t n_slabs);
+ int SlabAllocator_destroy(SlabAllocator* a);
+ void* SlabAllocator_malloc(SlabAllocator* a);
+ void SlabAllocator_free(SlabAllocator* a, void* ptr);
+\end{lstlisting}
+
+L’inizializzazione di un'istanza di \texttt{SlabAllocator} richiede la grandezza della slab (nei termini di Bonwick, la grandezza dell’oggetto da immagazzinare) e il loro numero.
+
+I blocchi liberi di memoria sono organizzati in una linked list, la cui lunghezza massima è pari al numero totale di blocchi disponibili, determinato dalla dimensione dell’area di memoria riservata per l’allocatore, divisa per la dimensione di un singolo blocco.
+
+Poiché tutti i blocchi hanno la stessa dimensione, alla richiesta non è necessario stabilire quale blocco sia più opportuno allocare: la suddivisione avviene a priori durante l’inizializzazione dell’allocatore, e i blocchi non vengono mai riuniti. Quando un blocco viene rilasciato, viene semplicemente inserito nella lista per uso futuro. Questo algoritmo potrebbe essere chiamato \textit{first fit}, ma in verità poiché ogni blocco ha la stessa dimensione, non viene seguito un pattern standard di allocazione e invece il comportamento dello slab allocator è prevedibile.
+
+Ogni blocco assegnato in risposta a una richiesta contiene prima il puntatore all’area di memoria che rappresenta l’elemento corrispondente nella lista, e poi inizia l’area che l’utente può gestire. All’utente viene restituito il puntatore all’inizio dell’area di memoria liberamente modificabile.
+
+\subsection{Efficienza dello SlabAllocator}
+
+Descriviamo ora più nel dettaglio la complessità computazionale delle operazioni compiute dall’allocatore. L’allocazione ha un costo costante, così come la liberazione di un blocco, poiché in entrambi i casi, viene semplicemente manipolata la testa di una linked list contenente i riferimenti ai blocchi liberi. I blocchi non sono in alcun modo manipolati: la loro grandezza rimane costante e questo elimina completamente i costi legati alle operazioni di divisione e unione.
+
+Grazie alla sua struttura particolare, l’allocatore slab non può mai presentare frammentazione esterna: poiché tutti i blocchi hanno la stessa dimensione, se è presente almeno uno slab di memoria libero, la richiesta dell’utente potrà essere esaudita e non può mai esistere memoria libera che l’utente non può chiedere di utilizzare. La frammentazione interna viene invece limitata dal programmatore, che, conoscendo le proprie necessità, può scegliere all’inizializzazione dell’allocatore la dimensione del blocco più appropriata per i propri scopi.
+
+\section{La classe BuddyAllocator}
+
+Il problema dell’allocazione di memoria con richieste di grandezza generica è ancora aperto. Diverse soluzioni sono state proposte nel corso del tempo. Inizialmente, l’area di memoria gestita veniva suddivisa secondo necessità in blocchi di dimensioni variabili, che organizzati in liste venivano esplorati con costo lineare per trovare il \textit{best fit}. Questa soluzione, famosamente esplorata da Knuth, perde in scalabilità e risulta essere particolarmente inefficiente quando il numero di blocchi nella lista aumenta. Il costo è dunque per la maggior parte in tempo, con una minima frammentazione.
+
+L’evoluzione di questo algoritmo va nella direzione opposta: gestire più efficacemente i blocchi liberi, investendo più spazio nell’organizzazione, permette di ottenere velocità maggiori. La memoria disponibile viene suddivisa in blocchi raccolti in liste in base alla loro taglia. Al momento della richiesta, viene esplorato il livello che meglio potrebbe esaudirla, e laddove non siano trovati all’interno della lista corrispondente blocchi adatti viene ricorsivamente controllato il livello ``superiore''. Il blocco eventualmente individuato è suddiviso e la memoria in eccesso (quella che non risulta necessaria per soddisfare la richiesta di memoria) è organizzata in un nuovo chunk libero che viene riposto nella lista corretta secondo la sua grandezza. Questo meccanismo viene chiamato nell’articolo di Wilson et al. ``segregated free lists''.
+
+L’allocatore buddy è descritto nella stessa pubblicazione come un ``caso particolare'' di questa tipologia di allocatori. La differenza consiste nelle politiche di splitting e coalescing. Se la metodologia descritta nel paragrafo precedente non stabilisce esplicitamente se, come o quando i blocchi liberi debbano essere riuniti e aggiunti alle free lists di grandezza maggiore, i buddy systems invece stabiliscono un sistema gerarchico in cui quando è necessario dividere un blocco (chiamato \textit{parent}) per soddisfare una richiesta, i blocchi così ottenuti diventano \textit{buddies} della stessa dimensione. Al rilascio da parte dell’utente, il blocco controlla il suo buddy e verifica se esso sia a sua volta libero. Nell’eventualità che entrambi i buddies siano contemporaneamente non riservati dall’utente, essi vengono riunificati nel blocco parent da cui derivano.
+
+\subsection{Funzionamento del BuddyAllocator}
+
+Dalla descrizione del sistema buddy, notiamo facilmente che la struttura dati delineata corrisponde a un albero binario. Infatti, ogni nodo (blocco di memoria) tranne la radice possiede un singolo genitore e un buddy. Esso può inoltre a sua volta essere scomposto in ulteriori due nodi liberi. Un vantaggio della struttura binaria è che il buddy corrisponde sempre con il blocco adiacente (precedente o successivo). Conoscendo la taglia del blocco e l’indirizzo di partenza, potremmo raggiungere l’header del buddy senza bisogno di immagazzinare questa informazione nell’header. Ciononostante, per facilitare la visualizzazione dell’occupazione di memoria e dello stato dell’allocatore, si è ritenuto di salvare questa informazione, così come anche l’indirizzo del parent.
+
+\subsection{Efficienza del BuddyAllocator}
