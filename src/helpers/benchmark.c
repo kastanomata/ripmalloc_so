@@ -88,15 +88,15 @@ int run_benchmark(const char *file_name) {
 	switch (type) {
 		case SLAB_ALLOCATOR:
 		printf("Running SLAB_ALLOCATOR benchmark...\n");
-		result = setup_slab_allocator(file, &config);
+		// result = setup_slab_allocator(file, &config);
 		break;
 		case BUDDY_ALLOCATOR:
 		printf("Running BUDDY_ALLOCATOR benchmark...\n");
-		result = setup_buddy_allocator(file, &config);
+		// result = setup_buddy_allocator(file, &config);
 		break;
 		case BITMAP_BUDDY_ALLOCATOR:
 		printf("Running BITMAP_BUDDY_ALLOCATOR benchmark...\n");
-		result = setup_bitmap_buddy_allocator(file, &config);
+		// result = setup_bitmap_buddy_allocator(file, &config);
 		break;
 		default:
 		fprintf(stderr, "Unknown allocator type: %d\n", type);

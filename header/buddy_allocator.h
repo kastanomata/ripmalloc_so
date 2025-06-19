@@ -9,6 +9,7 @@
 
 #define MAX_LEVELS 32
 #define MIN_BLOCK_SIZE 256
+#define METADATA_SIZE sizeof(BuddyNode*)
 
 typedef struct BuddyNode {
     Node node;
@@ -65,6 +66,7 @@ inline BuddyAllocator* BuddyAllocator_create(BuddyAllocator* a, size_t total_siz
     
     return a;
 }
+
 // Destroy BuddyAllocator
 inline int BuddyAllocator_destroy(BuddyAllocator* a) {
     if (!a) {
@@ -73,7 +75,7 @@ inline int BuddyAllocator_destroy(BuddyAllocator* a) {
         #endif
         return -1;
     }
-    if (BuddyAllocator_cleanup((Allocator*)a) != 0) {
+    if (a->base.dest((Allocator*)a) != 0) {
         #ifdef DEBUG
         printf(RED "ERROR: Failed to destroy buddy allocator\n" RESET);
         #endif
@@ -81,6 +83,7 @@ inline int BuddyAllocator_destroy(BuddyAllocator* a) {
     }
     return 0;
 }
+
 // Allocate memory from BuddyAllocator
 inline void* BuddyAllocator_malloc(BuddyAllocator* a, size_t size) {
     if (!a || size == 0) {
@@ -90,27 +93,22 @@ inline void* BuddyAllocator_malloc(BuddyAllocator* a, size_t size) {
         return NULL;
     }
 
-    // Reserve space for metadata
-    size_t meta_size = sizeof(BuddyNode*);
-    size_t adjusted_size = size + meta_size;
-    if (adjusted_size % 8 != 0) adjusted_size += 8 - (adjusted_size % 8);
+    size_t adjusted_size = size + METADATA_SIZE;
+    // Align to 8 bytes
+    adjusted_size = (adjusted_size + 7) & ~7;
     
     // Find appropriate block size
     size_t block_size = a->total_size;
     int level = 0;
-    while (block_size / 2 >= adjusted_size && level < a->num_levels - 1) {
+    while (level < a->num_levels - 1 && block_size / 2 >= adjusted_size) {
         block_size /= 2;
         level++;
     }
     
-    #ifdef VERBOSE
-    printf("Requested size: %zu, adjusted size with metadata: %zu\n", size, adjusted_size);
-    printf("Level required for size %zu: %d (block size: %zu)\n", size, level, block_size);
-    #endif    
-
-    if (block_size < a->min_block_size) {
+    if (block_size < adjusted_size) {
         #ifdef DEBUG
-        printf(RED "ERROR: Requested size too small for minimum block size\n" RESET);
+        printf(RED "ERROR: Requested size too large (req: %zu, max: %zu)\n" RESET, 
+               adjusted_size, a->total_size);
         #endif
         return NULL;
     }
@@ -122,14 +120,15 @@ inline void* BuddyAllocator_malloc(BuddyAllocator* a, size_t size) {
         #endif
         return NULL;
     }
-    node->is_free = 0; // Mark as used
+    node->is_free = false;
 
-    // Store metadata
-    void* user_data = (char*)node->data + meta_size;
-    *((BuddyNode**)((char*)user_data - meta_size)) = node;
+    // Store metadata at start of block
+    void* user_data = (char*)node->data + METADATA_SIZE;
+    *((BuddyNode**)((char*)user_data - METADATA_SIZE)) = node;
 
     return user_data;
 }
+
 // Release memory back to BuddyAllocator
 inline void BuddyAllocator_free(BuddyAllocator* a, void* ptr) {
     if(!a || !ptr) {
@@ -139,10 +138,19 @@ inline void BuddyAllocator_free(BuddyAllocator* a, void* ptr) {
         return;
     }
     
-    BuddyNode* node = *((BuddyNode**)((char*)ptr - sizeof(BuddyNode*)));
-    if (!node) {
+    // Verify pointer is within allocator's memory range
+    if ((char*)ptr < (char*)a->memory_start || 
+        (char*)ptr >= (char*)a->memory_start + a->total_size) {
         #ifdef DEBUG
-        printf(RED "ERROR: NULL node in release\n" RESET);
+        printf(RED "ERROR: Pointer outside allocator memory range!\n" RESET);
+        #endif
+        return;
+    }
+
+    BuddyNode* node = *((BuddyNode**)((char*)ptr - METADATA_SIZE));
+    if (!node || !node->data) {
+        #ifdef DEBUG
+        printf(RED "ERROR: Invalid metadata in release\n" RESET);
         #endif
         return;
     }

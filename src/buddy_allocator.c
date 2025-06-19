@@ -6,36 +6,46 @@ extern inline void* BuddyAllocator_malloc(BuddyAllocator* a, size_t size);
 extern inline void BuddyAllocator_free(BuddyAllocator* a, void* ptr);
 
 static struct Buddies BuddyAllocator_divide_block(BuddyAllocator* a, BuddyNode* parent) {
-    struct Buddies buddies;
+    struct Buddies buddies = {NULL, NULL};
     if (!a || !parent) {
         #ifdef DEBUG
         printf(RED "ERROR: Invalid parameters in divide_block!\n" RESET);
         #endif
+        return buddies;
+    }
+
+    buddies.left_buddy = SlabAllocator_malloc(&(a->node_allocator));
+    buddies.right_buddy = SlabAllocator_malloc(&(a->node_allocator));
+    
+    // Clean up if one allocation fails
+    if (!buddies.left_buddy || !buddies.right_buddy) {
+        if (buddies.left_buddy) SlabAllocator_free(&(a->node_allocator), buddies.left_buddy);
+        if (buddies.right_buddy) SlabAllocator_free(&(a->node_allocator), buddies.right_buddy);
         buddies.left_buddy = NULL;
         buddies.right_buddy = NULL;
         return buddies;
     }
-    buddies.left_buddy = SlabAllocator_malloc(&(a->node_allocator));
-    buddies.right_buddy = SlabAllocator_malloc(&(a->node_allocator));
 
-    parent->is_free = 0;
+    parent->is_free = false;
 
-    buddies.left_buddy->size = parent->size / 2;
+    size_t child_size = parent->size / 2;
+    buddies.left_buddy->size = child_size;
     buddies.left_buddy->data = parent->data;
     buddies.left_buddy->level = parent->level + 1;
-    buddies.left_buddy->is_free = 0;
+    buddies.left_buddy->is_free = false;
     buddies.left_buddy->parent = parent;
     buddies.left_buddy->buddy = buddies.right_buddy;
 
-    buddies.right_buddy->size = parent->size / 2;
-    buddies.right_buddy->data = parent->data + parent->size / 2;
+    buddies.right_buddy->size = child_size;
+    buddies.right_buddy->data = parent->data + child_size;
     buddies.right_buddy->level = parent->level + 1;
-    buddies.right_buddy->is_free = 1;
+    buddies.right_buddy->is_free = true;
     buddies.right_buddy->parent = parent;
     buddies.right_buddy->buddy = buddies.left_buddy;
 
     return buddies;
 }
+
 
 static BuddyNode* BuddyAllocator_merge_blocks(BuddyAllocator* a, BuddyNode* left, BuddyNode* right) {
     if (!a || !left || !right) {
@@ -45,36 +55,32 @@ static BuddyNode* BuddyAllocator_merge_blocks(BuddyAllocator* a, BuddyNode* left
         return NULL;
     }
 
-    // Check they are mutual buddies
-    if (left->buddy != right || right->buddy != left || left->level != right->level) {
+    // Enhanced buddy verification
+    if (left->buddy != right || right->buddy != left || 
+        left->level != right->level ||
+        left->data + left->size != right->data) {
         #ifdef DEBUG
-        printf(RED "ERROR: Nodes are not mutual buddies!\n" RESET);
+        printf(RED "ERROR: Nodes are not valid buddies!\n" RESET);
         #endif
         return NULL;
     }
 
     BuddyNode* parent = left->parent;
-    if (!parent || parent != right->parent) {
+    if (!parent || parent != right->parent || parent->is_free) {
         #ifdef DEBUG
-        printf(RED "ERROR: Parent mismatch!\n" RESET);
-        #endif
-        return NULL;
-    }
-    if (parent->is_free == true) {
-        #ifdef DEBUG
-        printf(RED "ERROR: Parent node is alreadyreserve free!\n" RESET);
+        printf(RED "ERROR: Invalid parent node!\n" RESET);
         #endif
         return NULL;
     }
 
-    // Release the child nodes
-    SlabAllocator_free(&(a->node_allocator), left);
-    SlabAllocator_free(&(a->node_allocator), right);
-
+    // Remove from free lists before merging
     list_detach(a->free_lists[left->level], (Node*)&left->node);
     list_detach(a->free_lists[right->level], (Node*)&right->node);
 
-    parent->is_free = 1;
+    SlabAllocator_free(&(a->node_allocator), left);
+    SlabAllocator_free(&(a->node_allocator), right);
+
+    parent->is_free = true;
     return parent;
 }
 
@@ -115,6 +121,7 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
     if (buddy->memory_start == MAP_FAILED) {
         #ifdef DEBUG
         printf(RED "ERROR: Failed to allocate memory in init!\n" RESET);
+        perror("mmap failed");
         #endif
         return NULL;
     }
@@ -236,6 +243,12 @@ void* BuddyAllocator_reserve(Allocator* alloc, ...) {
     #ifdef VERBOSE
     printf("Allocating at level %d\n", level);
     #endif
+    if (level < 0 || level >= buddy->num_levels) {
+        #ifdef DEBUG
+        printf(RED "ERROR: Invalid level %d (max %d)\n" RESET, level, buddy->num_levels-1);
+        #endif
+        return NULL;
+    }
     
     if (!buddy->free_lists[level]) {
         #ifdef DEBUG
@@ -303,9 +316,18 @@ void *BuddyAllocator_release(Allocator* alloc, ...) {
     BuddyNode* node = va_arg(args, BuddyNode*);
     va_end(args);
 
-    if (!node) {
+    if (!node || !node->data) {
         #ifdef DEBUG
-        printf(RED "ERROR: NULL node in free!\n" RESET);
+        printf(RED "ERROR: Invalid node in free!\n" RESET);
+        #endif
+        return (void*)-1;
+    }
+
+    // Verify node is within allocator's memory range
+    if ((char*)node->data < (char*)a->memory_start || 
+        (char*)node->data >= (char*)a->memory_start + a->total_size) {
+        #ifdef DEBUG
+        printf(RED "ERROR: Node outside allocator memory range!\n" RESET);
         #endif
         return (void*)-1;
     }
