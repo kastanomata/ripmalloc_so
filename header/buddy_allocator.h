@@ -9,7 +9,7 @@
 
 #define MAX_LEVELS 32
 #define MIN_BLOCK_SIZE 256
-#define METADATA_SIZE sizeof(BuddyNode*)
+#define BUDDY_METADATA_SIZE sizeof(BuddyNode*)
 
 typedef struct BuddyNode {
     Node node;
@@ -93,7 +93,7 @@ inline void* BuddyAllocator_malloc(BuddyAllocator* a, size_t size) {
         return NULL;
     }
 
-    size_t adjusted_size = size + METADATA_SIZE;
+    size_t adjusted_size = size + BUDDY_METADATA_SIZE;
     // Align to 8 bytes
     adjusted_size = (adjusted_size + 7) & ~7;
     
@@ -123,8 +123,8 @@ inline void* BuddyAllocator_malloc(BuddyAllocator* a, size_t size) {
     node->is_free = false;
 
     // Store metadata at start of block
-    void* user_data = (char*)node->data + METADATA_SIZE;
-    *((BuddyNode**)((char*)user_data - METADATA_SIZE)) = node;
+    void* user_data = (char*)node->data + BUDDY_METADATA_SIZE;
+    *((BuddyNode**)((char*)user_data - BUDDY_METADATA_SIZE)) = node;
 
     return user_data;
 }
@@ -147,7 +147,7 @@ inline void BuddyAllocator_free(BuddyAllocator* a, void* ptr) {
         return;
     }
 
-    BuddyNode* node = *((BuddyNode**)((char*)ptr - METADATA_SIZE));
+    BuddyNode* node = *((BuddyNode**)((char*)ptr - BUDDY_METADATA_SIZE));
     if (!node || !node->data) {
         #ifdef DEBUG
         printf(RED "ERROR: Invalid metadata in release\n" RESET);

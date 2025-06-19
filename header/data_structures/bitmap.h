@@ -10,7 +10,7 @@ typedef struct {
     int num_words;        // Number of words allocated
 } Bitmap;
 
-Bitmap* bitmap_create(Bitmap *bitmap, int num_bits);
+Bitmap* bitmap_create(Bitmap *bitmap, int num_bits, void *bits);
 void bitmap_destroy(Bitmap *bitmap);
 void bitmap_set(Bitmap *bitmap, int index);
 void bitmap_clear(Bitmap *bitmap, int index);

@@ -83,7 +83,7 @@ int run_benchmark(const char *file_name) {
 		fclose(file);
 		return -1;
 	}
-	struct AllocatorConfig config;
+	// struct AllocatorConfig config;
 	int result = -1;
 	switch (type) {
 		case SLAB_ALLOCATOR:

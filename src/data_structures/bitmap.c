@@ -1,17 +1,30 @@
 #include "bitmap.h"
 
 // Create a new bitmap with 'num_bits' capacity
-Bitmap* bitmap_create(Bitmap *bitmap, int num_bits) {
+Bitmap* bitmap_create(Bitmap *bitmap, int num_bits, void *bits) {
     if (num_bits <= 0 || !bitmap) return NULL;
 
     bitmap->num_bits = num_bits;
     // Calculate words needed: ceil(num_bits / 32)
     bitmap->num_words = (num_bits + 31) / 32;
-    bitmap->bits = (unsigned int*)calloc(bitmap->num_words, sizeof(unsigned int));
-    
-    if (!bitmap->bits) {
-        return NULL;
+    if(bits == NULL) {
+        // Allocate memory for the bits array
+        bits = calloc(bitmap->num_words, sizeof(unsigned int));
+        if (!bits) {
+            #ifdef DEBUG
+            printf("ERROR: Failed to allocate memory for bitmap bits\n");
+            #endif
+            return NULL; // Memory allocation failed
+        }
     }
+    bitmap->bits = bits;
+    if (!bitmap->bits) {
+        #ifdef DEBUG
+        printf("ERROR: Failed to allocate memory for bitmap bits\n");
+        #endif
+        return NULL; // Memory allocation failed
+    }
+
     return bitmap;
 }
 

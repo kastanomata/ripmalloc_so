@@ -3,13 +3,13 @@
 int test_bitmap_create_destroy() {
     // Test creation with valid size
     Bitmap b;
-    Bitmap *r = bitmap_create(&b, 64);
+    Bitmap *r = bitmap_create(&b, 64, NULL);
     assert(r != NULL);
     assert(b.num_bits == 64);
     assert(b.num_words == 2);  // 64 bits / 32 = 2 words
     bitmap_destroy(&b);
     // Note: We can't directly verify destruction, but valgrind can check for leaks
-    r = bitmap_create(&b, -1); // Invalid size
+    r = bitmap_create(&b, -1, NULL); // Invalid size
     assert(r == NULL); // Should return NULL for invalid size
     
     return 0;
@@ -17,7 +17,7 @@ int test_bitmap_create_destroy() {
 
 int test_bitmap_set_clear_test() {
     Bitmap b;
-    bitmap_create(&b, 128);
+    bitmap_create(&b, 128, NULL); // 128 bits
     assert(&b != NULL);
     
     // Test setting and testing bits
@@ -56,7 +56,7 @@ int test_bitmap_set_clear_test() {
 
 int test_bitmap_find_first() {
     Bitmap b;
-    bitmap_create(&b, 96);  // 3 words
+    bitmap_create(&b, 96, NULL);  // 3 words
     assert(&b != NULL);
 
     // Test empty bitmap
@@ -98,7 +98,7 @@ int test_bitmap_find_first() {
 int test_bitmap_print() {
     // Mostly for visual inspection
     Bitmap b;
-    bitmap_create(&b, 16);  // 16 bits
+    bitmap_create(&b, 16, NULL);  // 16 bits
     assert(&b != NULL);
     bitmap_set(&b, 0);
     bitmap_set(&b, 2);
