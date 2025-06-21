@@ -4,7 +4,7 @@
 #define NUM_ALLOCS NUM_SLABS
 
 // Test creation with invalid parameters
-static int test_slab_creation_invalid() {
+static int test_invalid_init() {
     SlabAllocator allocator;
     
     #ifdef VERBOSE
@@ -27,7 +27,7 @@ static int test_slab_creation_invalid() {
 }
 
 // Test basic creation and destruction
-static int test_slab_create_destroy() {
+static int test_create_destroy() {
     SlabAllocator allocator;
     
     #ifdef VERBOSE
@@ -44,7 +44,7 @@ static int test_slab_create_destroy() {
     assert(allocator.free_list_size_max == NUM_SLABS);
     
     // Clean up
-    SlabAllocator_destroy(&allocator);
+    assert(SlabAllocator_destroy(&allocator) == 0);
     
     #ifdef VERBOSE
     printf("Creation and destruction test passed\n");
@@ -53,7 +53,7 @@ static int test_slab_create_destroy() {
 }
 
 // Test allocation and deallocation patterns
-static int test_slab_alloc_pattern() {
+static int test_alloc_pattern() {
     SlabAllocator allocator;
     void* ptrs[NUM_SLABS];
     const unsigned char TEST_PATTERN = 0xAA;
@@ -86,7 +86,7 @@ static int test_slab_alloc_pattern() {
     printf("Releasing in reverse order...\n");
     #endif
     for (size_t i = NUM_SLABS; i > 0; i--) {
-        SlabAllocator_free(&allocator, ptrs[i-1]);
+        assert(SlabAllocator_free(&allocator, ptrs[i-1]) == 0);
     }
     
     #ifdef VERBOSE
@@ -106,7 +106,7 @@ static int test_slab_alloc_pattern() {
     printf("Cleaning up...\n");
     #endif
     for (size_t i = 0; i < NUM_SLABS; i++) {
-        SlabAllocator_free(&allocator, ptrs[i]);
+        assert(SlabAllocator_free(&allocator, ptrs[i]) == 0);
     }
     SlabAllocator_destroy(&allocator);
     
@@ -117,7 +117,7 @@ static int test_slab_alloc_pattern() {
 }
 
 // Test allocation exhaustion
-static int test_slab_exhaustion() {
+static int test_exhaustion() {
     SlabAllocator allocator;
     void* ptrs[NUM_SLABS + 1];  // One more than available
     
@@ -143,7 +143,7 @@ static int test_slab_exhaustion() {
     #ifdef VERBOSE
     printf("Freeing one and trying again - should succeed...\n");
     #endif
-    SlabAllocator_free(&allocator, ptrs[0]);
+    assert(SlabAllocator_free(&allocator, ptrs[0]) == 0);
     ptrs[NUM_SLABS] = SlabAllocator_malloc(&allocator);
     assert(ptrs[NUM_SLABS] != NULL);
     
@@ -153,7 +153,7 @@ static int test_slab_exhaustion() {
     for (size_t i = 1; i < NUM_SLABS; i++) {
         SlabAllocator_free(&allocator, ptrs[i]);
     }
-    SlabAllocator_free(&allocator, ptrs[NUM_SLABS]);
+    assert(SlabAllocator_free(&allocator, ptrs[NUM_SLABS]) == 0);
     SlabAllocator_destroy(&allocator);
     
     #ifdef VERBOSE
@@ -163,7 +163,7 @@ static int test_slab_exhaustion() {
 }
 
 // Test invalid releases
-static int test_slab_invalid_free() {
+static int test_invalid_free() {
     SlabAllocator allocator;
     void* ptr;
     
@@ -182,19 +182,19 @@ static int test_slab_invalid_free() {
     #ifdef VERBOSE
     printf("Testing NULL release...\n");
     #endif
-    SlabAllocator_free(&allocator, NULL);  // Should not crash
+    assert(SlabAllocator_free(&allocator, NULL) == -1);  // Should not crash
     
     #ifdef VERBOSE
     printf("Testing double release...\n");
     #endif
-    SlabAllocator_free(&allocator, ptr);
-    SlabAllocator_free(&allocator, ptr);  // Should not crash or corrupt
+    assert(SlabAllocator_free(&allocator, ptr) == 0);
+    assert(SlabAllocator_free(&allocator, ptr) == -1);  // Should not crash or corrupt
     
     #ifdef VERBOSE
     printf("Testing invalid pointer release...\n");
     #endif
     char invalid_ptr[SLAB_SIZE];
-    SlabAllocator_free(&allocator, invalid_ptr);  // Should not crash
+    assert(SlabAllocator_free(&allocator, invalid_ptr) == -1);  // Should not crash
     
     SlabAllocator_destroy(&allocator);
     
@@ -276,11 +276,11 @@ int test_standard_allocator() {
 int test_slab_allocator() {
     int result = 0;
     
-    result |= test_slab_creation_invalid();
-    result |= test_slab_create_destroy();
-    result |= test_slab_alloc_pattern();
-    result |= test_slab_exhaustion();
-    result |= test_slab_invalid_free();
+    result |= test_invalid_init();
+    result |= test_create_destroy();
+    result |= test_alloc_pattern();
+    result |= test_exhaustion();
+    result |= test_invalid_free();
     
     #ifdef TIME
     printf("\n=== Running Timing Tests ===\n");

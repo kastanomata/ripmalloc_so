@@ -3,7 +3,7 @@
 extern inline SlabAllocator* SlabAllocator_create(SlabAllocator* a, size_t slab_size, size_t n_slabs);
 extern inline int SlabAllocator_destroy(SlabAllocator* a);
 extern inline void* SlabAllocator_malloc(SlabAllocator* a);
-extern inline void SlabAllocator_free(SlabAllocator* a, void* ptr);
+extern inline int SlabAllocator_free(SlabAllocator* a, void* ptr);
 
 // Calculate actual size needed for a slab including metadata
 static inline size_t get_slab_total_size(size_t requested_size) {
