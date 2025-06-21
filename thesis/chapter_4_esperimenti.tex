@@ -1,5 +1,65 @@
 \chapter{Esperimenti, Casi d’Uso}
 
-\begin{itemize}
-  \item Descrizione di una run del sistema o, se applicabile, esperimenti qualitativi.
-\end{itemize}
+La letteratura descritta nel secondo capitolo giunge a una conclusione concorde sui benchmark per i gestori di memoria dinamicamente allocata: per valutare un algoritmo di allocazione, è necessario osservarne il comportamento all’interno di un contesto realistico. Ciò può avvenire solamente laddove le tracce adoperate per condurre i benchmark siano vicine alle allocazioni realmente compiute da programmi reali, che sono presi come esempio (esistono utilities che permettono di registrare le richieste, in modo da poterle usare a questo scopo).
+
+Quando le tracce sono casualmente generate, il risultato finale ci dice ben poco sulle capacità effettive dell’allocatore. Le richieste prodotte da un algoritmo probabilistico creano un modello di comportamento, ma questo non è sufficiente: riprodurre le complesse interazioni tra allocazioni e deallocazioni di memoria è molto difficile, poiché queste ultime sono poco comprese e differiscono grandemente tra tipologie di applicazione. Il comportamento a fasi dei programmi dà vita a fenomeni di interconnessione sistematica che sono per la maggior parte ignorati.
+
+Nel 1998, Wilson e Johnston approfondiscono i risultati del procedente paper sull’allocazione dinamica di memoria indagando il comportamento di diversi noti programmi scritti in C e C++. Nell’articolo \emph{The Memory Fragmentation Problem: Solved?} gli autori tentano di dimostrare come la frammentazione può essere evitata laddove sia scelta con attenzione una politica di allocazione appropriata a prescindere dall’implementazione.
+
+\begin{quote}
+``This substantially strengthens our previous results showing that the memory fragmentation problem has generally been misunderstood, and that good allocator policies can provide good memory usage for most programs. The new results indicate that for most programs, excellent allocator policies are readily available, and efficiency of implementation is the major challenge.''
+\end{quote}
+
+\section{Test delle funzionalità}
+
+I test delle funzionalità si concentrano unicamente sulla correttezza del codice: verificano che le funzioni rispondano correttamente a parametri sbagliati o richieste inappropriate. Definendo la flag DEBUG a tempo di compilazione abbiamo accesso a maggiori informazioni sugli errori e sulle loro cause.
+
+\subsection*{SlabAllocator}
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome del Test} & \textbf{Descrizione} \\
+\hline
+\texttt{test\_invalid\_init} & Verifica che l'allocatore gestisca correttamente parametri di inizializzazione non validi (es. dimensione zero o numero massimo di slab non valido). \\
+\hline
+\texttt{test\_create\_destroy} & Controlla che la creazione e distruzione di uno slab avvengano correttamente, senza memory leak o errori. \\
+\hline
+\texttt{test\_alloc\_pattern} & Testa il comportamento dell'allocatore con un pattern di allocazioni e deallocazioni ripetute per verificare la correttezza della gestione della memoria. \\
+\hline
+\texttt{test\_exhaustion} & Verifica il comportamento quando lo slab è pieno (es. ritorno di NULL o gestione degli errori quando non c'è più memoria disponibile). \\
+\hline
+\texttt{test\_invalid\_free} & Controlla come l'allocatore gestisce la deallocazione di puntatori non validi (es. NULL o indirizzi non allocati). \\
+\hline
+\end{tabularx}
+\caption{Test funzionali per SlabAllocator}
+\end{table}
+
+
+\subsection*{BuddyAllocator e BitmapBuddyAllocator}
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Nome del Test} & \textbf{Descrizione} \\
+\hline
+\texttt{test\_invalid\_init} & Verifica che l'allocatore gestisca correttamente inizializzazioni non valide (es. dimensione zero, parametri NULL, o valori non supportati). \\
+\hline
+\texttt{test\_create\_destroy} & Testa la corretta creazione e distruzione di un allocatore, assicurandosi che non ci siano memory leak o corruzione dei dati. \\
+\hline
+\texttt{test\_single\_allocation} & Verifica che l'allocatore possa gestire correttamente una singola allocazione e che la memoria restituita sia utilizzabile. \\
+\hline
+\texttt{test\_multiple\_allocation} & Controlla il comportamento dell'allocatore quando vengono effettuate più allocazioni consecutive, assicurandosi che tutte abbiano successo e non si sovrappongano. \\
+\hline
+\texttt{test\_varied\_sizes} & Testa l'allocazione di blocchi di dimensioni diverse per verificare che l'allocatore gestisca correttamente richieste eterogenee. \\
+\hline
+\texttt{test\_buddy\_merging} & Verifica che, dopo una serie di allocazioni e deallocazioni, l'allocatore riesca a fondere correttamente i blocchi liberi adiacenti (buddy merging) per evitare frammentazione. \\
+\hline
+\texttt{test\_invalid\_reference} & Controlla come l'allocatore gestisce tentativi di deallocazione di riferimenti non validi (es. NULL, doppio free, o puntatori non allocati). \\
+\hline
+\end{tabularx}
+\caption{Test funzionali per BuddyAllocator e BitmapBuddyAllocator}
+\end{table}
+
+
+\section{Benchmark}
