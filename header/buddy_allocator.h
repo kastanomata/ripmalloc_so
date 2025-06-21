@@ -97,23 +97,7 @@ inline void* BuddyAllocator_malloc(BuddyAllocator* a, size_t size) {
     // Align to 8 bytes
     adjusted_size = (adjusted_size + 7) & ~7;
     
-    // Find appropriate block size
-    size_t block_size = a->total_size;
-    int level = 0;
-    while (level < a->num_levels - 1 && block_size / 2 >= adjusted_size) {
-        block_size /= 2;
-        level++;
-    }
-    
-    if (block_size < adjusted_size) {
-        #ifdef DEBUG
-        printf(RED "ERROR: Requested size too large (req: %zu, max: %zu)\n" RESET, 
-               adjusted_size, a->total_size);
-        #endif
-        return NULL;
-    }
-
-    BuddyNode* node = a->base.malloc((Allocator*)a, level);
+    BuddyNode* node = a->base.malloc((Allocator*)a, adjusted_size);
     if (!node) {
         #ifdef DEBUG
         printf(RED "ERROR: Failed to allocate node!\n" RESET);

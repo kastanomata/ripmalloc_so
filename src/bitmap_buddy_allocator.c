@@ -34,20 +34,20 @@ static int startIdx(int idx, int num_levels) {
 }
 
 static void update_parent(Bitmap* bitmap, int bit) {
-    if (bit == 0) return;
+    if (bit == 0) return; 
     
     int parent = parentIdx(bit);
     int left = parent * 2 + 1;
     int right = parent * 2 + 2;
     
-    int left_set = bitmap_test(bitmap, left);
-    int right_set = bitmap_test(bitmap, right);
+    // Parent is set only if both children are allocated
+    if (bitmap_test(bitmap, left) && bitmap_test(bitmap, right)) {
+        bitmap_set(bitmap, parent);
+    } else {
+        bitmap_clear(bitmap, parent);
+    }
     
-    if (left_set && right_set)
-    bitmap_set(bitmap, parent);
-    else
-    bitmap_clear(bitmap, parent);
-    
+    // Recursively update ancestors
     update_parent(bitmap, parent);
 }
 
@@ -123,8 +123,9 @@ static void* get_buddy(BitmapBuddyAllocator* alloc, int level, int size) {
         if (bitmap_idx == -1) return NULL;
     }
     
-    update_child(&alloc->bitmap, bitmap_idx, 1);
-    update_parent(&alloc->bitmap, bitmap_idx);
+    // Mark the block as allocated
+    bitmap_set(&alloc->bitmap, bitmap_idx);
+    update_parent(&alloc->bitmap, bitmap_idx); // Ensure parents are updated
     
     int block_size = alloc->min_bucket_size << (alloc->num_levels - level);
     char* ret = alloc->memory_start + (startIdx(bitmap_idx, alloc->num_levels) * block_size);
@@ -237,7 +238,9 @@ void* BitmapBuddyAllocator_reserve(Allocator* base_alloc, ...) {
         #endif
         return NULL;
     }
-    
+    if (real_size < (size_t)alloc->min_bucket_size) {
+        real_size = alloc->min_bucket_size;
+    }
     
     // Find appropriate level
     int level = 0;
@@ -248,7 +251,7 @@ void* BitmapBuddyAllocator_reserve(Allocator* base_alloc, ...) {
         #endif
         return NULL;
     }
-    while (block_size / 2 >= real_size && level < alloc->num_levels) {
+    while (block_size / 2 >= real_size && level < alloc->num_levels - 1) {
         block_size /= 2;
         level++;
     }

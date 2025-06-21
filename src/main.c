@@ -15,5 +15,5 @@ int main() {
   line
   // freeform();
   line
-  // benchmark();
+  benchmark();
 }

@@ -23,4 +23,5 @@ union GeneralAllocator {
 };
 
 int benchmark();
+int run_benchmark_from_file(const char *file_name);
 

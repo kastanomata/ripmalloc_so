@@ -54,22 +54,8 @@ static BuddyNode* BuddyAllocator_merge_blocks(BuddyAllocator* a, BuddyNode* left
         #endif
         return NULL;
     }
-
-    // Enhanced buddy verification
-    if (left->buddy != right || right->buddy != left || 
-        left->level != right->level ||
-        left->data + left->size != right->data) {
-        #ifdef DEBUG
-        printf(RED "ERROR: Nodes are not valid buddies!\n" RESET);
-        #endif
-        return NULL;
-    }
-
     BuddyNode* parent = left->parent;
     if (!parent || parent != right->parent || parent->is_free) {
-        #ifdef DEBUG
-        printf(RED "ERROR: Invalid parent node!\n" RESET);
-        #endif
         return NULL;
     }
 
@@ -237,12 +223,36 @@ void* BuddyAllocator_reserve(Allocator* alloc, ...) {
     va_list args;
     va_start(args, alloc);
     BuddyAllocator* buddy = (BuddyAllocator*)alloc;
-    int level = va_arg(args, int);
+    size_t size = va_arg(args, size_t);
     va_end(args);
     
+    if (!buddy || size == 0) {
+        #ifdef DEBUG
+        printf(RED "ERROR: NULL allocator or invalid size in reserve!\n" RESET);
+        #endif
+        return NULL;
+    }
+
+    // Calculate the appropriate level for the requested size
+    size_t block_size = buddy->total_size;
+    int level = 0;
+    while (level < buddy->num_levels - 1 && block_size / 2 >= size) {
+        block_size /= 2;
+        level++;
+    }
+    
+    if (block_size < size) {
+        #ifdef DEBUG
+        printf(RED "ERROR: Requested size too large (req: %zu, max: %zu)\n" RESET, 
+               size, buddy->total_size);
+        #endif
+        return NULL;
+    }
+
     #ifdef VERBOSE
-    printf("Allocating at level %d\n", level);
+    printf("Allocating size %zu at level %d (block size %zu)\n", size, level, block_size);
     #endif
+    
     if (level < 0 || level >= buddy->num_levels) {
         #ifdef DEBUG
         printf(RED "ERROR: Invalid level %d (max %d)\n" RESET, level, buddy->num_levels-1);
@@ -260,7 +270,7 @@ void* BuddyAllocator_reserve(Allocator* alloc, ...) {
     BuddyNode* free_block = (BuddyNode*) list_pop_front(buddy->free_lists[level]);
     #ifdef VERBOSE
     if(!free_block) {
-        printf("No block found at level %d\n",  level);
+        printf("No block found at level %d\n", level);
     }
     #endif
     
@@ -355,9 +365,6 @@ void *BuddyAllocator_release(Allocator* alloc, ...) {
 
         node = BuddyAllocator_merge_blocks(a, left, right);
         if (!node) {
-            #ifdef DEBUG
-            printf(RED "ERROR: Failed to merge buddies\n" RESET);
-            #endif
             break;
         }
         

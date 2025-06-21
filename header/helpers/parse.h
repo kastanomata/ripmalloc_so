@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <allocator.h>
+#include <stdbool.h>
+
+#define VARIABLE_ALLOCATION_DELIMITER 0
 
 enum AllocatorType {
   SLAB_ALLOCATOR,
@@ -10,8 +13,14 @@ enum AllocatorType {
   BITMAP_BUDDY_ALLOCATOR,
 };
 
+enum RequestType {
+  ALLOCATE,
+  FREE
+};
+
 struct AllocatorConfig {
   enum AllocatorType type;
+  bool is_variable_size_allocation;
   Allocator *allocator;
 };
 
@@ -26,7 +35,10 @@ union AllocatorConfigData {
   } buddy;
 };
 
+
+
 int parse(const char *filename);
 enum AllocatorType parse_allocator_create(FILE *file);
 union AllocatorConfigData parse_allocator_create_parameters(FILE *file, struct AllocatorConfig *config);
+int parse_allocator_request(const char *line, struct AllocatorConfig *config, char **pointers, long *pointer_count);
 

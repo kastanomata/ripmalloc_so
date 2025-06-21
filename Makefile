@@ -15,6 +15,7 @@ DATA_STRUCTURES = $(BUILDDIR)/double_linked_list.o \
 
 HELPERS = $(BUILDDIR)/memory_manipulation.o \
 					$(BUILDDIR)/benchmark.o \
+					$(BUILDDIR)/file_benchmark.o \
 					$(BUILDDIR)/parse.o \
 					$(BUILDDIR)/time.o \
 					$(BUILDDIR)/freeform.o \
@@ -129,6 +130,9 @@ $(BUILDDIR)/parse.o: $(SRCDIR)/helpers/parse.c $(HEADDIR)/helpers/parse.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(BUILDDIR)/benchmark.o: $(SRCDIR)/helpers/benchmark.c $(HEADDIR)/helpers/benchmark.h
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+$(BUILDDIR)/file_benchmark.o: $(SRCDIR)/helpers/file_benchmark.c $(HEADDIR)/helpers/benchmark.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:

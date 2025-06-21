@@ -1,5 +1,72 @@
-% initialize buddy allocator
+% initialize allocator (choose bitmap for this example)
 i,buddy
-% buddy allocator parameters
-% inline BuddyAllocator* BuddyAllocator_create(BuddyAllocator* a, size_t total_size, int num_levels)
-p,4096,5
+% bitmap allocator parameters: memory_size=131072 bytes, max_levels=10
+p,131072,10
+
+% Allocate symbol table (large)
+a,0,64
+
+% Allocate many AST nodes (small)
+a,1,2
+a,2,2
+a,3,2
+a,4,2
+a,5,2
+a,6,2
+a,7,2
+a,8,2
+a,9,2
+a,10,2
+a,11,2
+a,12,2
+a,13,2
+a,14,2
+a,15,2
+a,16,2
+a,17,2
+a,18,2
+a,19,2
+a,20,2
+
+% Allocate intermediate representation (medium)
+a,21,16
+a,22,16
+
+% Free some AST nodes (scope ends)
+f,3
+f,4
+f,5
+f,6
+f,7
+
+% Allocate temporary buffers (large)
+a,23,32
+a,24,32
+
+% Free symbol table (end of compilation)
+f,0
+
+% Free intermediate representation
+f,21
+f,22
+
+% Free temporary buffers
+f,23
+f,24
+
+% Free remaining AST nodes
+f,1
+f,2
+f,8
+f,9
+f,10
+f,11
+f,12
+f,13
+f,14
+f,15
+f,16
+f,17
+f,18
+f,19
+f,20
