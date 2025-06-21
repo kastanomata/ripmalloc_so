@@ -130,12 +130,12 @@ inline void* BuddyAllocator_malloc(BuddyAllocator* a, size_t size) {
 }
 
 // Release memory back to BuddyAllocator
-inline void BuddyAllocator_free(BuddyAllocator* a, void* ptr) {
+inline int BuddyAllocator_free(BuddyAllocator* a, void* ptr) {
     if(!a || !ptr) {
         #ifdef DEBUG
         printf(RED "ERROR: NULL allocator or pointer in release\n" RESET);
         #endif
-        return;
+        return -1;
     }
     
     // Verify pointer is within allocator's memory range
@@ -144,7 +144,7 @@ inline void BuddyAllocator_free(BuddyAllocator* a, void* ptr) {
         #ifdef DEBUG
         printf(RED "ERROR: Pointer outside allocator memory range!\n" RESET);
         #endif
-        return;
+        return -1;
     }
 
     BuddyNode* node = *((BuddyNode**)((char*)ptr - BUDDY_METADATA_SIZE));
@@ -152,14 +152,14 @@ inline void BuddyAllocator_free(BuddyAllocator* a, void* ptr) {
         #ifdef DEBUG
         printf(RED "ERROR: Invalid metadata in release\n" RESET);
         #endif
-        return;
+        return -1;
     }
     
     if(node->is_free) {
         #ifdef DEBUG
         printf(RED "ERROR: Attempting to release an already free block\n" RESET);
         #endif
-        return;
+        return -1;
     }
     
     #ifdef VERBOSE
@@ -172,11 +172,13 @@ inline void BuddyAllocator_free(BuddyAllocator* a, void* ptr) {
         #ifdef DEBUG
         printf(RED "ERROR: Failed to release block\n" RESET);
         #endif
+        return -1;
     }
     
     #ifdef VERBOSE
     printf("Block released and merged if possible\n");
     #endif
+    return 0;
 }
 
 

@@ -3,7 +3,7 @@
 extern inline BuddyAllocator* BuddyAllocator_create(BuddyAllocator* a, size_t total_size, int num_levels);
 extern inline int BuddyAllocator_destroy(BuddyAllocator* a);
 extern inline void* BuddyAllocator_malloc(BuddyAllocator* a, size_t size);
-extern inline void BuddyAllocator_free(BuddyAllocator* a, void* ptr);
+extern inline int BuddyAllocator_free(BuddyAllocator* a, void* ptr);
 
 static struct Buddies BuddyAllocator_divide_block(BuddyAllocator* a, BuddyNode* parent) {
     struct Buddies buddies = {NULL, NULL};

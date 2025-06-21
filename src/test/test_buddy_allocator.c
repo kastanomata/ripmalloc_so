@@ -1,11 +1,4 @@
 #include <test_buddy_allocator.h>
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#define TOTAL_SIZE (1 << 10)  // 1KB
-#define NUM_LEVELS 4          // Results in 128B min block size (1024/2^4)
 
 // Test initialization with invalid parameters
 static int test_invalid_init() {
@@ -74,12 +67,17 @@ static int test_single_allocation() {
     
     BuddyAllocator_create(&allocator, TOTAL_SIZE, NUM_LEVELS);
     assert(&allocator != NULL);
+
+    // Allocate 0 bytes
+    ptr = BuddyAllocator_malloc(&allocator, 0);
+    assert(ptr == NULL);
     
+    // Allocate more than TOTAL_SIZE BYTES
+    ptr = BuddyAllocator_malloc(&allocator, TOTAL_SIZE * 2);
+    assert(ptr == NULL);
+
     // Allocate smallest block size
     size_t alloc_size = allocator.min_block_size;
-    #ifdef VERBOSE
-    printf("Allocating block of size %zu\n", alloc_size);
-    #endif
     
     ptr = BuddyAllocator_malloc(&allocator, alloc_size);
     // Verify we can write to the memory
@@ -87,11 +85,7 @@ static int test_single_allocation() {
     assert(verify_memory_pattern(ptr, alloc_size, 0xAA) == 0);
     
     // Release the block
-    BuddyAllocator_free(&allocator, ptr);
-    
-    #ifdef VERBOSE
-    BuddyAllocator_print_state(&allocator);
-    #endif
+    assert(BuddyAllocator_free(&allocator, ptr) == 0);
     
     // Clean up
     assert(BuddyAllocator_destroy(&allocator) == 0);
@@ -132,24 +126,21 @@ static int test_multiple_allocations() {
     
     // Release half of the blocks
     for (int i = 0; i < max_blocks/2; i++) {
-        BuddyAllocator_free(&allocator, ptrs[i]);
+        assert(BuddyAllocator_free(&allocator, ptrs[i]) == 0);
     }
     
     // Allocate again - should succeed
     for (int i = 0; i < max_blocks/2; i++) {
         ptrs[i] = BuddyAllocator_malloc(&allocator, alloc_size);
+        assert(ptrs[i] != NULL);
     }
     
     // Clean up
     for (int i = 0; i < max_blocks; i++) {
         if (ptrs[i]) {
-            BuddyAllocator_free(&allocator, ptrs[i]);
+            assert(BuddyAllocator_free(&allocator, ptrs[i]) == 0);
         }
     }
-    
-    #ifdef VERBOSE
-    BuddyAllocator_print_state(&allocator);
-    #endif
     
     assert(BuddyAllocator_destroy(&allocator) == 0);
     
@@ -172,10 +163,6 @@ static int test_varied_sizes() {
     BuddyAllocator buddy;
     BuddyAllocator_create(&buddy, total_size, DEF_LEVELS_NUMBER);
 
-    #ifdef VERBOSE
-    BuddyAllocator_print_state(&buddy);
-    #endif
-
     ptr = BuddyAllocator_malloc(&buddy, max_alloc_size);
     if (ptr == NULL) {
         #ifdef DEBUG
@@ -191,10 +178,7 @@ static int test_varied_sizes() {
     #endif
     assert(verify_memory_pattern(ptr, max_alloc_size, 0xAA) == 0);
 
-    BuddyAllocator_free(&buddy, ptr);
-    #ifdef VERBOSE
-    BuddyAllocator_print_state(&buddy);
-    #endif
+    assert(BuddyAllocator_free(&buddy, ptr) == 0);
 
     ptrs[0] = BuddyAllocator_malloc(&buddy, half_alloc_size);
     ptrs[1] = BuddyAllocator_malloc(&buddy, quarter_alloc_size);
@@ -211,16 +195,9 @@ static int test_varied_sizes() {
         fill_memory_pattern(ptrs[i], (i == 0 ? half_alloc_size : (i == 1 ? quarter_alloc_size : eight_alloc_size)), 0x01 + i);
         assert(verify_memory_pattern(ptrs[i], (i == 0 ? half_alloc_size : (i == 1 ? quarter_alloc_size : eight_alloc_size)), 0x01 + i) == 0);
     }
-    #ifdef VERBOSE
-    BuddyAllocator_print_state(&buddy);
-    printf("Allocated four blocks of memory\n");
-    
-    print_memory_pattern(buddy.memory_start, total_size);
-    printf("Memory pattern printed\n");
-    #endif
-    
+
     for(int i = 0; i < 4; i++) {
-        BuddyAllocator_free(&buddy, ptrs[i]);
+        assert(BuddyAllocator_free(&buddy, ptrs[i]) == 0);
     }
 
     assert(BuddyAllocator_destroy(&buddy) == 0);
@@ -275,19 +252,19 @@ static int test_invalid_releases() {
     assert(BuddyAllocator_create(&allocator, TOTAL_SIZE, NUM_LEVELS) != NULL);
     
     // Test NULL pointer release
-    BuddyAllocator_free(&allocator, NULL);  // Should not crash
+    assert(BuddyAllocator_free(&allocator, NULL) == -1); // Should not crash
     
     // Test double release
     void* ptr = BuddyAllocator_malloc(&allocator, allocator.min_block_size);
     assert(ptr != NULL);
     BuddyAllocator_free(&allocator, ptr);
-    BuddyAllocator_free(&allocator, ptr);  // Should not crash
+    assert(BuddyAllocator_free(&allocator, ptr) == -1); // Should not crash
     
     // Test invalid pointer release
     char invalid_ptr[64];
     memset(invalid_ptr, 0, sizeof(invalid_ptr));  // Not allocated by BuddyAllocator
     // Attempt to free a pointer not managed by BuddyAllocator
-    BuddyAllocator_free(&allocator, invalid_ptr);  // Should not crash
+    assert(BuddyAllocator_free(&allocator, invalid_ptr) == -1); // Should not crash
     
     assert(BuddyAllocator_destroy(&allocator) == 0);
     

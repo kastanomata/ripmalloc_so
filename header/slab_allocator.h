@@ -93,6 +93,9 @@ inline void* SlabAllocator_malloc(SlabAllocator* a) {
     return ((Allocator*)a)->malloc((Allocator*)a);
 }
 // Free a slab
-inline void SlabAllocator_free(SlabAllocator* a, void* ptr) {
-    ((Allocator*)a)->free((Allocator*)a, ptr);
+inline int SlabAllocator_free(SlabAllocator* a, void* ptr) {
+    void * r = ((Allocator*)a)->free((Allocator*)a, ptr);
+    if(r == NULL)
+        return -1;
+    return 0;
 }
