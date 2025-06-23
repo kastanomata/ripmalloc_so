@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -g -I$(HEADDIR) -I$(HEADDIR)/data_structures -I$(HEADDIR)/test -I$(HEADDIR)/helpers
+CFLAGS = -Wall -Wextra -fsanitize=address -g -I$(HEADDIR) -I$(HEADDIR)/data_structures -I$(HEADDIR)/test -I$(HEADDIR)/helpers
 
 # Directories
 SRCDIR = src
@@ -32,7 +32,7 @@ OBJECTS = $(BUILDDIR)/main.o \
           $(BUILDDIR)/buddy_allocator.o \
 					$(BUILDDIR)/bitmap_buddy_allocator.o \
 
-.PHONY: clean all valgrind verbose time
+.PHONY: clean all benchmark valgrind verbose time 
 
 all: $(BINDIR)/main
 

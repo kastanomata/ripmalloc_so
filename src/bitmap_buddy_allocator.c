@@ -294,6 +294,14 @@ void* BitmapBuddyAllocator_release(Allocator* base_alloc, ...) {
     // Retrieve metadata
     int* metadata = (int*)(char_ptr - BITMAP_METADATA_SIZE);
     int bit = metadata[0];
+
+    // Check if the pointer is already free
+    if (bitmap_test(&alloc->bitmap, bit) == 0) {
+        #ifdef DEBUG
+        printf(RED "Error: Memory already free!\n" RESET);
+        #endif
+        return (void*)-1;
+    }
     
     // Validate bitmap index
     if (bit < 0 || bit >= alloc->bitmap.num_bits) {
@@ -302,6 +310,8 @@ void* BitmapBuddyAllocator_release(Allocator* base_alloc, ...) {
         #endif
         return (void*)-1;
     }
+
+
 
     // Update bitmap
     update_child(&alloc->bitmap, bit, 0);

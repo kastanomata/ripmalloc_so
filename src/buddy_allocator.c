@@ -31,17 +31,21 @@ static struct Buddies BuddyAllocator_divide_block(BuddyAllocator* a, BuddyNode* 
     size_t child_size = parent->size / 2;
     buddies.left_buddy->size = child_size;
     buddies.left_buddy->data = parent->data;
-    buddies.left_buddy->level = parent->level + 1;
     buddies.left_buddy->is_free = false;
     buddies.left_buddy->parent = parent;
     buddies.left_buddy->buddy = buddies.right_buddy;
 
     buddies.right_buddy->size = child_size;
     buddies.right_buddy->data = parent->data + child_size;
-    buddies.right_buddy->level = parent->level + 1;
     buddies.right_buddy->is_free = true;
     buddies.right_buddy->parent = parent;
     buddies.right_buddy->buddy = buddies.left_buddy;
+
+    int child_level = parent->level + 1;
+    buddies.left_buddy->level = child_level;
+    buddies.right_buddy->level = child_level;
+    
+    assert(buddies.left_buddy->level == buddies.right_buddy->level);
 
     return buddies;
 }
@@ -49,24 +53,41 @@ static struct Buddies BuddyAllocator_divide_block(BuddyAllocator* a, BuddyNode* 
 
 static BuddyNode* BuddyAllocator_merge_blocks(BuddyAllocator* a, BuddyNode* left, BuddyNode* right) {
     if (!a || !left || !right) {
-        #ifdef DEBUG
-        printf(RED "ERROR: Invalid parameters in merge_blocks!\n" RESET);
-        #endif
-        return NULL;
-    }
-    BuddyNode* parent = left->parent;
-    if (!parent || parent != right->parent || parent->is_free) {
+        printf(RED "ERROR: Null parameters to merge_blocks\n" RESET);
         return NULL;
     }
 
-    // Remove from free lists before merging
+    // Verify blocks are at same level
+    if (left->level != right->level) {
+        printf(RED "ERROR: Different levels in merge (%d vs %d)\n" RESET,
+               left->level, right->level);
+        return NULL;
+    }
+
+    BuddyNode* parent = left->parent;
+    if (!parent || parent != right->parent) {
+        printf(RED "ERROR: Blocks don't share a parent\n" RESET);
+        return NULL;
+    }
+    
+    // Verify parent level makes sense
+    int expected_parent_level = left->level - 1;
+    if (parent->level != expected_parent_level) {
+        printf(RED "ERROR: Parent level mismatch! Is %d, should be %d\n" RESET,
+               parent->level, expected_parent_level);
+        return NULL;
+    }
+
+    parent->is_free = true;
+    
+    // Remove children from free lists
     list_detach(a->free_lists[left->level], (Node*)&left->node);
     list_detach(a->free_lists[right->level], (Node*)&right->node);
 
+    // Free child nodes
     SlabAllocator_free(&(a->node_allocator), left);
     SlabAllocator_free(&(a->node_allocator), right);
 
-    parent->is_free = true;
     return parent;
 }
 
@@ -225,32 +246,40 @@ void* BuddyAllocator_reserve(Allocator* alloc, ...) {
     BuddyAllocator* buddy = (BuddyAllocator*)alloc;
     size_t size = va_arg(args, size_t);
     va_end(args);
+
+    size_t adjusted_size = size + BUDDY_METADATA_SIZE;
+    // Align to 8 bytes
+    adjusted_size = (adjusted_size + 7) & ~7;
+
     
-    if (!buddy || size == 0) {
+    if (!buddy || adjusted_size == 0) {
         #ifdef DEBUG
-        printf(RED "ERROR: NULL allocator or invalid size in reserve!\n" RESET);
+        printf(RED "ERROR: NULL allocator or invalid adjusted_size in reserve!\n" RESET);
         #endif
         return NULL;
     }
-
-    // Calculate the appropriate level for the requested size
+    
+    if (adjusted_size < buddy->min_block_size) {
+        adjusted_size = buddy->min_block_size;
+    }
+    // Calculate the appropriate level for the requested adjusted_size
     size_t block_size = buddy->total_size;
     int level = 0;
-    while (level < buddy->num_levels - 1 && block_size / 2 >= size) {
+    while (level < buddy->num_levels - 1 && block_size / 2 >= adjusted_size) {
         block_size /= 2;
         level++;
     }
     
-    if (block_size < size) {
+    if (block_size < adjusted_size) {
         #ifdef DEBUG
-        printf(RED "ERROR: Requested size too large (req: %zu, max: %zu)\n" RESET, 
-               size, buddy->total_size);
+        printf(RED "ERROR: Requested adjusted_size too large (req: %zu, max: %zu)\n" RESET, 
+               adjusted_size, buddy->total_size);
         #endif
         return NULL;
     }
 
     #ifdef VERBOSE
-    printf("Allocating size %zu at level %d (block size %zu)\n", size, level, block_size);
+    printf("Allocating adjusted_size %zu at level %d (block adjusted_size %zu)\n", adjusted_size, level, block_size);
     #endif
     
     if (level < 0 || level >= buddy->num_levels) {
@@ -295,6 +324,7 @@ void* BuddyAllocator_reserve(Allocator* alloc, ...) {
                     #ifdef DEBUG
                     printf(RED "ERROR: Failed to split block!\n" RESET);
                     #endif
+                    if (free_block) list_push_front(buddy->free_lists[current_level], (Node*)free_block);
                     return NULL;
                 }
                 
@@ -316,59 +346,74 @@ void* BuddyAllocator_reserve(Allocator* alloc, ...) {
     #ifdef VERBOSE
     printf("Found free block at level %d: %p\n", level, (void*)free_block);
     #endif
-    return free_block;
+    free_block->is_free = false;
+    // Store metadata at start of block
+    void* raw_block = free_block->data;
+    *((BuddyNode**)raw_block) = free_block;
+    void* user_ptr = (char*)raw_block + BUDDY_METADATA_SIZE;
+    return user_ptr;
 }
 
 void *BuddyAllocator_release(Allocator* alloc, ...) {
     va_list args;
     va_start(args, alloc);
     BuddyAllocator* a = (BuddyAllocator*)alloc;
-    BuddyNode* node = va_arg(args, BuddyNode*);
+    void* ptr = va_arg(args, void*);
     va_end(args);
-
-    if (!node || !node->data) {
+    // Verify pointer is within allocator's memory range
+    if ((char*)ptr < (char*)a->memory_start || 
+        (char*)ptr >= (char*)a->memory_start + a->total_size) {
         #ifdef DEBUG
-        printf(RED "ERROR: Invalid node in free!\n" RESET);
+        printf(RED "ERROR: Pointer outside allocator memory range!\n" RESET);
         #endif
         return (void*)-1;
     }
 
-    // Verify node is within allocator's memory range
+    BuddyNode* node = *((BuddyNode**)((char*)ptr - BUDDY_METADATA_SIZE));
+    if(node->is_free) {
+        #ifdef DEBUG
+        printf(RED "ERROR: Attempting to release an already free block\n" RESET);
+        #endif
+        return (void*)-1;
+    }
+    if (!node || !node->data) {
+        if (node) printf("Node data: %p\n", (void*)node->data);
+        return (void*)-1;
+    }
+
     if ((char*)node->data < (char*)a->memory_start || 
         (char*)node->data >= (char*)a->memory_start + a->total_size) {
-        #ifdef DEBUG
         printf(RED "ERROR: Node outside allocator memory range!\n" RESET);
-        #endif
         return (void*)-1;
     }
-
-    #ifdef VERBOSE
-    printf("Freeing block at %p, size %zu, level %d\n", 
-           node->data, node->size, node->level);
-    #endif
-
+    
+    if (node->level < 0 || node->level >= a->num_levels) {
+        printf(RED "ERROR: Invalid level %d (max %d)\n" RESET, 
+               node->level, a->num_levels-1);
+        return (void*)-1;
+    }
+    if (!a->free_lists[node->level]) {
+        printf(RED "ERROR: Free list at level %d is NULL!\n" RESET, node->level);
+        return (void*)-1;
+    }    
     node->is_free = 1;
     list_push_front(a->free_lists[node->level], (Node*)&node->node);
 
     // Try to merge with buddy if possible
     while (node->parent && node->buddy && node->buddy->is_free) {
         BuddyNode* buddy = node->buddy;
-
-        #ifdef VERBOSE
-        printf("Merging blocks: [%p] and [%p] at level %d\n", 
-               node->data, buddy->data, node->level);
-        #endif
-
+        
         // Determine left and right buddies (lower address first)
         BuddyNode* left = node;
         BuddyNode* right = buddy;
-
+        
         node = BuddyAllocator_merge_blocks(a, left, right);
         if (!node) {
+            printf("Merge failed or not possible\n");
             break;
         }
         
-        // After merging, add parent to its free list
+        
         list_push_front(a->free_lists[node->level], (Node*)&node->node);
     }
     

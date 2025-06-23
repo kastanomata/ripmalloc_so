@@ -67,14 +67,14 @@ inline void* BitmapBuddyAllocator_malloc(BitmapBuddyAllocator* alloc, size_t siz
         return NULL;
     }
     
-    void* memory_start = alloc->base.malloc((Allocator*)alloc, size);
-    if( memory_start == NULL ) {
+    void* ptr = alloc->base.malloc((Allocator*)alloc, size);
+    if( ptr == NULL ) {
         #ifdef DEBUG
         printf(RED "Error: Failed to allocate memory\n" RESET);
         #endif
         return NULL;
     }
-    return memory_start;
+    return ptr;
 }
 inline int BitmapBuddyAllocator_free(BitmapBuddyAllocator* alloc, void* ptr) {
     if (!alloc || !ptr) {
@@ -83,16 +83,7 @@ inline int BitmapBuddyAllocator_free(BitmapBuddyAllocator* alloc, void* ptr) {
         #endif
         return -1;
     }
-    // Retrieve metadata
-    int* metadata = (int*)((char*)ptr - 2 * sizeof(int));
-    int bit = metadata[0];
-    // Check if the pointer is already free
-    if (bitmap_test(&alloc->bitmap, bit) == 0) {
-        #ifdef DEBUG
-        printf(RED "Error: Memory already free!\n" RESET);
-        #endif
-        return -1;
-    }
+    
     if (alloc->base.free((Allocator*)alloc, ptr) == (void*) -1) {
         #ifdef DEBUG
         printf(RED "Error: Failed to free memory in BitmapBuddyAllocator_free\n" RESET);

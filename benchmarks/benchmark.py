@@ -82,7 +82,7 @@ def generate_file(path, pattern, alloc_type):
         lines.append(f"p,{slab_sz},{n_slabs}")
         slots = n_slabs
     else:
-        total_mem, levels = 8000, 4
+        total_mem, levels = 2000, 4
         lines.append(f"p,{total_mem},{levels}")
         slots = 2 ** levels
 

@@ -1,6 +1,7 @@
 #pragma once
 #include <allocator.h>
 #include <slab_allocator.h>
+#include <assert.h>
 
 #include <math.h>
 #include <sys/mman.h>
@@ -92,25 +93,16 @@ inline void* BuddyAllocator_malloc(BuddyAllocator* a, size_t size) {
         #endif
         return NULL;
     }
-
-    size_t adjusted_size = size + BUDDY_METADATA_SIZE;
-    // Align to 8 bytes
-    adjusted_size = (adjusted_size + 7) & ~7;
     
-    BuddyNode* node = a->base.malloc((Allocator*)a, adjusted_size);
+    void* node = a->base.malloc((Allocator*)a, size);
     if (!node) {
         #ifdef DEBUG
         printf(RED "ERROR: Failed to allocate node!\n" RESET);
         #endif
         return NULL;
     }
-    node->is_free = false;
-
-    // Store metadata at start of block
-    void* user_data = (char*)node->data + BUDDY_METADATA_SIZE;
-    *((BuddyNode**)((char*)user_data - BUDDY_METADATA_SIZE)) = node;
-
-    return user_data;
+    
+    return (BuddyNode*) node;
 }
 
 // Release memory back to BuddyAllocator
@@ -122,36 +114,12 @@ inline int BuddyAllocator_free(BuddyAllocator* a, void* ptr) {
         return -1;
     }
     
-    // Verify pointer is within allocator's memory range
-    if ((char*)ptr < (char*)a->memory_start || 
-        (char*)ptr >= (char*)a->memory_start + a->total_size) {
-        #ifdef DEBUG
-        printf(RED "ERROR: Pointer outside allocator memory range!\n" RESET);
-        #endif
-        return -1;
-    }
-
-    BuddyNode* node = *((BuddyNode**)((char*)ptr - BUDDY_METADATA_SIZE));
-    if (!node || !node->data) {
-        #ifdef DEBUG
-        printf(RED "ERROR: Invalid metadata in release\n" RESET);
-        #endif
-        return -1;
-    }
-    
-    if(node->is_free) {
-        #ifdef DEBUG
-        printf(RED "ERROR: Attempting to release an already free block\n" RESET);
-        #endif
-        return -1;
-    }
-    
     #ifdef VERBOSE
     printf("Releasing block at %p, size %zu, level %d\n", 
            (void*)node->data, node->size, node->level);
     #endif
     
-    uint64_t r = (uint64_t)((Allocator*)a->base.free((Allocator*)a, node));
+    uint64_t r = (uint64_t)((Allocator*)a->base.free((Allocator*)a, ptr));
     if (r != 0) {
         #ifdef DEBUG
         printf(RED "ERROR: Failed to release block\n" RESET);
