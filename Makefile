@@ -6,6 +6,7 @@ SRCDIR = src
 HEADDIR = header
 BUILDDIR = build
 BINDIR = bin
+BENCHMARKDIR = benchmarks
 
 # Targets
 BINS = $(BINDIR)/main
@@ -15,9 +16,8 @@ DATA_STRUCTURES = $(BUILDDIR)/double_linked_list.o \
 
 HELPERS = $(BUILDDIR)/memory_manipulation.o \
 					$(BUILDDIR)/benchmark.o \
-					$(BUILDDIR)/file_benchmark.o \
+					$(BUILDDIR)/benchmark_allocator.o \
 					$(BUILDDIR)/parse.o \
-					$(BUILDDIR)/time.o \
 					$(BUILDDIR)/freeform.o \
 
 TESTS = $(BUILDDIR)/test_slab_allocator.o \
@@ -35,6 +35,9 @@ OBJECTS = $(BUILDDIR)/main.o \
 .PHONY: clean all valgrind verbose time
 
 all: $(BINDIR)/main
+
+benchmark: 
+	python3 $(BENCHMARKDIR)/benchmark.py
 
 valgrind: $(BINDIR)/main
 	valgrind  --track-origins=yes --show-leak-kinds=all --leak-check=full ./$(BINDIR)/main
@@ -117,8 +120,6 @@ $(BUILDDIR)/test_bitmap_buddy_allocator.o: $(SRCDIR)/test/test_bitmap_buddy_allo
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 # Helpers 
-$(BUILDDIR)/time.o: $(SRCDIR)/helpers/time.c $(HEADDIR)/helpers/time.h
-	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(BUILDDIR)/memory_manipulation.o: $(SRCDIR)/helpers/memory_manipulation.c $(HEADDIR)/helpers/memory_manipulation.h
 	$(CC) $(CFLAGS) -c -o $@ $<
@@ -132,8 +133,9 @@ $(BUILDDIR)/parse.o: $(SRCDIR)/helpers/parse.c $(HEADDIR)/helpers/parse.h
 $(BUILDDIR)/benchmark.o: $(SRCDIR)/helpers/benchmark.c $(HEADDIR)/helpers/benchmark.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-$(BUILDDIR)/file_benchmark.o: $(SRCDIR)/helpers/file_benchmark.c $(HEADDIR)/helpers/benchmark.h
+$(BUILDDIR)/benchmark_allocator.o: $(SRCDIR)/helpers/benchmark_allocator.c $(HEADDIR)/helpers/benchmark.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
 	rm -rf $(BUILDDIR)/*.o $(BINDIR)/*
+	rm -rf $(BENCHMARKDIR)/generated_*.alloc

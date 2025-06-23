@@ -1,5 +1,6 @@
-HOW TO USE THE MEMORY PROFILER
-
+HOW TO USE THE MEMORY PROFILER 
+Files considered MUST be in the ./benchmarks folder and have the .alloc extension
+Lines that start with % will be ignored
 Commands:
 i,<allocator type> where allocator type can be slab, buddy or bitmap
 p,<param1>,<param2>,...

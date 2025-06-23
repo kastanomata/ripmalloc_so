@@ -40,5 +40,5 @@ union AllocatorConfigData {
 int parse(const char *filename);
 enum AllocatorType parse_allocator_create(FILE *file);
 union AllocatorConfigData parse_allocator_create_parameters(FILE *file, struct AllocatorConfig *config);
-int parse_allocator_request(const char *line, struct AllocatorConfig *config, char **pointers, long *pointer_count);
+int parse_allocator_request(const char *line, struct AllocatorConfig *config, char **pointers, int num_pointers, long *allocation_counter);
 

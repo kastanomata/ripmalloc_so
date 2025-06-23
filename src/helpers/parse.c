@@ -34,7 +34,6 @@ enum AllocatorType parse_allocator_create(FILE *file) {
   // Remove trailing newline from token if present
   token[strcspn(token, "\r\n")] = 0;
   enum AllocatorType type = -1;  // Default to an invalid type
-  printf("Parsing allocator type: '%s'\n", token);
   if (strcmp(token, "slab") == 0) {
     type = SLAB_ALLOCATOR;
   } else if (strcmp(token, "buddy") == 0) {
@@ -113,7 +112,7 @@ union AllocatorConfigData parse_allocator_create_parameters(FILE *file, struct A
   return data;
 }
 
-int parse_allocator_request(const char *line, struct AllocatorConfig *config, char **pointers, long *pointer_count) {
+int parse_allocator_request(const char *line, struct AllocatorConfig *config, char **pointers, int num_pointers, long *allocation_counter) {
   // the structure of the line is:
   // for variable size allocation:
   // a,<index>,<size>
@@ -123,124 +122,106 @@ int parse_allocator_request(const char *line, struct AllocatorConfig *config, ch
   char *token = strtok((char *)line, ",");
   enum RequestType request_type = ALLOCATE;
   if (strcmp(token, "a") == 0) {
-    // Allocation request
     request_type = ALLOCATE;
   } else if (strcmp(token, "f") == 0) {
-    // Free request
     request_type = FREE;
   } else {
     #ifdef DEBUG
-    fprintf(stderr, RED "Invalid request type: %s\n" RESET, token);
+    printf(RED "Invalid request type: %s\n" RESET, token);
     #endif
     return -1;
   }
   token = strtok(NULL, ",");
   if (!token) {
     #ifdef DEBUG
-    fprintf(stderr, RED "No index specified in allocator request\n" RESET);
+    printf(RED "No index specified in allocator request\n" RESET);
     #endif
     return -1;
   }
   int index = atoi(token);
-  if (index < 0) {
+  if (index < 0 || index >= num_pointers) {
     #ifdef DEBUG
-    fprintf(stderr, RED "Invalid index specified in allocator request: %d\n" RESET, index);
+    printf(RED "Invalid index specified in allocator request: %d\n" RESET, index);
     #endif
     return -1;
   }
-  if (config->is_variable_size_allocation == false) {
-    // Fixed size allocation, no size specified
-    switch (request_type) {
-      case ALLOCATE:
+
+  switch (request_type) {
+    case ALLOCATE: {
       if (pointers[index] != NULL) {
         #ifdef DEBUG
-        fprintf(stderr, RED "Pointer at index %d already allocated: %p\n" RESET, index, pointers[index]);
+        printf(RED "Pointer at index %d already allocated: %p\n" RESET, index, pointers[index]);
         #endif
         return -1;  // Pointer already allocated
       }
-      pointers[index] = allocator->malloc(allocator);  // Allocate memory for the pointer
-      if (pointers[index] == NULL) {
-        #ifdef DEBUG
-        fprintf(stderr, RED "Failed to allocate memory for pointer at index %d\n" RESET, index);
+      if (config->is_variable_size_allocation == false) {
+        // Fixed size allocation
+        pointers[index] = allocator->malloc(allocator);
+        if (pointers[index] == NULL) {
+          #ifdef DEBUG
+          printf(RED "Failed to allocate memory for pointer at index %d\n" RESET, index);
+          #endif
+          return -1;
+        }
+        #ifdef VERBOSE
+        printf(GREEN "Pointer at index %d allocated successfully: %p\n" RESET, index, pointers[index]);
         #endif
-        return -1;  // Allocation failed
+        (*allocation_counter)++;
+      } else {
+        // Variable size allocation
+        token = strtok(NULL, ",");
+        if (!token) {
+          #ifdef DEBUG
+          printf(RED "No size specified for variable size allocation\n" RESET);
+          #endif
+          return -1;
+        }
+        int size = atoi(token);
+        if (size <= 0) {
+          #ifdef DEBUG
+          printf(RED "Invalid size specified for variable size allocation: %d\n" RESET, size);
+          #endif
+          return -1;
+        }
+        pointers[index] = allocator->malloc(allocator, size);
+        if (pointers[index] == NULL) {
+          #ifdef DEBUG
+          printf(RED "Failed to allocate memory for pointer at index %d\n" RESET, index);
+          #endif
+          return -1;
+        }
+        #ifdef VERBOSE
+        printf(GREEN "Pointer at index %d allocated successfully: %p\n" RESET, index, pointers[index]);
+        #endif
+        (*allocation_counter)++;
       }
-      printf(GREEN "Pointer at index %d allocated successfully: %p\n" RESET, index, pointers[index]);
-      *pointer_count++;
       break;
-      case FREE:
-      if (pointers[index] == NULL) {
-        #ifdef DEBUG
-        fprintf(stderr, RED "Pointer at index %d is already free or not allocated\n" RESET, index);
-        #endif
-        return -1;  // Pointer not allocated
-      }
-      if(allocator->free(allocator, pointers[index]) == (void *) -1 ) {
-        #ifdef DEBUG
-        fprintf(stderr, RED "Failed to free pointer at index %d\n" RESET, index);
-        #endif
-        return -1;  // Free operation failed
-      }
-      *pointer_count--;
-      printf("Pointer at index %d freed successfully\n", index);
-      pointers[index] = NULL;  // Clear the pointer after freeing
-      break;
-      default:
-      #ifdef DEBUG
-      fprintf(stderr, RED "Unknown request type: %d\n" RESET, request_type);
-      #endif
-      return -1;
     }
-    printf("Parsed allocation request: index=%d, pointer=%p\n", index, pointers[index]);
-  } else {
-    // Variable size allocation, size is specified
-    int size = 0;  
-    if (request_type == ALLOCATE) {
-      token = strtok(NULL, ",");
-      if (!token) {
+    case FREE: {
+      if (pointers[index] == NULL) {
         #ifdef DEBUG
-        fprintf(stderr, RED "No size specified for variable size allocation\n" RESET);
+        printf(RED "Pointer at index %d is already free or not allocated\n" RESET, index);
         #endif
         return -1;
       }
-      size = atoi(token);
-      if (size <= 0) {
+      if (allocator->free(allocator, pointers[index]) == (void *) -1) {
         #ifdef DEBUG
-        fprintf(stderr, RED "Invalid size specified for variable size allocation: %d\n" RESET, size);
+        printf(RED "Failed to free pointer at index %d\n" RESET, index);
         #endif
         return -1;
       }
-    }
-    switch (request_type) {
-      case ALLOCATE:
-      pointers[index] = allocator->malloc(allocator, size);  // Allocate memory for the pointer
-      if (pointers[index] == NULL) {
-        #ifdef DEBUG
-        fprintf(stderr, RED "Failed to allocate memory for pointer at index %d\n" RESET, index);
-        #endif
-        return -1;  // Allocation failed
-      }
-      printf(GREEN "Pointer at index %d allocated successfully: %p\n" RESET, index, pointers[index]);
-      *pointer_count++;
-      break;
-      case FREE:
-      if( allocator->free(allocator, pointers[index]) == (void *) -1 ) {
-        #ifdef DEBUG
-        fprintf(stderr, RED "Failed to free pointer at index %d\n" RESET, index);
-        #endif
-        return -1;  // Free operation failed
-      }
-      *pointer_count--;
+      (*allocation_counter)--;
+      #ifdef VERBOSE
       printf(GREEN "Pointer at index %d freed successfully\n" RESET, index);
-      pointers[index] = NULL;  // Clear the pointer after freeing
+      #endif
+      pointers[index] = NULL;
       break;
-      default:
+    }
+    default:
       #ifdef DEBUG
-      fprintf(stderr, RED "Unknown request type: %d\n" RESET, request_type);
+      printf(RED "Unknown request type: %d\n" RESET, request_type);
       #endif
       return -1;
-    }
-    // printf("Parsed allocation request: index=%d, pointer=%p\n", index, pointers[index]);
   }
   return 0;
 }

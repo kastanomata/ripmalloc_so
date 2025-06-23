@@ -62,9 +62,10 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-# My 
+# My notes
 thesis/.~lock.*.fodt#
 *.txt
+benchmarks/generated_*.alloc
 .vscode
 
 # Massif output files

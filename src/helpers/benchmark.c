@@ -34,63 +34,88 @@ static int free_benchmark_files(char *files[], int file_count) {
 }
 
 static int select_benchmark_file(char *files[], int file_count) {
-	if (file_count == 0) {
-		printf("No benchmark files found.\n");
-		return -1;
-	}
-	
-	printf("Select a benchmark file (0 to run all):\n");
-	for (int i = 0; i < file_count; i++) {
-		printf("%d: %s\n", i + 1, files[i]);
-	}
-	
-	int choice;
-	while (1) {
-		printf("Enter choice [0-%d]: ", file_count);
-		if (scanf("%d", &choice) != 1) {
-			printf("Invalid input. Please enter a number.\n");
-			while (getchar() != '\n'); // Clear input buffer
-			continue;
-		}
-		
-		if (choice == 0) {
-			return file_count; // Run all
-		} else if (choice > 0 && choice <= file_count) {
-			return choice - 1; // Run single
-		} else {
-			printf("Invalid choice. Try again.\n");
-		}
-	}
+    if (file_count == 0) {
+        printf("No benchmark files found.\n");
+        return -1;
+    }
+    
+    printf("\nSelect a benchmark file:\n");
+    printf("0: Run all benchmarks\n");
+    for (int i = 0; i < file_count; i++) {
+        printf("%d: %s\n", i + 1, files[i]);
+    }
+    printf("q: Quit\n");
+    
+    char input[32];
+    while (1) {
+        printf("\nEnter choice [0-%d, q]: ", file_count);
+        if (scanf("%31s", input) != 1) {
+            printf("Invalid input. Please try again.\n");
+            while (getchar() != '\n'); // Clear input buffer
+            continue;
+        }
+        
+        // Check for quit command
+        if (input[0] == 'q' || input[0] == 'Q') {
+            return -2; // Special code for quit
+        }
+        
+        // Convert to number
+        char *endptr;
+        long choice = strtol(input, &endptr, 10);
+        if (endptr == input || *endptr != '\0') {
+            printf("Invalid input. Please enter a number or 'q'.\n");
+            continue;
+        }
+        
+        if (choice == 0) {
+            return file_count; // Run all
+        } else if (choice > 0 && choice <= file_count) {
+            return choice - 1; // Run single
+        } else {
+            printf("Invalid choice. Try again.\n");
+        }
+    }
 }
 
 int benchmark() {
-	// this function should print all the benchmark files in the benchmark folder
-	char *files[100];  // Adjust size as needed
-	int file_count = get_benchmark_files(files, 100);
-	if (file_count <= 0) {
-		return -1;  // Error occurred
-	}
-	
-	int run = select_benchmark_file(files, file_count);
-	if(run == file_count) {
-		// Run all files
-		for (int i = 0; i < file_count; i++) {
-			printf("Running benchmark: %s\n", files[i]);
-			run_benchmark_from_file(files[i]);  
-		}
-	} else if (run >= 0) {
-		// Run the selected file
-		printf("Running benchmark: %s\n", files[run]);
-		run_benchmark_from_file(files[run]);  
-	} else {
-		printf("No valid benchmark selected.\n");
-		free_benchmark_files(files, file_count);
-		return -1;  // Invalid selection
-	}
-	
-	
-	// Free the allocated memory for file names
-	free_benchmark_files(files, file_count);
-	return 0;  // Success
+    char *files[100];  // Adjust size as needed
+    int file_count = get_benchmark_files(files, 100);
+    if (file_count <= 0) {
+        return -1;  // Error occurred
+    }
+    
+    while (1) {
+        int run = select_benchmark_file(files, file_count);
+        
+        if (run == -2) { // Quit command
+            printf("Exiting benchmark menu.\n");
+            break;
+        } else if (run == file_count) {
+            // Run all files
+            printf("\nRunning all benchmarks:\n");
+            for (int i = 0; i < file_count; i++) {
+                printf("\n=== Benchmark %d/%d: %s ===\n", i+1, file_count, files[i]);
+                Allocator_benchmark_initialize(files[i]);  
+            }
+            printf("\nAll benchmarks completed.\n");
+        } else if (run >= 0) {
+            // Run the selected file
+            printf("\n=== Running benchmark: %s ===\n", files[run]);
+            Allocator_benchmark_initialize(files[run]);  
+            printf("\nBenchmark completed.\n");
+        } else {
+            printf("No valid benchmark selected.\n");
+        }
+        
+        // Option to continue or quit
+        printf("\nPress Enter to continue...");
+				getchar(); // Wait for Enter key
+				while (getchar() != '\n'); // Clear input buffer
+    }
+    
+    // Free the allocated memory for file names
+    free_benchmark_files(files, file_count);
+    return 0;  // Success
 }
 

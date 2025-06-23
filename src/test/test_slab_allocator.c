@@ -204,103 +204,21 @@ static int test_invalid_free() {
     return 0;
 }
 
-#ifdef TIME
-// Test functions that perform the actual allocations
-static int test_standard_malloc_impl() {
-
-    void* ptrs[NUM_ALLOCS];
-    
-    // Allocate blocks
-    for (size_t i = 0; i < NUM_ALLOCS; i++) {
-        ptrs[i] = malloc(SLAB_SIZE);
-        if (!ptrs[i]) {
-            // Cleanup previous allocations
-            for (size_t j = 0; j < i; j++) {
-                free(ptrs[j]);
-            }
-            return -1;
-        }
-        // Fill allocated memory with zeros
-        memset(ptrs[i], 0, SLAB_SIZE);
-    }
-    
-    // Free blocks
-    for (size_t i = 0; i < NUM_ALLOCS; i++) {
-        free(ptrs[i]);
-    }
-    
-    return 0;
-}
-#endif
-static int test_slab_operations_impl() {
-    SlabAllocator allocator;
-    void* ptrs[NUM_SLABS];
-    
-    // Setup
-    if (!SlabAllocator_create(&allocator, SLAB_SIZE, NUM_SLABS)) {
-        return -1;
-    }
-    
-    // Allocate slabs and write to them
-    for (size_t i = 0; i < NUM_SLABS ; i++) {
-        ptrs[i] = SlabAllocator_malloc(&allocator);
-        if (!ptrs[i]) {
-            for (size_t j = 0; j < i; j++) {
-                SlabAllocator_free(&allocator, ptrs[j]);
-            }
-            SlabAllocator_destroy(&allocator);
-            return -1;
-        }
-        // Fill allocated memory with zeros
-        memset(ptrs[i], 0, SLAB_SIZE);
-    }
-
-    // Free slabs
-    for (size_t i = 0; i < NUM_SLABS; i++) {
-        SlabAllocator_free(&allocator, ptrs[i]);
-    }
-    
-    // Cleanup
-    SlabAllocator_destroy(&allocator);
-    return 0;
-}
-
-#ifdef TIME
-// Main test functions that handle timing
-int test_standard_allocator() {
-    TimingResult timing = get_real_timing(test_standard_malloc_impl, "Standard malloc/free", NUM_RUNS);
-    return timing.real_time < 0 ? -1 : 0;
-}
-#endif
 
 int test_slab_allocator() {
     int result = 0;
     
+    printf("=== Running SlabAllocator Tests ===\n");
     result |= test_invalid_init();
     result |= test_create_destroy();
     result |= test_alloc_pattern();
     result |= test_exhaustion();
     result |= test_invalid_free();
-    
-    #ifdef TIME
-    printf("\n=== Running Timing Tests ===\n");
-    TimingResult slab_timing = get_real_timing(test_slab_operations_impl, "Slab allocator", NUM_RUNS);
-    result |= slab_timing.real_time < 0 ? -1 : 0;
-    
-    printf("\n=== Running Standard Allocator Tests ===\n");
-    int std_result = test_standard_allocator();
-    result |= std_result;
-    #else
 
-    printf("=== Running SlabAllocator Tests ===\n");
-    result |= test_slab_operations_impl();
-    #endif
     if (result != 0) {
-        // Red color for failed tests
-        printf("\033[1;31mSome SlabAllocator tests failed!\033[0m\n");
+        printf(RED "Some SlabAllocator tests failed!\n" RESET);
     } else {
-        // Green color for passed tests
-        printf("\033[1;32mAll SlabAllocator tests passed!\033[0m\n");
+        printf(GREEN "All SlabAllocator tests passed!\n" RESET);
     }
     printf("=== SlabAllocator Tests Complete ===\n");
     

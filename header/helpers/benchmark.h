@@ -12,6 +12,9 @@
 #include <bitmap_buddy_allocator.h>
 
 #include <helpers/parse.h>
+#ifdef TIME
+  #include <time.h>
+#endif
 
 #define PROJECT_FOLDER "."
 #define BENCHMARK_FOLDER "./benchmarks"
@@ -23,5 +26,5 @@ union GeneralAllocator {
 };
 
 int benchmark();
-int run_benchmark_from_file(const char *file_name);
+int Allocator_benchmark_initialize(const char *file_name);
 
