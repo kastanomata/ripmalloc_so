@@ -143,11 +143,10 @@ void* BitmapBuddyAllocator_init(Allocator* base_alloc, ...) {
     size_t total_size = va_arg(args, size_t);
     int num_levels = va_arg(args, int);
     va_end(args);
-    
     // Validate parameters
-    if (num_levels <= 0 || num_levels >= BITMAP_BUDDY_MAX_LEVELS) {
+    if (!alloc || total_size <= 0 || num_levels <= 0 || num_levels >= BITMAP_BUDDY_MAX_LEVELS) {
         #ifdef DEBUG
-        printf(RED "ERROR: Invalid number of levels (%d)\n" RESET, num_levels);
+        printf(RED "ERROR: Invalid allocator or invalid number of levels (%d)\n" RESET, num_levels);
         #endif
         return NULL;
     }
@@ -199,9 +198,15 @@ void* BitmapBuddyAllocator_init(Allocator* base_alloc, ...) {
 
 void* BitmapBuddyAllocator_cleanup(Allocator* base_alloc, ...) {
     BitmapBuddyAllocator* alloc = (BitmapBuddyAllocator*)base_alloc;
+    if (!alloc) {
+        #ifdef DEBUG
+        printf(RED "Error: NULL allocator in BitmapBuddyAllocator_destroy\n" RESET);
+        #endif
+        return (void*)-1;
+    }
     
     if (alloc->memory_start) {
-        // Calculate total allocated size (buddy memory + bitmap)
+        // Calculate total allocated size (buddy memory + alloc)
         int num_bits = (1 << (alloc->num_levels + 1)) - 1;
         size_t bitmap_size = ((num_bits + 31) / 32) * sizeof(uint32_t);
         size_t total_size = alloc->memory_size + bitmap_size;
@@ -221,12 +226,12 @@ void* BitmapBuddyAllocator_reserve(Allocator* base_alloc, ...) {
     size_t size = va_arg(args, size_t);
     va_end(args);
     
-    if (size <= 0) {
+    if (!alloc || size <= 0) {
         #ifdef DEBUG
-        printf(RED "ERROR: Invalid size for reservation\n" RESET);
+        printf(RED "Error: NULL allocator or invalid size\n" RESET);
         #endif
         return NULL;
-    } 
+    }
     
     // Add metadata overhead
     size_t real_size = size + BITMAP_METADATA_SIZE;
@@ -267,7 +272,13 @@ void* BitmapBuddyAllocator_release(Allocator* base_alloc, ...) {
     void* ptr = va_arg(args, void*);
     va_end(args);
 
-    if (!ptr) return (void*)-1;
+    if (!alloc || !ptr) {
+        #ifdef DEBUG
+        printf(RED "Error: NULL allocator or pointer in BitmapBuddyAllocator_free\n" RESET);
+        #endif
+        return (void*)-1;
+    }
+
 
     // Convert to char* for pointer arithmetic
     char* char_ptr = (char*)ptr;

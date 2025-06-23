@@ -94,13 +94,16 @@ static BuddyNode* BuddyAllocator_merge_blocks(BuddyAllocator* a, BuddyNode* left
 void* BuddyAllocator_init(Allocator* alloc, ...) {
     va_list args;
     va_start(args, alloc);
-    
     BuddyAllocator* buddy = (BuddyAllocator*)alloc;
     size_t total_size = va_arg(args, size_t);
     int num_levels = va_arg(args, int) + 1; // +1 for the root level
-    
     va_end(args);
-
+    if (!alloc || total_size <= 0 || num_levels <= 1 || num_levels >= BUDDY_MAX_LEVELS) {
+        #ifdef DEBUG
+        printf(RED "ERROR: Invalid parameters in create!\n" RESET);
+        #endif
+        return NULL;
+    } 
     // Calculate max number of nodes
     size_t max_nodes = 0;
     size_t level_nodes = 1;
@@ -108,19 +111,6 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
         max_nodes += level_nodes;
         level_nodes *= 2;
     }
-    
-    #ifdef VERBOSE
-    printf("Buddy Allocator initialized with:\n");
-    printf("  Total size: %zu bytes\n", total_size);
-    printf("  Number of levels: %d\n", num_levels);
-    printf("  Max nodes: %zu\n", max_nodes);
-    size_t level_size = total_size;
-    printf("\nNode sizes at each level:\n");
-    for (int i = 0; i < num_levels; i++) {
-        printf("  Level %d: %zu bytes\n", i, level_size);
-        level_size /= 2;
-    }
-    #endif
 
     // Initialize memory
     buddy->memory_start = mmap(NULL, total_size, PROT_READ | PROT_WRITE, 
@@ -234,9 +224,6 @@ void* BuddyAllocator_cleanup(Allocator* alloc, ...) {
         return (void*)-1;
     }
     
-    #ifdef VERBOSE
-    printf("Buddy allocator destroyed\n");
-    #endif
     return (void*)0;
 }
 
@@ -246,6 +233,12 @@ void* BuddyAllocator_reserve(Allocator* alloc, ...) {
     BuddyAllocator* buddy = (BuddyAllocator*)alloc;
     size_t size = va_arg(args, size_t);
     va_end(args);
+    if (!alloc || size <= 0) {
+        #ifdef DEBUG
+        printf(RED "ERROR: NULL allocator or invalid size in alloc!\n" RESET);
+        #endif
+        return NULL;
+    }
 
     size_t adjusted_size = size + BUDDY_METADATA_SIZE;
     // Align to 8 bytes
@@ -278,9 +271,6 @@ void* BuddyAllocator_reserve(Allocator* alloc, ...) {
         return NULL;
     }
 
-    #ifdef VERBOSE
-    printf("Allocating adjusted_size %zu at level %d (block adjusted_size %zu)\n", adjusted_size, level, block_size);
-    #endif
     
     if (level < 0 || level >= buddy->num_levels) {
         #ifdef DEBUG
@@ -296,27 +286,14 @@ void* BuddyAllocator_reserve(Allocator* alloc, ...) {
         return NULL;
     }
 
-    BuddyNode* free_block = (BuddyNode*) list_pop_front(buddy->free_lists[level]);
-    #ifdef VERBOSE
-    if(!free_block) {
-        printf("No block found at level %d\n", level);
-    }
-    #endif
-    
+    BuddyNode* free_block = (BuddyNode*) list_pop_front(buddy->free_lists[level]);    
     int current_level = level;
     
     // Search larger blocks if needed
     while (!free_block && current_level > 0) {
         current_level--;
-        #ifdef VERBOSE
-        printf("Looking for block at level %d\n", current_level);
-        #endif
         free_block = (BuddyNode*) list_pop_front(buddy->free_lists[current_level]);
-        if (free_block) {
-            #ifdef VERBOSE
-            printf("Found block at level %d, splitting...\n", current_level);
-            #endif
-            
+        if (free_block) {            
             // Split block to desired level
             while (current_level < level) {
                 struct Buddies buddies = BuddyAllocator_divide_block(buddy, free_block);
@@ -343,9 +320,6 @@ void* BuddyAllocator_reserve(Allocator* alloc, ...) {
         return NULL;
     }
 
-    #ifdef VERBOSE
-    printf("Found free block at level %d: %p\n", level, (void*)free_block);
-    #endif
     free_block->is_free = false;
     // Store metadata at start of block
     void* raw_block = free_block->data;
@@ -360,6 +334,12 @@ void *BuddyAllocator_release(Allocator* alloc, ...) {
     BuddyAllocator* a = (BuddyAllocator*)alloc;
     void* ptr = va_arg(args, void*);
     va_end(args);
+    if(!a || !ptr) {
+        #ifdef DEBUG
+        printf(RED "ERROR: NULL allocator or pointer in release\n" RESET);
+        #endif
+        return (void*)-1;
+    }
     // Verify pointer is within allocator's memory range
     if ((char*)ptr < (char*)a->memory_start || 
         (char*)ptr >= (char*)a->memory_start + a->total_size) {

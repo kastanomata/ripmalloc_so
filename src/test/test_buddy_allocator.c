@@ -213,7 +213,7 @@ static int test_buddy_merging() {
     #endif
     
     assert(BuddyAllocator_create(&allocator, TOTAL_SIZE, NUM_LEVELS) != NULL);
-    size_t small_size = allocator.min_block_size - sizeof(BuddyNode*);
+    size_t small_size = allocator.min_block_size - BUDDY_METADATA_SIZE;
     size_t large_size = small_size * 2;
     
     // Allocate two adjacent small blocks

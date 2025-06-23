@@ -44,18 +44,6 @@ void print_slab_info(SlabAllocator* a, unsigned int slab_index);
 
 // Create a new SlabAllocator
 inline SlabAllocator* SlabAllocator_create(SlabAllocator* a, size_t slab_size, size_t n_slabs) {
-    #ifdef VERBOSE
-    printf("\tCreating new SlabAllocator...\n");
-    #endif
-    
-    // Validate input parameters
-    if (!a || slab_size == 0 || n_slabs == 0) {
-        #ifdef DEBUG
-        printf(RED "ERROR: Failed to create: invalid parameters!\n" RESET);
-        #endif
-        return NULL;
-    }
-
     // memset(a, 0, sizeof(SlabAllocator));
     if (!SlabAllocator_init((Allocator*)a, slab_size, n_slabs)) {
         #ifdef DEBUG
@@ -63,29 +51,12 @@ inline SlabAllocator* SlabAllocator_create(SlabAllocator* a, size_t slab_size, s
         #endif
         return NULL;
     }
-    #ifdef VERBOSE
-    printf("\tSuccessfully created SlabAllocator\n");
-    #endif
     return a;
 }
 // Destroy a SlabAllocator
-inline int SlabAllocator_destroy(SlabAllocator* a) {
-    #ifdef VERBOSE
-    printf("\tDestroying SlabAllocator instance...\n");
-    #endif
-    if (!a) {
-        #ifdef DEBUG
-        printf(RED "ERROR: NULL allocator passed to SlabAllocator_destroy\n" RESET);
-        #endif
-        return -1;
-    }
-    
+inline int SlabAllocator_destroy(SlabAllocator* a) {    
     void* result = ((Allocator*)a)->dest((Allocator*)a);
     if (!result) return -1;
-    
-    #ifdef VERBOSE
-    printf("\tSlabAllocator instance destroyed\n");
-    #endif
     return 0;
 }
 // Allocate a slab

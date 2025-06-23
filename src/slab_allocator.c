@@ -12,9 +12,6 @@ static inline size_t get_slab_total_size(size_t requested_size) {
 
 // Initialize SlabAllocator
 void *SlabAllocator_init(Allocator* alloc, ...) {
-    #ifdef VERBOSE
-    printf("\tInitializing SlabAllocator...\n");
-    #endif
     if (!alloc) {
         #ifdef DEBUG
         printf(RED "ERROR: NULL allocator passed to SlabAllocator_init\n" RESET);
@@ -31,14 +28,16 @@ void *SlabAllocator_init(Allocator* alloc, ...) {
     size_t n_slabs = va_arg(args, size_t);
     va_end(args);
 
+    // Validate input parameters
+    if (!alloc || requested_size == 0 || n_slabs == 0) {
+        #ifdef DEBUG
+        printf(RED "ERROR: Failed to create: invalid parameters!\n" RESET);
+        #endif
+        return NULL;
+    }
+
     // Calculate actual slab size including metadata
     slab->slab_size = get_slab_total_size(requested_size);
-    
-    #ifdef VERBOSE
-    printf("\tRequested slab size: %zu bytes\n", requested_size);
-    printf("\tActual slab size with metadata: %zu bytes\n", slab->slab_size);
-    printf("\tInitial slabs: %zu\n", n_slabs);
-    #endif
 
     // Calculate total memory needed including space for DoubleLinkedList
     size_t list_size = sizeof(DoubleLinkedList);
@@ -46,9 +45,6 @@ void *SlabAllocator_init(Allocator* alloc, ...) {
     // Round up to page size
     size_t page_size = sysconf(_SC_PAGESIZE);
     total_size = (total_size + page_size - 1) & ~(page_size - 1);
-    #ifdef VERBOSE
-    printf("\tTotal memory needed: %zu bytes\n", total_size);
-    #endif
 
     // Allocate memory using mmap
     slab->managed_memory = mmap(NULL, total_size, PROT_READ | PROT_WRITE,
@@ -59,9 +55,6 @@ void *SlabAllocator_init(Allocator* alloc, ...) {
         #endif
         return NULL;
     }
-    #ifdef VERBOSE
-    printf("\tSuccessfully allocated %zu bytes of managed memory\n", total_size);
-    #endif
 
     slab->buffer_size = total_size;
     
@@ -74,14 +67,8 @@ void *SlabAllocator_init(Allocator* alloc, ...) {
         munmap(slab->managed_memory, total_size);
         return NULL;
     }
-    #ifdef VERBOSE
-    printf("\tSuccessfully created free list\n");
-    #endif
 
     // Initialize free list with slabs
-    #ifdef VERBOSE
-    printf("\tInitializing free list with slabs...\n");
-    #endif
     char* current = slab->managed_memory + list_size;
     for (size_t i = 0; i < n_slabs; i++) {
         SlabNode* slab_node = (SlabNode*)current;
@@ -94,9 +81,6 @@ void *SlabAllocator_init(Allocator* alloc, ...) {
     }
     slab->free_list_size = n_slabs;
     slab->free_list_size_max = n_slabs;
-    #ifdef VERBOSE
-    printf("\tFree list initialized with %u slabs\n", slab->free_list_size);
-    #endif
 
     // Store the requested size for user allocations
     slab->user_size = requested_size;
@@ -106,18 +90,11 @@ void *SlabAllocator_init(Allocator* alloc, ...) {
     alloc->dest = SlabAllocator_cleanup;
     alloc->malloc = SlabAllocator_reserve;
     alloc->free = SlabAllocator_release;
-    #ifdef VERBOSE
-    printf("\tInterface methods configured\n");
-    printf("\tSlabAllocator initialization complete\n");
-    #endif
     return (void*)1;
 }
 
 // Clean up SlabAllocator
 void *SlabAllocator_cleanup(Allocator* alloc, ...) {
-    #ifdef VERBOSE
-    printf("\tDestroying SlabAllocator...\n");
-    #endif
     if (!alloc) {
         #ifdef DEBUG
         printf(RED "ERROR: NULL allocator passed to SlabAllocator_cleanup\n" RESET);
@@ -127,23 +104,14 @@ void *SlabAllocator_cleanup(Allocator* alloc, ...) {
 
     SlabAllocator* slab = (SlabAllocator*)alloc;
     if (slab->managed_memory) {
-        #ifdef VERBOSE
-        printf("\tUnmapping managed memory (%u bytes)\n", slab->buffer_size);
-        #endif
         munmap(slab->managed_memory, slab->buffer_size);
     }
     // memset(slab, 0, sizeof(SlabAllocator));
-    #ifdef VERBOSE
-    printf("\tSlabAllocator destruction complete\n");
-    #endif
     return (void*)1;
 }
 
 // Allocate a slab
 void *SlabAllocator_reserve(Allocator* alloc, ...) {
-    #ifdef VERBOSE
-    printf("\tAttempting to allocate a slab...\n");
-    #endif
     if (!alloc) {
         #ifdef DEBUG
         printf(RED "ERROR: NULL allocator passed to SlabAllocator_malloc\n" RESET);
@@ -173,10 +141,6 @@ void *SlabAllocator_reserve(Allocator* alloc, ...) {
     // Clear the user data area
     // memset(slab_node->data, 0, slab->user_size);
 
-    #ifdef VERBOSE
-    printf("\tSuccessfully allocated slab (free slabs remaining: %u)\n", slab->free_list_size);
-    printf("\tAllocated node: %p, data: %p\n", (void*)slab_node, (void*)slab_node->data);
-    #endif
     return slab_node->data;
 }
 
@@ -184,9 +148,6 @@ void *SlabAllocator_reserve(Allocator* alloc, ...) {
 
 // Free a slab
 void *SlabAllocator_release(Allocator* alloc, ...) {
-    #ifdef VERBOSE
-    printf("\tAttempting to free a slab...\n");
-    #endif
     if (!alloc) {
         #ifdef DEBUG
         printf(RED "ERROR: NULL allocator passed to SlabAllocator_free\n" RESET);
@@ -201,8 +162,8 @@ void *SlabAllocator_release(Allocator* alloc, ...) {
     va_end(args);
 
     if (!ptr) {
-        #ifdef VERBOSE
-        printf("\tSkipping free of NULL pointer\n");
+        #ifdef EBUG
+        printf(RED "ERROR:Skipping free of NULL pointer\n" RESET);
         #endif
         return NULL;
     }
@@ -234,9 +195,6 @@ void *SlabAllocator_release(Allocator* alloc, ...) {
 
     // Check if node is already in free list
     if (list_find(slab->free_list, &slab_node->node) != NULL) {
-        #ifdef VERBOSE
-        printf("\tSlab already in free list, skipping...\n");
-        #endif
         return NULL;
     }
     
@@ -248,10 +206,6 @@ void *SlabAllocator_release(Allocator* alloc, ...) {
     list_push_front(slab->free_list, &slab_node->node);
     slab->free_list_size++;
     
-    #ifdef VERBOSE
-    printf("\tSuccessfully freed slab (free slabs: %u)\n", slab->free_list_size);
-    printf("\tFreed node: %p, data: %p\n", (void*)slab_node, (void*)slab_node->data);
-    #endif
     return (void*)1;
 }
 
