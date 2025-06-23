@@ -1,4 +1,4 @@
-\chapter{Esperimenti, Casi d’Uso}
+\chapter[Test e Performance]{Test e Performance}
 
 La letteratura descritta nel secondo capitolo giunge a una conclusione concorde sui benchmark per i gestori di memoria dinamicamente allocata: per valutare un algoritmo di allocazione, è necessario osservarne il comportamento all’interno di un contesto realistico. Ciò può avvenire solamente laddove le tracce adoperate per condurre i benchmark siano vicine alle allocazioni realmente compiute da programmi reali, che sono presi come esempio (esistono utilities che permettono di registrare le richieste, in modo da poterle usare a questo scopo).
 
@@ -14,7 +14,7 @@ Nel 1998, Wilson e Johnston approfondiscono i risultati del procedente paper sul
 
 I test delle funzionalità si concentrano unicamente sulla correttezza del codice: verificano che le funzioni rispondano correttamente a parametri sbagliati o richieste inappropriate. Definendo la flag DEBUG a tempo di compilazione abbiamo accesso a maggiori informazioni sugli errori e sulle loro cause.
 
-\subsection*{SlabAllocator}
+\subsection{SlabAllocator}
 \begin{table}[H]
 \centering
 \begin{tabularx}{\textwidth}{|l|X|}
@@ -36,7 +36,7 @@ I test delle funzionalità si concentrano unicamente sulla correttezza del codic
 \end{table}
 
 
-\subsection*{BuddyAllocator e BitmapBuddyAllocator}
+\subsection{BuddyAllocator e BitmapBuddyAllocator}
 \begin{table}[H]
 \centering
 \begin{tabularx}{\textwidth}{|l|X|}
@@ -47,7 +47,7 @@ I test delle funzionalità si concentrano unicamente sulla correttezza del codic
 \hline
 \texttt{test\_create\_destroy} & Testa la corretta creazione e distruzione di un allocatore, assicurandosi che non ci siano memory leak o corruzione dei dati. \\
 \hline
-\texttt{test\_single\_allocation} & Verifica che l'allocatore possa gestire correttamente una singola allocazione e che la memoria restituita sia utilizzabile. \\
+\texttt{test\_single\_allocation} & Verifica che l'allocatore possa rispondere correttamente ad allocazioni invalide e gestire correttamente una singola allocazione. \\
 \hline
 \texttt{test\_multiple\_allocation} & Controlla il comportamento dell'allocatore quando vengono effettuate più allocazioni consecutive, assicurandosi che tutte abbiano successo e non si sovrappongano. \\
 \hline
@@ -63,3 +63,5 @@ I test delle funzionalità si concentrano unicamente sulla correttezza del codic
 
 
 \section{Benchmark}
+
+\subsection{Timing e Performance}

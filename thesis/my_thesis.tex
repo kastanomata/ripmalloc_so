@@ -6,13 +6,32 @@
 \usepackage{float}
 \usepackage{booktabs}
 \usepackage{tabularx}
-
+\usepackage{listings}
+\usepackage{xcolor}
+\definecolor{lightgray}{rgb}{0.95,0.95,0.95}
+\lstset{
+  language=C,                         
+  basicstyle=\ttfamily\small,        % font size and style
+  backgroundcolor=\color{lightgray}, % background color
+  frame=single,                      % adds a box around code
+  rulecolor=\color{gray},           % color of frame
+  numbers=left,                     % show line numbers
+  numberstyle=\tiny\color{gray},    % style of line numbers
+  numbersep=10pt,                   % space between code and line numbers
+  keywordstyle=\color{blue},        % style for keywords
+  commentstyle=\color{green!50!black}, % style for comments
+  stringstyle=\color{red},          % style for strings
+  tabsize=4,                         % tab width
+  showstringspaces=false,           % don't show spaces in strings
+  breaklines=true,                  % automatic line breaking
+  breakatwhitespace=true,           % only break at white space
+  captionpos=b                      % caption position (t or b)
+}
 
 \usepackage{lipsum}
 \usepackage{url}
 \usepackage{graphicx}
 \usepackage{placeins}
-\usepackage{listings}
 \usepackage{wrapfig}
 \usepackage{hyperref}
 \usepackage{multicol,caption}
@@ -39,15 +58,11 @@
 \dedication{Dedicato a...}
 
 \begin{abstract}
-  ABS HERE
+  ABSTRACT HERE
 \end{abstract}
 
 
 \mainmatter 
-\begin{acknowledgments}
-  ACK HERE 
-\end{acknowledgments}
-
 \tableofcontents
 
 \include{chapter_1_introduction}
@@ -60,5 +75,12 @@
 
 \include{chapter_5_conclusioni}
 
+\include{bibliografia}
+
 \backmatter
+
+\begin{acknowledgments}
+  ACK HERE 
+\end{acknowledgments}
+
 \end{document}
