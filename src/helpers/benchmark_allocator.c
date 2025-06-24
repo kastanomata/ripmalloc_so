@@ -168,30 +168,40 @@ int Allocator_benchmark_initialize(const char *file_name) {
     }
 
     // Execute the benchmark
-#ifdef TIME
+    #ifdef TIME
     // Setup timing variables
     struct timespec start, end;
+    struct rusage usage_start, usage_end;
     double elapsed_seconds = 0.0;
-    
+    double user_seconds = 0.0, sys_seconds = 0.0;
+
     // Start timing
-    if (clock_gettime(CLOCK_MONOTONIC, &start) != 0) {
+    if (clock_gettime(CLOCK_MONOTONIC, &start) != 0 || getrusage(RUSAGE_SELF, &usage_start) != 0) {
         perror("Failed to get start time");
         result = -1;
     } else {
         // Execute benchmark
         result = Allocator_malloc_free(config, instructions, remaining, n_pointers);
-        
+
         // End timing
-        if (clock_gettime(CLOCK_MONOTONIC, &end) != 0) {
+        if (clock_gettime(CLOCK_MONOTONIC, &end) != 0 || getrusage(RUSAGE_SELF, &usage_end) != 0) {
             perror("Failed to get end time");
             result = -1;
         } else {
-            // Calculate elapsed time in seconds
+            // Calculate elapsed wall time in seconds
             elapsed_seconds = (end.tv_sec - start.tv_sec);
             elapsed_seconds += (end.tv_nsec - start.tv_nsec) / 1e9;
-            
+
+            // Calculate user and system CPU time in seconds
+            user_seconds = (usage_end.ru_utime.tv_sec - usage_start.ru_utime.tv_sec)
+                         + (usage_end.ru_utime.tv_usec - usage_start.ru_utime.tv_usec) / 1e6;
+            sys_seconds = (usage_end.ru_stime.tv_sec - usage_start.ru_stime.tv_sec)
+                        + (usage_end.ru_stime.tv_usec - usage_start.ru_stime.tv_usec) / 1e6;
+
             printf("\nBenchmark timing results:\n");
-            printf("  Total time: %.6f seconds\n", elapsed_seconds);
+            printf("  Wall time: %.6f seconds\n", elapsed_seconds);
+            printf("  User CPU time: %.6f seconds\n", user_seconds);
+            printf("  Kernel (system) CPU time: %.6f seconds\n", sys_seconds);
             printf("  Operations: %ld\n", remaining);
         }
     }

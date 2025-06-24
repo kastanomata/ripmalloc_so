@@ -10,6 +10,11 @@ Nel 1998, Wilson e Johnston approfondiscono i risultati del procedente paper sul
 ``This substantially strengthens our previous results showing that the memory fragmentation problem has generally been misunderstood, and that good allocator policies can provide good memory usage for most programs. The new results indicate that for most programs, excellent allocator policies are readily available, and efficiency of implementation is the major challenge.''
 \end{quote}
 
+Il programma dunque 
+
+
+\pagebreak 
+
 \section{Test delle funzionalità}
 
 I test delle funzionalità si concentrano unicamente sulla correttezza del codice: verificano che le funzioni rispondano correttamente a parametri sbagliati o richieste inappropriate. Definendo la flag DEBUG a tempo di compilazione abbiamo accesso a maggiori informazioni sugli errori e sulle loro cause.
@@ -34,6 +39,8 @@ I test delle funzionalità si concentrano unicamente sulla correttezza del codic
 \end{tabularx}
 \caption{Test funzionali per SlabAllocator}
 \end{table}
+
+I test per lo SlabAllocator sono generalmente semplici in natura: poiché la grandezza della richiesta non varia e la lista da gestire è singola, gli unici punti di difficoltà sono la creazione con parametri invalidi o il rilascio di puntatori incorretti.
 
 
 \subsection{BuddyAllocator e BitmapBuddyAllocator}
@@ -61,11 +68,22 @@ I test delle funzionalità si concentrano unicamente sulla correttezza del codic
 \caption{Test funzionali per BuddyAllocator e BitmapBuddyAllocator}
 \end{table}
 
+Gli allocatori che accettano richieste a taglia variabile vanno incontro a maggiori problematiche, perché devono manipolare maggiornmente la memoria per sistemare i blocchi correttamente. Ciononostante, i test aiutano a comprendere se qualcosa non è corretto nella loro implementazione.
+
 
 \section{Benchmark}
-Per verificare il comportamento degli allocatori a seguito di pattern più complessi di richieste e rilasci di memoria, è stato ritenuto opportuno aggiungere al programma una funzionalità che permetta di manipolare facilmente le richieste senza doverle esplicitare nel codice. Ciò permette una maggiore flessibilità e non impone di ricompilare ogni volta che si renda necessario cambiare i benchmark. Le funzioni che permettono questa funzionalità sono negli helper \texttt{benchmark} e \texttt{parse}.
+Per verificare il comportamento degli allocatori a seguito di pattern più complessi di richieste e rilasci di memoria, è stato ritenuto opportuno aggiungere al programma una funzionalità che permetta di manipolare facilmente le richieste senza doverle compilare esplicitamente nel codice. Ciò permette una maggiore flessibilità e non impone di ricompilare ogni volta che si renda necessario cambiare i benchmark. Le funzioni che permettono questa funzionalità sono negli helper \texttt{benchmark} e \texttt{parse}.
 
-Questa funzionalità è resa possibile dall’implementazione da parte di ogni allocatore dell’interfaccia \texttt{<Allocator>}. Poiché abbiamo a nostra disposizione i puntatori alle funzioni necessarie, possiamo standardizzare il funzionamento delle classi dividendole in due categorie: allocatori a taglia fissa, che permettono di richiedere blocchi di grandezza prestabilita (e.g. \texttt{SlabAllocator}) e allocatori a taglia variabile, i quali invece lasciano all’utente la scelta della dimensione dell’area di memoria richiesta (ossia \texttt{BuddyAllocator} e \texttt{BitmapBuddyAllocator}, nella nostra implementazione).
+Questa funzionalità è resa possibile dall’implementazione da parte di ogni allocatore dell’interfaccia \texttt{<Allocator>}. Poiché abbiamo a nostra disposizione i puntatori alle funzioni necessarie per svolgere tutte le operazioni, possiamo standardizzare il funzionamento delle classi dividendole in due categorie: allocatori a taglia fissa, che permettono di richiedere blocchi di grandezza prestabilita (e.g. \texttt{SlabAllocator}) e allocatori a taglia variabile, i quali invece lasciano all’utente la scelta della dimensione dell’area di memoria richiesta (ossia \texttt{BuddyAllocator} e \texttt{BitmapBuddyAllocator}, nella nostra implementazione).
+
+\begin{lstlisting}
+  // template per allocatore a dimensione fissa
+  void *FixedSizeAllocator_malloc(FixedSizeAllocator *a);
+  void *FixedSizeAllocator_free(FixedSizeAllocator *a);
+  // template per allocatore a dimensione variabile
+  void *VariableSizeAllocator_malloc(VariableSizeAllocator *a, size_t size);
+  void *VariableSizeAllocator_free(VariableSizeAllocator *a)
+\end{lstlisting}
 
 Il programma cerca all’interno della cartella \texttt{./benchmarks} file che abbiano l’estensione \texttt{.alloc}. Modificando il testo al loro interno si possono definire la tipologia di allocatore, i suoi parametri di inizializzazione e la sequenza di \texttt{malloc}/\texttt{free} da provare. I comandi sono terminati dal carattere ``a capo'' (\textbackslash n) e le componenti sono divise da una virgola. Comandi che sono preceduti dal carattere percentuale (\%) sono considerati commenti e ignorati.
 
@@ -82,9 +100,17 @@ Bitmap  & Variabile & memory\_size & max\_levels  \\
 \caption{Parametri di inizializzazione per ciascuna classe di allocatore}
 \end{table}
 
-La tabella illustra i parametri per le classi da noi implementate, ma sarebbe facilmente possibile estenderla per poter accogliere altre tipologie di allocatori.
+Per allocare e liberare memoria, l’istruzione deve iniziare rispettivamente con ``a'' o ``f''. Il benchmark per tenere traccia delle allocazioni usa un array avente lunghezza pari al numero massimo possibile di frammenti di memoria. Il comando \texttt{a,<index>} alloca memoria in una posizione specifica dell'array, mentre \texttt{f,<index>} la libera. Nel caso di allocatore a richiesta variabile, dopo l’index dell’array va specificato il numero di byte da allocare (con struttura \texttt{a,<index>,<size>}). 
 
-Per allocare e liberare memoria, l’istruzione deve iniziare rispettivamente con ``a'' o ``f''. Il benchmark per tenere traccia delle allocazioni usa un array avente lunghezza pari al numero massimo possibile di frammenti di memoria. Il comando \texttt{a,<index>} alloca memoria in una posizione specifica dell'array, mentre \texttt{f,<index>} la libera. Nel caso di allocatore a richiesta variabile, dopo l’index dell’array va specificato il numero di byte da allocare (con struttura \texttt{a,<index>,<size>}). È fondamentale non allocare più volte sullo stesso indice senza prima liberarlo, altrimenti si perderà il riferimento al puntatore e non sarà più possibile gestirlo correttamente.
+È fondamentale non allocare più volte sullo stesso indice senza prima liberarlo, altrimenti si perderà il riferimento al puntatore e non sarà più possibile gestirlo correttamente\footnote{Il programma di benchmarking non esegue istruzioni che porterebbero alla perdita di un indirizzo e avverte se il benchmark termina senza deallocare tutti gli indirizzi.}. Compilando con la flag TIME, il programma stampa a schermo una serie di informazioni sulla durata del benchmark: \textit{elapsed\_seconds}, \textit{user\_seconds} e \textit{kernel\_seconds}. L'analisi di queste informazioni fornisce alcune metriche aggiuntive sul comportamento dell'allocatore e sulla sua \textit{performance}.
+
+\subsection{Analisi dei pattern di allocazione}
+
+% TODO this chapter 
+
+
+
+\pagebreak
 
 \subsection{Esempi di file \texttt{.alloc}}
 \begin{lstlisting}[language={}]
@@ -115,4 +141,5 @@ a,2,64
 \end{lstlisting}
 
 
-\subsection{Timing e Performance}
+
+

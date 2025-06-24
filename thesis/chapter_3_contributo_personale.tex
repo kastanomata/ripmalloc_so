@@ -1,6 +1,57 @@
 \chapter{Implementazione}
 Il progetto contenuto nella repository è gestito in quattro cartelle principali. \textit{bin} e \textit{build} contengono i risultati del processo di compilazione, mentre il codice sorgente è contenuto in \textit{header} e \textit{src}. Il programma contiene anche delle basilari implementazioni delle strutture dati per esso necessarie: una semplice \textit{double linked list} e una \textit{bitmap}. La loro struttura è volutamente molto semplice per evitare costi di tempo aggiuntivi e non è d’interesse ai fini di questa analisi. Di ogni funzionalità viene accertato il comportamento desiderato attraverso una serie di test.
 
+\begin{lstlisting}
+ripmalloc_so
++-- benchmarks
++-- bin
++-- build
++-- header
+|   +-- data_structures
+|   |   +-- bitmap.h
+|   |   \-- double_linked_list.h
+|   +-- helpers
+|   |   +-- benchmark.h
+|   |   +-- freeform.h
+|   |   +-- memory_manipulation.h
+|   |   \-- parse.h
+|   +-- test
+|   |   +-- test_bitmap.h
+|   |   +-- test_bitmap_buddy_allocator.h
+|   |   +-- test_buddy_allocator.h
+|   |   +-- test_double_linked_list.h
+|   |   \-- test_slab_allocator.h
+|   +-- allocator.h
+|   +-- bitmap_buddy_allocator.h
+|   +-- buddy_allocator.h
+|   +-- main.h
+|   \-- slab_allocator.h
++-- src
+|   +-- data_structures
+|   |   +-- bitmap.c
+|   |   \-- double_linked_list.c
+|   +-- helpers
+|   |   +-- benchmark.c
+|   |   +-- benchmark_allocator.c
+|   |   +-- freeform.c
+|   |   +-- memory_manipulation.c
+|   |   \-- parse.c
+|   +-- test
+|   |   +-- test_bitmap.c
+|   |   +-- test_bitmap_buddy_allocator.c
+|   |   +-- test_buddy_allocator.c
+|   |   +-- test_double_linked_list.c
+|   |   \-- test_slab_allocator.c
+|   +-- bitmap_buddy_allocator.c
+|   +-- buddy_allocator.c
+|   +-- main.c
+|   \-- slab_allocator.c
++-- LICENSE
++-- Makefile
++-- README.md
+\-- my_thesis.pdf
+\end{lstlisting}
+
 Notiamo che tutte le implementazioni descritte successivamente condividono alcune caratteristiche, quali la possibilità di soddisfare unicamente richieste di memoria di dimensioni contenute nei parametri di creazione dell'allocatore. La dimensione dell’area di memoria dinamicamente gestita infatti non cambia nell’eventualità che venga fatta un’allocazione impossibile da soddisfare. L’allocatore non reclama ulteriore memoria dal sistema operativo neppure a seguito di richieste che potrebbero essere soddisfatte se memoria fosse rilasciata ad esso. Invece in entrambi i casi viene gestito l’errore ritornando al richiedente un valore invalido per segnalare l’insuccesso.
 
 \section{L’interfaccia Allocator}
@@ -12,7 +63,23 @@ Il contratto che gli allocatori devono seguire consiste nell’interfaccia \text
     \item il rilascio di memoria per uso futuro (\texttt{release}).
 \end{itemize}
 
-% TODO inserire codice interfaccia Allocator
+\begin{lstlisting}
+// Define function pointer types
+typedef void* (*InitFunc)(Allocator*, ...);
+typedef void* (*DestructorFunc)(Allocator*, ...);
+typedef void* (*MallocFunc)(Allocator*, ...);  
+typedef void* (*FreeFunc)(Allocator*, ...); 
+
+// Allocator structure
+struct Allocator {
+    InitFunc init; 
+    DestructorFunc dest;
+    MallocFunc malloc;
+    FreeFunc free; 
+};
+\end{lstlisting}
+
+Secondo la più recente specifica UML, \textit{“Un'interfaccia è un tipo di classificatore che rappresenta una dichiarazione di un insieme di caratteristiche e obblighi pubblici che insieme costituiscono un servizio coerente. Un'interfaccia specifica un contratto; qualsiasi istanza di un classificatore che realizzi l'interfaccia deve soddisfare tale contratto.”} Tutti gli allocatori devono quindi implementare metodi che abbiano signature corrispondente e che svolgano le operazioni elencate sopra.
 
 \begin{figure}[H]
     \centering
@@ -21,13 +88,11 @@ Il contratto che gli allocatori devono seguire consiste nell’interfaccia \text
     \label{fig:uml_allocator_interface}
 \end{figure}
 
-Secondo la più recente specifica UML,  \textit{“Un'interfaccia è un tipo di classificatore che rappresenta una dichiarazione di un insieme di caratteristiche e obblighi pubblici che insieme costituiscono un servizio coerente. Un'interfaccia specifica un contratto; qualsiasi istanza di un classificatore che realizzi l'interfaccia deve soddisfare tale contratto.”} Tutti gli allocatori devono quindi implementare metodi che abbiano signature corrispondente e che svolgano le operazioni elencate sopra.
+Le funzioni di cui manteniamo un riferimento all'interno delle \textit{struct} sono progettate per uso interno: infatti, gli argomenti sono passati attraverso modalità definite dalla libreria di sistema \texttt{<stdarg.h>}. In questo modo, possiamo mantenere i puntatori alle funzioni nonostante per le varie implementazioni della classe essi abbiamo \textit{signature} diverse, dando grande libertà e flessibilità. Contemporaneamente però questa pratica costituisce un rischio, poiché le verifiche sulla correttezza del tipo e del numero degli argomenti non sono fatte a \textit{compile-time}.
 
-Queste operazioni sono progettate per un uso interno: infatti, gli argomenti sono passati attraverso modalità definite dalla libreria di sistema \texttt{<stdarg.h>}. Ciò introduce flessibilità nella nostra implementazione delle funzioni permettendoci di gestire i parametri in modo arbitrario, ma contemporaneamente costituisce un rischio, poiché le verifiche sulla correttezza del tipo e del numero non sono fatte a \textit{compile-time}.
+Per ovviare a questo problema e permettere al nostro programma di verificare correttamente che i parametri passati siano validi, introduciamo un buffer tra le funzioni interne e l’utente nella forma di funzioni helper segnalate come \textit{inline}. Attraverso esse, il programma mantiene la sua flessibilità internamente senza dover sacrificare in sicurezza: la correttezza dei parametri passati alla chiamata è effettuata dal compilatore e contemporaneamente la performance non è eccessivamente impattata da questo passaggio intermedio grazie alla keyword \textit{inline}. Essa indica al compilatore di ottimizzare aggressivamente la funzione, sostituendo alla chiamata il suo corpo (per questo motivo, è importante che queste funzioni helper siano brevi e concise, in modo da evitare \textit{code bloat}).
 
-Per ovviare a questo problema e permettere al nostro programma di verificare correttamente che i parametri passati siano validi, introduciamo un buffer tra le funzioni interne e l’utente nella forma di funzioni helper segnalate come \textit{inline}. Attraverso esse, il programma mantiene la sua flessibilità internamente senza dover sacrificare in sicurezza: la correttezza dei parametri passati alla chiamata è effettuata dal compilatore e contemporaneamente la performance non è eccessivamente impattata da questo passaggio intermedio grazie alla keyword \textit{inline}. Essa indica al compilatore di ottimizzare aggressivamente la funzione, sostituendo alla chiamata il suo corpo e per questo motivo, è importante che queste funzioni helper siano brevi e concise, in modo da evitare \textit{code bloat}.
-
-È importante ricordare che \textit{inline} è un suggerimento, non un obbligo, per il compilatore: esistono modalità per forzare questa ottimizzazione, imponendo di applicarla a tutte le chiamate, ma questo potrebbe portare nel lungo termine a una minore ottimizzazione per via della quantità di codice, che renderebbe necessari più \textit{cache swaps} del necessario. Ulteriori test potrebbero mostrarne l’impatto e con ciò l’importanza di lasciare che sia il compilatore a occuparsi delle ottimizzazioni, ma ciò esula dagli scopi dell’analisi.
+Una nota sulla keyword \textit{inline}: è importante ricordare che essa è un suggerimento e non un obbligo, per il compilatore: esistono modalità per forzare questa ottimizzazione, imponendo di applicarla a tutte le chiamate, ma questo potrebbe portare nel lungo termine a una minore ottimizzazione per via della quantità di codice, che renderebbe necessari più \textit{cache swaps} del necessario. Ulteriori test potrebbero mostrarne l’impatto e con ciò l’importanza di lasciare che sia il compilatore a occuparsi delle ottimizzazioni, ma ciò esula dagli scopi dell’analisi.
 
 Ogni classe che implementa l’interfaccia \texttt{Allocator} deve implementare le proprie funzioni interne, che mantengono la stessa signature, e le funzioni \textit{wrapper}, che invece possono avere una signature diversa in base alle necessità. Per esempio, nell’allocazione di memoria per uno SlabAllocator (che velocemente anticipiamo poter allocare unicamente blocchi di memoria di grandezza omogenea) non sarà necessario specificare la grandezza dell’area richiesta. In più, deve fornire anche una rappresentazione grafica del suo stato ai fini di \textit{debugging} e analisi.
 
@@ -40,11 +105,11 @@ Le funzioni helper seguono una nomenclatura più vicina a quella della \textit{l
 \end{itemize}
 Per via del linker del linguaggio C, siamo costretti ad anteporre a nome della funzione la classe, come vediamo sopra. Sono state esplorate soluzioni a questo problema, ma sfortunatamente introducevano livelli di complessità oppure sacrificavano a livello di \textit{type checking}. Grazie alla duplice struttura con funzioni helper e internal sarebbe possibile realizzare in C una forma semplice di \textit{polimorfismo}, ma risulta sempre necessario, al netto dell’utilizzo di macro (che reintrodurrebbero i problemi evidenziati precedentemente), usare nomi univoci per ogni funzione con diversa combinazione di parametri.
 
-Tutte le classi che implementano l’interfaccia \texttt{Allocator} usano \textit{mmap} per chiedere memoria da gestire al sistema operativo. Durante la fase di progetto, è stato valutato alternativamente di poter utilizzare la primitiva \textit{sbrk}, fornita dalla libreria C standard, che permette di “accrescere” l’\textit{heap} esplicitamente. Questo approccio avrebbe permesso un più granulare controllo sulla memoria, al costo di una minore flessibilità. In più, la prospettiva di usare \textit{sbrk} avrebbe permesso di studiare come avveniva l’allocazione di memoria in tempi passati.
+\subsection{Richiesta iniziale di memoria}
+Tutte le classi che implementano l’interfaccia \texttt{Allocator} usano \textit{mmap} per chiedere memoria al sistema operativo. Durante la fase di progetto, è stato valutato alternativamente di poter utilizzare la primitiva \textit{sbrk}, fornita dalla libreria C standard, che permette di “accrescere” l’\textit{heap} esplicitamente. Questo approccio avrebbe permesso un più granulare controllo sulla memoria al costo di una minore flessibilità e, dal punto di vista didattico, avrebbe costituito un'importante opportunità per studiare come avveniva l’allocazione di memoria in versioni precedenti della \textit{sbrk}.
+Si è ritenuto tuttavia di usare \textit{mmap} per evitare complicazioni nella deallocazione (la memoria allocata attraverso \textit{sbrk} può infatti essere deallocata solamente in modo sequenziale o si rischia di introdurre frammentazione). La struttura a cui si può accedere attraverso \textit{sbrk} è infatti di tipo LIFO, ossia una pila di memoria. Ciò avrebbe potuto creare problemi laddove gestori fossero distrutti in ordine diverso da quello di creazione o si fosse deciso di permettere l’utilizzo \textit{multithreaded} \footnote{Al netto di possibili complicazioni impreviste, il supporto per l'utilizzo da parte di più entità potrebbe essere aggiunto con relativa facilità adoperando \textit{mutex} per contingentare le operazioni di richiesta e rilascio di memoria.}.
 
-Si è ritenuto tuttavia di usare \textit{mmap} per evitare complicazioni nella deallocazione (la memoria allocata attraverso \textit{sbrk} può infatti essere deallocata solamente in modo sequenziale o si rischia di introdurre frammentazione). La struttura a cui si può accedere attraverso \textit{sbrk} è infatti di tipo LIFO, ossia una pila di memoria. Ciò avrebbe potuto creare problemi laddove gestori fossero distrutti in ordine diverso da quello di creazione e laddove si fosse deciso di permettere l’utilizzo \textit{multithreaded} (che al netto di possibili complicazioni impreviste potrebbe essere aggiunto con relativa facilità adoperando \textit{mutex} per le operazioni di richiesta e rilascio di memoria).
-
-La flag \texttt{MAP\_ANONYMOUS} (anche nota come \texttt{MAP\_ANON}) è stata adoperata alla chiamata di \textit{mmap}. Essa fa sì che la memoria richiesta non sia “supportata” da alcun file. Dal manuale, “The mapping is not backed by any file; its contents are initialized to zero. The fd argument is ignored; however, some implementations require fd to be \texttt{-1}. If \texttt{MAP\_ANONYMOUS} (or \texttt{MAP\_ANON}) is specified, and portable applications ensure this. The offset argument should be zero. for \texttt{MAP\_ANONYMOUS} in conjunction with \texttt{MAP\_SHARED} added in Linux 2.4.” La memoria si trova dunque nella RAM fisica e non in un file (chiaramente a meno che non sia stata posta in un file di swap).
+La flag \texttt{MAP\_ANONYMOUS} (anche nota come \texttt{MAP\_ANON}) è stata adoperata alla chiamata di \textit{mmap}. Essa fa sì che la memoria richiesta non sia “supportata” da alcun file. Dal manuale, “The mapping is not backed by any file; its contents are initialized to zero. The fd argument is ignored; however, some implementations require fd to be \texttt{-1}. If \texttt{MAP\_ANONYMOUS} (or \texttt{MAP\_ANON}) is specified, and portable applications ensure this. The offset argument should be zero. for \texttt{MAP\_ANONYMOUS} in conjunction with \texttt{MAP\_SHARED} added in Linux 2.4.” La memoria si trova dunque nella RAM fisica e non fa riferimento a un file \footnote{Chiaramente a meno che non sia stata posta in un file di swap}.
 
 \begin{center}
 \begin{tabular}{|l|l|l|}
@@ -60,27 +125,45 @@ Modern Usage & Legacy (brk in \textit{malloc}) & Preferred for large allocations
 \end{tabular}
 \end{center}
 
+% TODO add section about massif and valgrind
+
 \section{La classe SlabAllocator}
-Lo \textit{slab allocator} è un gestore pensato per richieste di memoria di taglia costante. La sua struttura interna lo rende particolarmente efficiente al costo di poca flessibilità. Ciò lo rende adatto quando sono necessarie solamente allocazioni di memoria di dimensione nota e fissa (ad esempio, un'istanza di una classe): il termine \textit{slab} fa riferimento a questa “fetta” di memoria.
+Lo \textit{slab allocator} è un gestore pensato per richieste di memoria di taglia costante. La sua struttura interna lo rende adatto quando sono necessarie unicamente allocazioni di memoria di dimensione nota e fissa (ad esempio, un'istanza di una classe): il termine \textit{slab} fa riferimento a questa “fetta” di memoria. Esso è dunque particolarmente efficiente al costo di flessibilità ridotta.
 
-La prima menzione di un’implementazione di \textit{slab allocator} viene descritta nell’articolo di Jeff Bonwick “The Slab Allocator: An Object-Caching Kernel Memory Allocator” del 1994. In esso vengono elencati i benefici di una soluzione che, rispetto a quella da noi implementata, risulta ben più complessa e strutturata. Il codice di Bonwick infatti trae beneficio non solo dalla taglia definita dei \textit{chunk}, ma anche dalla conoscenza della struttura dei dati che verrà allocata nella memoria richiesta (dichiarata alla creazione del gestore). I blocchi liberi vengono già inizializzati come oggetti e mantengono la loro struttura alla restituzione del blocco, evitando così di dover spendere risorse per riorganizzare la memoria alla prossima richiesta. L’idea consiste nel “preservare la porzione invariante dello stato iniziale di un oggetto nell’intervallo tra gli usi, in modo che essa non debba essere distrutta e ricreata ogni volta che l’oggetto è usato.”
+\begin{lstlisting}
+struct SlabAllocator {
+    Allocator base;
+    char* managed_memory;
+    unsigned int buffer_size;
+    size_t slab_size;   
+    size_t user_size;
+    DoubleLinkedList* free_list;   
+    unsigned int free_list_size;
+    unsigned int free_list_size_max;
+};
+\end{lstlisting}
 
-Non scendiamo ulteriormente nei dettagli del gestore di Bonwick per semplicità, ma notiamo che per quanto possa sembrare a posteriori non significativa, l’eleganza della sua soluzione è degna di nota. L’autore dell’articolo infatti non solo definisce algoritmi efficienti e con strumenti approfonditi per il \textit{debugging}, ma si cura di approfondire la relazione tra il suo algoritmo e le strutture del sistema operativo, in particolare con il \textit{Translation Lookaside Buffer}, fornendo chiare evidenze dell’attenzione posta non solo nell’approccio teorico, ma anche all’applicazione pratica del suo gestore.
+La prima menzione di un’implementazione di \textit{slab allocator} viene descritta nell’articolo di Jeff Bonwick \textit{“The Slab Allocator: An Object-Caching Kernel Memory Allocator”}~\cite{slab} del 1994. In esso vengono elencati i benefici di una soluzione che, rispetto a quella da noi implementata, risulta ben più complessa e strutturata. Il codice di Bonwick infatti trae beneficio non solo dalla taglia definita dei \textit{chunk}, ma anche dalla conoscenza della struttura dei dòati che verrà allocata nella memoria richiesta (dichiarata alla creazione del gestore). I blocchi liberi vengono già inizializzati come oggetti e mantengono la loro struttura alla restituzione del blocco, evitando così di dover spendere risorse per riorganizzare la memoria alla prossima richiesta. L’idea consiste nel “preservare la porzione invariante dello stato iniziale di un oggetto nell’intervallo tra gli usi, in modo che essa non debba essere distrutta e ricreata ogni volta che l’oggetto è usato.”
 
-La specializzazione della soluzione applicata da Bonwick la rende ideale per l’utilizzo all’interno di sistemi operativi. Essi spesso gestiscono numerosi oggetti rappresentati da strutture dati di grandezza nota e fissa (\textit{socket}, \textit{semafori}, \textit{file}…). La prima implementazione di questo modello è presentata nel kernel di SunOS 5.4, per poi comparire a uso interno a molti altri kernel, compreso quello di FreeBSD (v5.0) e Linux (a partire dalla versione 2.1.23), dove successivamente diventerà anche disponibile per l’uso da parte dell’utente.
+Non scendiamo ulteriormente nei dettagli del gestore di Bonwick per semplicità, ma notiamo che per quanto possa sembrare a posteriori non significativa, l’eleganza della sua soluzione è degna di nota. L’autore dell’articolo infatti non solo definisce algoritmi efficienti e con strumenti approfonditi per il \textit{debugging}, ma si cura di approfondire la relazione tra il suo algoritmo e le strutture del sistema operativo, in particolare con il \textit{Translation Lookaside Buffer}, fornendo chiare evidenze dell’attenzione posta non solo nell’approccio teorico, ma anche all’applicazione pratica del suo gestore. La specializzazione della soluzione applicata da Bonwick la rende ideale per l’utilizzo all’interno di sistemi operativi, che gestiscono spesso numerosi oggetti rappresentati da strutture dati di grandezza nota e fissa (\textit{socket}, \textit{semafori}, \textit{file}…). La prima implementazione di questo modello è presentata nel kernel di SunOS 5.4, per poi comparire a uso interno a molti altri kernel, compreso quello di FreeBSD (v5.0) e Linux (a partire dalla versione 2.1.23), dove successivamente diventerà anche disponibile per l’uso da parte dell’utente.
 
 Nella nostra implementazione non viene fatto \textit{caching} della struttura interna dell’oggetto e l’utente è lasciato libero di gestire liberamente lo slab assegnato. Chiaramente, questo lo rende ordini di grandezza più lento della soluzione applicata da Bonwick. Lo scopo didattico nonostante questo è la dimostrazione di come l’efficienza dei gestori dinamici di memoria sia strettamente correlata alla comprensione da parte del programmatore delle richieste fatte durante il corso della vita dell’applicazione: lo \textit{slab allocator} può essere usato al massimo delle sue potenzialità solo a seguito della profonda comprensione del succedersi delle allocazioni e rilasci di memoria.
 
 \subsection*{Funzionamento dello SlabAllocator}
-Come stabilito precedentemente, l’utente non usa le funzioni interne per accedere alle funzionalità del gestore, ma bensì adopera gli helper qui delineati:
+Come stabilito precedentemente, l’utente non usa le funzioni interne per accedere alle funzionalità del gestore, ma bensì adopera i metodi helper sotto delineati, la cui funzione è puramente quella di "filtro" a tempo di compilazione dei parametri e di gestire in maniera appropriata il valore di ritorno delle funzioni interne
 
-% TODO inserire qui signature dei callable methods dello Slab Allocator
+\begin{lstlisting}
+inline SlabAllocator* SlabAllocator_create(SlabAllocator* a, size_t slab_size, size_t n_slabs);
+inline int SlabAllocator_destroy(SlabAllocator* a);
+inline void* SlabAllocator_malloc(SlabAllocator* a);
+inline int SlabAllocator_free(SlabAllocator* a, void* ptr);
+\end{lstlisting}
 
 L’inizializzazione di un’istanza di SlabAllocator richiede la grandezza dello slab (nei termini di Bonwick, la grandezza dell’oggetto da immagazzinare) e il numero delle stesse. Dopo una serie di controlli sui parametri, la memoria richiesta viene suddivisa in blocchi. Essi sono dunque organizzati in una \textit{linked list}, che mantiene un pratico riferimento alla memoria disponibile e la cui lunghezza massima è pari al numero totale di blocchi. Al termine dell’uso le operazioni di distruzione sono immediate: l’unica accortezza è restituire la memoria al sistema operativo con \textit{unmap}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{images/slab/slab_allocator_init.pdf}
+    \includegraphics[width=0.8\textwidth]{images/slab/slab_allocator_init.pdf}
     \caption{Inizializzazione dello SlabAllocator: suddivisione della memoria in blocchi di dimensione fissa e organizzazione in una lista concatenata.}
     \label{fig:slab_allocator_init}
 \end{figure}
@@ -115,34 +198,68 @@ Abbiamo già definito come, nel caso sia nota la dimensione massima necessaria p
 Rispetto a gestori generici (come \textit{buddy system} o \textit{malloc} tradizionale), lo \textit{slab allocator} eccelle in velocità e assenza di frammentazione esterna, ma è meno adatto a contesti con richieste eterogenee. La sua complessità spaziale è proporzionale al numero di slab preallocati, il che lo rende ideale per sistemi con risorse dedicate e pattern di allocazione prevedibili.
 
 \section{La classe BuddyAllocator}
-Il problema dell’allocazione di memoria per richieste di dimensioni variabili rimane un tema aperto e ampiamente discusso, con approcci diversi. Essi hanno nel corso del tempo suscitato dibattiti e proposte contrastanti. Sono state sviluppate numerose soluzioni, ciascuna con i propri vantaggi e limiti, ottenendo livelli di adozione e consenso variabili nell'ambito dei sistemi moderni.
+Il problema dell’allocazione di memoria per richieste di dimensioni variabili rimane un tema aperto e ampiamente discusso. Diversi approcci alla sua soluzione sono stati discussi nel tempo, suscitando dibattiti e proposte contrastanti. Sono state sviluppate numerose alternative, ciascuna con i propri vantaggi e limiti, ottenendo livelli di adozione e consenso variabili nell'ambito dei sistemi moderni.
 
-I primi tentativi alla divisione dinamica dello spazio disponibile presero il nome di “sequential fits”. In base alle necessità e richieste del programma in esecuzione, la memoria viene divisa in blocchi di dimensione variabile. Essi, organizzati in una o più liste concatenate, sono esplorati con costo lineare per trovare il first (il primo blocco sufficientemente grande) o best fit (il blocco più piccolo in grado di soddisfare la richiesta).
+I primi tentativi alla divisione dinamica dello spazio disponibile presero il nome di \textit{“sequential fits”}. In base alle necessità e richieste del programma in esecuzione, la memoria viene divisa in blocchi di dimensione variabile. Essi, organizzati in un'unica lista concatenata, sono esplorati con costo lineare per trovare il first (il primo blocco sufficientemente grande) o best fit (il blocco più piccolo in grado di soddisfare la richiesta).
 
-Questa soluzione, famosamente esplorata da Knuth, ha importanti difficoltà. La perdità di scalabilità per via del costo lineare è un punto critico: all’aumentare del numero di blocchi, il costo temporale della ricerca diventa proibitivo. Sebbene con dovuti accorgimenti si possano evitare un eccessivo overhead e una debilitante frammentazione, l’inefficienza della scansione lineare è un fattore limitante nei contesti ad alte prestazioni.
+Questa soluzione, famosamente esplorata da Knuth, presenta importanti limitazioni. La perdità di scalabilità per via del costo lineare è un punto critico: all’aumentare del numero di blocchi, il costo temporale della ricerca diventa proibitivo. Sebbene con dovuti accorgimenti si possano evitare un eccessivo overhead e una debilitante frammentazione\footnote{Knuth stesso ne ha proposto uno che successivamente è diventato molto popolare: il concetto di \textit{boundary tag}, ossia salvare le informazioni al termine dell'area allocata per facilitare la riunione dei blocchi.}, l’inefficienza della scansione lineare è il fattore che principalmente ne impedisce l'applicazione nei contesti ad alte prestazioni.
 
-L’evoluzione di questo algoritmo mantiene la divisione dinamica in taglie non prestabilite, ma prova a risolvere il problema della lunghezza eccessiva: investire nell’organizzazione maggiore spazio per gestire i blocchi liberi più efficientemente permette di velocizzare la ricerca. La memoria disponibile viene suddivisa quindi in blocchi liberi, che sono però raccolti in liste diverse in base alla loro taglia. Le liste sono dunque numerose, ma di lunghezza minore, e quindi sono più facilmente esplorabili.
+L’evoluzione di questo algoritmo mantiene la divisione dinamica in taglie non prestabilite, ma prova a risolvere il problema della lunghezza eccessiva della lista: investire nell’organizzazione maggiore spazio, gestendo i blocchi liberi più efficientemente, permette di velocizzare la ricerca del blocco corretto. La memoria disponibile viene suddivisa sempre in blocchi liberi, che sono però raccolti in base alla loro taglia in liste diversificate. La struttura è semplice e simile a quella del metodo visto precedentemente, tuttavia grazie alla lunghezza minore delle singolari liste, esse sono più rapidamente esplorabili.
 
-Al momento della richiesta, è esaminata la lista contenente i blocchi della taglia più appropriata, e laddove non via sia un blocco adeguato viene ricursivamente controllata la lista di blocchi di taglia “superiore”. Il blocco eventualmente individuato è suddiviso e la memoria in eccesso (quella che non risulta necessaria per soddisfare la richiesta di memoria) è organizzata in un nuovo chunk libero che viene riposto nella lista corretta secondo la sua grandezza. Questo meccanismo viene chiamato nell’articolo di Wilson et al. “segregated free lists”.
+Al momento della richiesta, è esaminata la lista contenente i blocchi della taglia più appropriata, e laddove non vi sia un blocco adeguato vengono ricorsivamente controllate le liste di livello "superiore", contenente blocchi di dimensione maggiore. Il blocco eventualmente individuato è suddiviso e la memoria in eccesso (quella che non risulta necessaria per soddisfare la richiesta di memoria) è organizzata in un nuovo \textit{chunk} libero che viene riposto nella lista corretta secondo la sua grandezza. Questo meccanismo viene chiamato nell’articolo di Wilson et al. \textit{“segregated free lists”}.
 
-L’allocatore buddy è descritto nella stessa pubblicazione come un “caso particolare” di questa tipologia di allocatori. Inventato da Harry Markowitz nel 1963 e pubblicato per la prima volta nell’articolo “A Fast Storage Allocator” del 1965 da Kenneth C. Knowlton, ingegnere presso Bell Telephone Laboratories, il buddy system è facile da implementare, e presenta buoni risultati se usato in risposta a richieste di taglia variabile, ma fissa e nota.
+Il \textit{Buddy Allocator} è descritto nella stessa pubblicazione come un “caso particolare” di quest'ultima tipologia di allocatori. Inventato da Harry Markowitz nel 1963 e pubblicato per la prima volta nell’articolo \textit{“A Fast Storage Allocator”}~\cite{knowlton1965} del 1965 da Kenneth C. Knowlton, ingegnere presso Bell Telephone Laboratories, il \textit{buddy system} è facile da implementare e presenta buoni risultati se usato in risposta a richieste di taglia variabile, ma generalmente nota, che vengono ripetute numerose volte.
  
-La differenza rispetto agli algoritmi che lo hanno preceduto consiste principalmente nelle politiche di splitting e coalescing. Se la metodologia descritta nel paragrafo precedente non stabilisce esplicitamente se, come o quando i blocchi liberi debbano essere riuniti e aggiunti alle free lists di grandezza maggiore, i buddy systems invece stabiliscono una chiara gerarchia che rende il procedimento più ordinato.
+La differenza rispetto agli algoritmi che lo precedono consiste principalmente nelle politiche di \textit{splitting} e \textit{coalescing}. Se la metodologia descritta nel paragrafo precedente non stabilisce esplicitamente se, come o quando i blocchi liberi debbano essere riuniti e aggiunti alle \textit{free lists} di grandezza maggiore, i \textit{buddy systems} invece stabiliscono una chiara gerarchia che rende il procedimento più ordinato. I blocchi infatti, come approfondiremo successivamente, sono infatti partizionati sempre secondo le stesse modalità in metà uguali.
 
-Quando è necessario dividere un blocco (che prende il nome di parent) per soddisfare una richiesta, esso viene diviso in parti uguali e i blocchi ottenuti diventano buddies, aventi chiaramente la stessa dimensione. Al rilascio da parte dell’utente, il blocco controlla il suo buddy e verifica se esso sia a sua volta libero. Nell’eventualità che entrambi i buddies siano contemporaneamente non riservati dall’utente, essi vengono riunificati nel blocco parent da cui derivano. Il buddy allocator rappresenta una soluzione elegante al problema della frammentazione esterna grazie alla sua struttura costituita da blocchi le cui dimensioni sono esclusivamente potenze di due. Ciò previene la formazione di aree di memoria inutilizzabili e garantisce che tutti i blocchi allocati abbiano dimensioni standardizzate.
+Questa differenza consente di evitare un problema significativo che emerge quando la dimensione dei blocchi non è vincolata. In particolare, modelli di allocazione tipici, come l'alternanza di richieste e rilasci di blocchi di dimensioni diverse, causano frammentazione esterna negli allocatori che adottano metodi come i \textit{sequential fits}. La libertà nella gestione delle dimensioni dei blocchi unita alla ricerca lineare porta alla formazione di numerose aree libere sparse e non contigue. Gli allocatori con \textit{segregated free lists}, sebbene più efficienti grazie alla suddivisione in liste separate per intervalli di dimensione, non sono immuni al problema.
 
-Questa differenza consente di evitare un problema significativo che emerge quando la dimensione dei blocchi non è vincolata. In particolare, pattern di allocazione tipici – come l'alternanza di allocazioni e deallocazioni di blocchi di dimensioni diverse – causano frammentazione esterna negli allocatori che adottano sequential fits o segregated free lists. La libertà nella gestione delle dimensioni dei blocchi unita alla ricerca lineare porta alla formazione di numerose aree libere sparse e non contigue. Gli allocatori con segregated free lists, sebbene più efficienti grazie alla suddivisione in liste separate per intervalli di dimensione, non sono immuni al problema.
-
-L’architettura del buddy system risolve radicalmente il problema della frammentazione esterna tipica degli allocatori tradizionali. La memoria libera viene infatti divisa equamente in base alle necessità reali del programma e costantemente riaggregata in blocchi ordinati e perfettamente allineati. Tuttavia, questa soluzione non è esente da compromessi. L'arrotondamento sistematico alla potenza di due superiore comporta inevitabilmente una certa quantità di frammentazione interna, particolarmente evidente quando le richieste di memoria sono solo leggermente superiori a una data potenza di due. Inoltre, la rigidità del sistema lo rende meno adatto a gestire pattern di allocazione estremamente variabili o imprevedibili.
+Il \textit{Buddy Allocator} rappresenta una soluzione elegante al problema della frammentazione esterna grazie alla sua struttura costituita da blocchi le cui dimensioni sono esclusivamente potenze di due. Ciò previene la formazione di aree di memoria inutilizzabili e garantisce che tutti i blocchi allocati abbiano dimensioni standardizzate.
 
 \subsection*{Funzionamento del BuddyAllocator}
-Dalla descrizione del sistema buddy, notiamo facilmente che la struttura dati delineata corrisponde a un albero binario. Infatti, ogni nodo (blocco di memoria) tranne la radice possiede un singolo genitore e un buddy. Esso può inoltre a sua volta essere scomposto in ulteriori due nodi liberi. Un vantaggio della struttura binaria è che il buddy corrisponde sempre con il blocco adiacente (precedente o successivo).
-
 Ogni blocco di memoria è rappresentato da un BuddyNode, che contiene metadati come la dimensione, un’indicazione sullo stato e puntatori al buddy e al parent. La scelta di memorizzare esplicitamente queste relazioni, anziché calcolarle dinamicamente attraverso manipolazione degli indirizzi di memoria, semplifica il debug e la visualizzazione dello stato dell'allocatore: infatti, poiché sono note la taglia del blocco e l’indirizzo di partenza, gli header del buddy e del parent potrebbero essere raggiunti senza bisogno di immagazzinare esplicitamente questa informazione nell’header.
+
+\begin{lstlisting}
+typedef struct BuddyNode {
+    Node node;
+    char *data;
+    size_t size;                // Size of this block (including header)
+    int level;                  // Level in the buddy system
+    int is_free;                // Whether this block is free
+    struct BuddyNode* buddy;    // Pointer to buddy block
+    struct BuddyNode* parent;   // Pointer to parent block
+} BuddyNode;
+\end{lstlisting}
 
 I nodi non sono salvati in una struttura ad albero, ma bensì in una serie di free lists, corrispondenti ai vari livelli dello stesso. La metodologia è ripresa dalle tecniche elencate precedentemente negli algoritmi “segregated free lists”. Alla creazione, viene richiesto all’utente la grandezza dell’area di memoria da gestire e il numero massimo di livelli (alternativamente, poteva essere richiesta la grandezza del blocco di dimensione minima). L'allocatore utilizza due SlabAllocator interni: uno per gestire i BuddyNode e l'altro per le liste libere, che vengono tutte inizializzate alla creazione. Questa scelta rappresenta un chiaro luogo dove le caratteristiche dello slab allocator possano essere valorizzate, poiché le dimensioni degli oggetti allocati sono fisse e note a priori.
 
+\begin{lstlisting}
+typedef struct BuddyAllocator {
+    Allocator base;           // Base allocator interface
+    void* memory_start;       // Start of managed memory
+    size_t total_size;        // Total size of managed memory
+    size_t min_block_size;    // Minimum block size (power of 2)
+    int num_levels;           // Number of levels in the system
+    SlabAllocator list_allocator;
+    SlabAllocator node_allocator;
+    DoubleLinkedList* free_lists[BUDDY_MAX_LEVELS];  // Array of free lists for each level
+} BuddyAllocator;
+\end{lstlisting}
+
+Dalla descrizione del sistema buddy, notiamo facilmente che la struttura dati delineata corrisponde a un albero binario. Infatti, ogni nodo (blocco di memoria) tranne la radice possiede un singolo genitore e un buddy. Esso può inoltre a sua volta essere scomposto in ulteriori due nodi liberi. Un vantaggio della struttura binaria è che il buddy corrisponde sempre con il blocco adiacente (precedente o successivo).
+
+\begin{lstlisting}
+inline BuddyAllocator* BuddyAllocator_create(BuddyAllocator* a, size_t total_size, int num_levels);
+inline int BuddyAllocator_destroy(BuddyAllocator* a);
+inline void* BuddyAllocator_malloc(BuddyAllocator* a, size_t size);
+inline int BuddyAllocator_free(BuddyAllocator* a, void* ptr);
+\end{lstlisting}
+
+Quando è necessario dividere un blocco per soddisfare una richiesta, esso viene diviso in parti uguali e i blocchi ottenuti diventano buddies, aventi chiaramente la stessa dimensione. Al rilascio da parte dell’utente, il blocco controlla il suo buddy e verifica se esso sia a sua volta libero. Nell’eventualità che entrambi i buddies siano contemporaneamente non riservati dall’utente, essi vengono riunificati nel blocco parent da cui derivano. Sia l'operazione di divisione dei blocchi che quella di ricongiungimento sono svolte in modo ricorsivo, esplorando tutti i livelli dell'albero fino a che la richiesta non sia stata esaudita o sia stato accertato che non vi siano blocchi liberi per farlo. 
+
 \subsection*{Efficienza del BuddyAllocator}
+L’architettura del buddy system risolve radicalmente il problema della frammentazione esterna tipica degli allocatori tradizionali. La memoria libera viene infatti divisa equamente in base alle necessità reali del programma e costantemente riaggregata in blocchi ordinati e perfettamente allineati. Tuttavia, questa soluzione non è esente da compromessi. L'arrotondamento sistematico alla potenza di due superiore comporta inevitabilmente una certa quantità di frammentazione interna, particolarmente evidente quando le richieste di memoria sono solo leggermente superiori a una data potenza di due. Inoltre, la rigidità del sistema lo rende meno adatto a gestire pattern di allocazione estremamente variabili o imprevedibili.
+
 L'operazione di allocazione cerca prima nella lista libera del livello appropriato. Se non trova blocchi disponibili, risale ai livelli superiori, dividendo i blocchi fino a raggiungere la dimensione desiderata. Questo approccio garantisce un costo $O(1)$ nel caso ideale (blocco disponibile nel livello corretto) e $O(L)$ nel caso peggiore, dove L è il numero di livelli. La fusione dei blocchi liberi avviene in tempo $O(L)$, grazie alla verifica ricorsiva dello stato del buddy.
 
 L'uso di free lists separate per ogni livello elimina la necessità di strutture ad albero complesse, semplificando l'implementazione e riducendo l'overhead. Tuttavia, l'allocatore paga un costo in termini di memoria per i metadati aggiuntivi (puntatori a buddy e parent), che potrebbe essere evitato con un calcolo dinamico degli indirizzi dei buddy. La tecnica adoperata nel BuddyAllocator evita frammentazione esterna, ma rischia di introdurne interna.
@@ -162,25 +279,69 @@ Frammentazione esterna & Generalmente bassa \\
 \end{center}
 
 \section{La classe BitmapBuddyAllocator}
-Nelle implementazioni analizzate finora, la ricerca di un blocco libero avviene tipicamente tramite l'esplorazione di liste concatenate. Se queste sono correttamente ordinate o suddivise per dimensione, la scansione può essere relativamente efficiente quando il blocco cercato è presente. Tuttavia, un problema intrinseco di questo approccio è la possibile discontiguità spaziale dei blocchi nella lista, che può essere causa di inefficienza nella gestione della cache, causando numerosi miss.
+Nelle implementazioni analizzate finora, la ricerca di un blocco libero avviene tramite l'esplorazione di liste concatenate. Se queste sono correttamente ordinate o suddivise per dimensione, la scansione può essere relativamente efficiente quando il blocco cercato è presente. Tuttavia, un problema intrinseco di questo approccio è la possibile discontiguità spaziale dei blocchi nella lista, che può essere causa di inefficienza nella gestione della cache, causando numerosi miss.
 
-Per ovviare a questa limitazione, sono stati introdotti allocatori che utilizzano strutture dati più avanzate per memorizzare le informazioni sui blocchi liberi, migliorando così l’efficienza grazie a un utilizzo della cache più avveduto. Essi nell’articolo di Wilson prendono il nome di indexed fit. Tra le strutture usate, alberi binari bilanciati (self-balancing binary trees) e heap si sono dimostrati particolarmente efficaci; ciononostante, essi richiedono un overhead gestionale non trascurabile per mantenere l’equilibrio della struttura.
+Per ovviare a questa limitazione, sono stati introdotti allocatori che utilizzano strutture dati più avanzate per memorizzare le informazioni sui blocchi liberi, migliorando così l’efficienza grazie a un utilizzo della cache più avveduto. Essi nell’articolo di Wilson prendono il nome di \textit{"indexed fit"}. Tra le strutture usate, alberi binari bilanciati (\textit{self-balancing binary trees}) e \textit{heap} si sono dimostrati particolarmente efficaci; ciononostante, essi richiedono un costo gestionale non trascurabile per mantenere l’equilibrio della struttura.
 
-Un approccio alternativo e più semplice rispetto alle strutture dati complesse è l’utilizzo di bitmap, in cui ogni bit rappresenta lo stato, libero o occupato, di un blocco di memoria. A differenza delle liste concatenate (che richiedono dereferenziamenti di puntatori potenzialmente dispersi in memoria, con conseguenti cache miss), le bitmap permettono di verificare lo stato dei blocchi in modo più efficiente, poiché le informazioni risiedono in memoria contigua. Ciò può anche avvalersi delle istruzioni SIMD (Single Instruction, Multiple Data) e funzionalità hardware avanzate fornite dall’architettura.
-
-Questo metodo consente una ricerca estremamente rapida di blocchi contigui liberi, migliorando significativamente la località spaziale e riducendo i problemi di caching tipici delle liste. Tuttavia, poiché la verifica della disponibilità richiede comunque l’ispezione sequenziale dei bit (seppur accelerata da ottimizzazioni hardware), la complessità computazionale rimane $O(n)$ per algoritmi come first-fit o best-fit.
+Un approccio alternativo e più semplice rispetto alle strutture dati complesse è l’utilizzo di \textit{bitmap}: questa struttura dati, nota anche come \textit{bit array} o \textit{bit field}, permette di immagazzinare informazioni in modo denso e compatto.  Nella gestione del \textit{BitmapBuddyAllocator}, è fatto uso di una \textit{bitmap} dove ogni bit rappresenta lo stato, libero o occupato, del corrispondente blocco di memoria. A differenza delle liste concatenate (che richiedono dereferenziamenti di puntatori potenzialmente dispersi in memoria, con conseguenti \textit{cache miss}), le bitmap permettono di verificare lo stato dei blocchi in modo più efficiente, poiché le informazioni risiedono in memoria contigua. Ciò può anche avvalersi delle istruzioni SIMD (Single Instruction, Multiple Data) e funzionalità hardware avanzate fornite dall’architettura.
 
 Si rende dunque necessario mitigare gli effetti della scansione mediante euristiche che restringono l’area di esplorazione a intervalli predefiniti. In questo contesto, il buddy system visto nella sezione precedente riemerge come soluzione particolarmente efficace. Grazie alla sua struttura gerarchica binaria, esso permette infatti di individuare rapidamente i blocchi liberi e le relazioni tra di essi, ottimizzando sia l’allocazione che la deallocazione. In particolare, sfruttando una bitmap associativa, è possibile delimitare con precisione la zona di memoria in cui cercare i blocchi disponibili, migliorando ulteriormente l’efficienza.
 
 \subsection*{Funzionamento del BitmapBuddyAllocator}
-Poiché il BitmapBuddyAllocator è una variante ottimizzata del classico buddy system, le operazioni che esso svolge sono simili a quelle viste precedentemente: la differenza è nella struttura dati che viene consultata. (la bitmap piuttosto delle liste concatenate). Quando viene richiesta della memoria, l’allocatore cerca nella bitmap un blocco libero della dimensione giusta. Se non lo trova, risale di livello per trovarne uno più grande e lo suddivide in due blocchi (buddy), aggiornando la bitmap di conseguenza. Un blocco parent che sia scomposto in buddy di cui almeno uno è utilizzato è segnato a sua volta come non adoperabile per esaudire richieste.
+La memoria necessaria per gestire la bitmap viene gestita all'interno dell'area assegnata all'allocatore dall'operazione di \textit{mmap}
 
-Durante la deallocazione, il bit del blocco viene segnato come libero. Se anche il buddy è libero, i due vengono fusi e il blocco originario viene ricostruito, riducendo la frammentazione.
+\begin{lstlisting}
+inline BitmapBuddyAllocator* BitmapBuddyAllocator_create(BitmapBuddyAllocator* a, size_t total_size, int num_levels);
+inline int BitmapBuddyAllocator_destroy(BitmapBuddyAllocator* a);
+inline void* BitmapBuddyAllocator_malloc(BitmapBuddyAllocator* a, size_t size);
+inline int BitmapBuddyAllocator_free(BitmapBuddyAllocator* a, void* ptr);
+\end{lstlisting}
 
-In breve, il BitmapBuddyAllocator unisce la flessibilità del buddy system con la velocità e compattezza delle bitmap, risultando ideale per ambienti ad alte prestazioni.
+Poiché il BitmapBuddyAllocator è una variante del classico buddy system, le operazioni che esso svolge sono simili a quelle viste precedentemente: la differenza è nella struttura dati che viene consultata. (la bitmap piuttosto delle liste concatenate). Quando viene richiesta della memoria, l’allocatore cerca nella bitmap un blocco libero della dimensione giusta. Se non lo trova, risale di livello per trovarne uno più grande e lo suddivide nei due buddy di dimensione uguale, aggiornando la bitmap di conseguenza. Un blocco parent che sia scomposto in buddy di cui almeno uno è utilizzato è segnato a sua volta come non adoperabile per esaudire richieste, in quanto parte di esso è allocata.
+
+\begin{lstlisting}
+// Returns the level in the binary tree for a given index.
+// Formula: level = floor(log2(idx + 1))
+static int levelIdx(size_t idx) {
+    return (int)floor(log2(idx+1));
+}
+
+// Returns the buddy index for a given node index.
+// Formula: buddyIdx = idx - 1 if idx is odd, idx + 1 if idx is even (except root)
+// buddyIdx = idx ^ 1 (bitwise alternative)
+static int buddyIdx(int idx) {
+    if (idx == 0) return 0;
+    return idx % 2 ? idx - 1 : idx + 1;
+}
+
+// Returns the parent index for a given node index.
+// Formula: parentIdx = floor((idx - 1) / 2)
+static int parentIdx(int idx) {
+    return (idx - 1) / 2;
+}
+
+// Returns the first index at a given level in the binary tree.
+// Formula: firstIdx = 2^level - 1
+static int firstIdx(int level) {
+    return (1 << level) - 1;
+}
+
+// Returns the position of idx within its level.
+// Formula: startIdx = idx - firstIdx(level)
+// Returns -1 if level is invalid (>= num_levels)
+static int startIdx(int idx, int num_levels) {
+    int level = levelIdx(idx);
+    if (level >= num_levels) return -1;  // Invalid level
+    return idx - firstIdx(level);
+}
+\end{lstlisting}
+
+Durante la deallocazione, il bit del blocco viene segnato come libero. Se anche il buddy è libero, i due vengono fusi e il blocco originario viene ricostruito, riducendo la frammentazione. In breve, il BitmapBuddyAllocator unisce la flessibilità del buddy system con la velocità e compattezza delle bitmap, risultando ideale per ambienti ad alte prestazioni.
 
 \subsection*{Efficienza del BitmapBuddyAllocator}
-Il BitmapBuddyAllocator rappresenta un compromesso ottimale tra efficienza (grazie alle ottimizzazioni bitwise), semplicità (nessuna gestione di strutture complesse come alberi bilanciati) e scalabilità (adatto a sistemi con grandi pool di memoria). Mentre il BuddyAllocator tradizionale rimane una scelta valida in contesti semplici, in quanto di più facile implementazione, il BitmapBuddyAllocator si dimostra superiore in scenari ad alte prestazioni, dove è critico il ruolo del caching. Tuttavia, la frammentazione interna rimane un problema irrisolto, rendendo questo allocatore meno adatto per carichi di lavoro con richieste di memoria estremamente variabili.
+Il BitmapBuddyAllocator rappresenta un compromesso ottimale tra efficienza (grazie alle ottimizzazioni bitwise), semplicità (nessuna gestione di strutture complesse come alberi bilanciati) e scalabilità (adatto a sistemi con grandi pool di memoria). Mentre il BuddyAllocator tradizionale rimane una scelta valida in contesti semplici, in quanto di più facile implementazione, il BitmapBuddyAllocator si dimostra superiore in scenari ad alte prestazioni, dove è critico il ruolo del caching. 
+
+Questo metodo consente una ricerca estremamente rapida di blocchi contigui liberi, migliorando significativamente la località spaziale e riducendo i problemi di caching tipici delle liste. Tuttavia, poiché la verifica della disponibilità richiede comunque l’ispezione sequenziale dei bit (seppur accelerata da ottimizzazioni hardware), la complessità computazionale rimane $O(n)$ per algoritmi come first-fit o best-fit. Tuttavia, la frammentazione interna rimane un problema irrisolto, rendendo questo allocatore meno adatto per carichi di lavoro con richieste di memoria estremamente variabili.
 
 \begin{center}
 \begin{tabular}{|l|l|}

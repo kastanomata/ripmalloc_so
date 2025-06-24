@@ -19,7 +19,7 @@ Le conclusioni delle esperienze di Puaut confermano le tesi di Wilson: l’ineff
 ``Such problems may be hidden because most programmers who encounter severe issues may simply code around them using ad-hoc storage management techniques---or, as is still painfully common, by statically allocating ``enough'' memory for variable-sized structures. These ad-hoc approaches to memory management lead to `brittle' software with hidden limitations (e.g., due to the use of fixed-size arrays). The impact on software clarity, flexibility, maintainability, and reliability is significant, though difficult to estimate. It should not be underestimated, however, because these hidden costs can incur major penalties in productivity---and, to put it plainly, human costs in sheer frustration, anxiety, and general suffering.''
 \end{quote}
 \begin{flushright}
-\textit{(Wilson~\cite{wilson1995}, capitolo 1.1)}
+(Wilson, \textit{Dynamic Storage Allocation, A Survey and Critical Review}~\cite{wilson1995}, ch. 1.1)
 \end{flushright}
 
 Gli autori del survey continuano, sottolineando che soluzioni efficienti per la gestione dinamica di memoria fanno uso di ``regolarità'' nel comportamento del programma. Infatti, osservando come viene allocata e deallocata la memoria è possibile scegliere la corretta politica di gestione per il proprio caso d’uso. Non esiste dunque una soluzione \textit{``set and forget''} e invece risulta essere appropriato dedicare risorse all’esplorazione di diverse soluzioni. Successivamente l’articolo definisce una chiara tassonomia delle principali specie di allocatori, la quale avremo modo di approfondire nel capitolo terzo.
