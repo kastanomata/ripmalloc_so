@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <office:document xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:ooo="http://openoffice.org/2004/office" xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:config="urn:oasis:names:tc:opendocument:xmlns:config:1.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:meta="urn:oasis:names:tc:opendocument:xmlns:meta:1.0" xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0" xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0" xmlns:rpt="http://openoffice.org/2005/report" xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0" xmlns:dr3d="urn:oasis:names:tc:opendocument:xmlns:dr3d:1.0" xmlns:svg="urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0" xmlns:chart="urn:oasis:names:tc:opendocument:xmlns:chart:1.0" xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0" xmlns:number="urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0" xmlns:ooow="http://openoffice.org/2004/writer" xmlns:oooc="http://openoffice.org/2004/calc" xmlns:of="urn:oasis:names:tc:opendocument:xmlns:of:1.2" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:tableooo="http://openoffice.org/2009/table" xmlns:calcext="urn:org:documentfoundation:names:experimental:calc:xmlns:calcext:1.0" xmlns:drawooo="http://openoffice.org/2010/draw" xmlns:loext="urn:org:documentfoundation:names:experimental:office:xmlns:loext:1.0" xmlns:field="urn:openoffice:names:experimental:ooo-ms-interop:xmlns:field:1.0" xmlns:math="http://www.w3.org/1998/Math/MathML" xmlns:form="urn:oasis:names:tc:opendocument:xmlns:form:1.0" xmlns:script="urn:oasis:names:tc:opendocument:xmlns:script:1.0" xmlns:formx="urn:openoffice:names:experimental:ooxml-odf-interop:xmlns:form:1.0" xmlns:dom="http://www.w3.org/2001/xml-events" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:grddl="http://www.w3.org/2003/g/data-view#" xmlns:css3t="http://www.w3.org/TR/css3-text/" xmlns:officeooo="http://openoffice.org/2009/office" office:version="1.4" office:mimetype="application/vnd.oasis.opendocument.text">
- <office:meta><meta:creation-date>2025-06-06T12:36:10.770512400</meta:creation-date><dc:date>2025-06-23T01:55:33.723630700</dc:date><meta:editing-duration>P2DT10H51M39S</meta:editing-duration><meta:editing-cycles>98</meta:editing-cycles><meta:generator>LibreOffice/25.2.4.3$Windows_X86_64 LibreOffice_project/33e196637044ead23f5c3226cde09b47731f7e27</meta:generator><meta:document-statistic meta:table-count="7" meta:image-count="0" meta:object-count="0" meta:page-count="20" meta:paragraph-count="250" meta:word-count="6570" meta:character-count="46555" meta:non-whitespace-character-count="40227"/></office:meta>
+ <office:meta><meta:creation-date>2025-06-06T12:36:10.770512400</meta:creation-date><dc:date>2025-06-23T23:05:27.845305900</dc:date><meta:editing-duration>P2DT16H56M8S</meta:editing-duration><meta:editing-cycles>99</meta:editing-cycles><meta:generator>LibreOffice/25.2.4.3$Windows_X86_64 LibreOffice_project/33e196637044ead23f5c3226cde09b47731f7e27</meta:generator><meta:document-statistic meta:table-count="8" meta:image-count="0" meta:object-count="0" meta:page-count="22" meta:paragraph-count="285" meta:word-count="7056" meta:character-count="50008" meta:non-whitespace-character-count="43139"/></office:meta>
  <office:settings>
   <config:config-item-set config:name="ooo:view-settings">
-   <config:config-item config:name="ViewAreaTop" config:type="long">194582</config:config-item>
+   <config:config-item config:name="ViewAreaTop" config:type="long">595524</config:config-item>
    <config:config-item config:name="ViewAreaLeft" config:type="long">0</config:config-item>
    <config:config-item config:name="ViewAreaWidth" config:type="long">24476</config:config-item>
    <config:config-item config:name="ViewAreaHeight" config:type="long">11141</config:config-item>
@@ -14,11 +14,11 @@
     <config:config-item-map-entry>
      <config:config-item config:name="ViewId" config:type="string">view2</config:config-item>
      <config:config-item config:name="ViewLeft" config:type="long">3738</config:config-item>
-     <config:config-item config:name="ViewTop" config:type="long">199448</config:config-item>
+     <config:config-item config:name="ViewTop" config:type="long">600652</config:config-item>
      <config:config-item config:name="VisibleLeft" config:type="long">0</config:config-item>
-     <config:config-item config:name="VisibleTop" config:type="long">194582</config:config-item>
+     <config:config-item config:name="VisibleTop" config:type="long">595524</config:config-item>
      <config:config-item config:name="VisibleRight" config:type="long">24474</config:config-item>
-     <config:config-item config:name="VisibleBottom" config:type="long">205721</config:config-item>
+     <config:config-item config:name="VisibleBottom" config:type="long">606663</config:config-item>
      <config:config-item config:name="ZoomType" config:type="short">0</config:config-item>
      <config:config-item config:name="ViewLayoutColumns" config:type="short">1</config:config-item>
      <config:config-item config:name="ViewLayoutBookMode" config:type="boolean">false</config:config-item>
@@ -92,7 +92,7 @@
    <config:config-item config:name="IgnoreTabsAndBlanksForLineCalculation" config:type="boolean">false</config:config-item>
    <config:config-item config:name="IgnoreHiddenCharsForLineCalculation" config:type="boolean">true</config:config-item>
    <config:config-item config:name="TabAtLeftIndentForParagraphsInList" config:type="boolean">false</config:config-item>
-   <config:config-item config:name="Rsid" config:type="int">6109047</config:config-item>
+   <config:config-item config:name="Rsid" config:type="int">6511741</config:config-item>
    <config:config-item config:name="RsidRoot" config:type="int">828735</config:config-item>
    <config:config-item config:name="LoadReadonly" config:type="boolean">false</config:config-item>
    <config:config-item config:name="ClipAsCharacterAnchoredWriterFlyFrames" config:type="boolean">false</config:config-item>
@@ -180,7 +180,7 @@
  <office:styles>
   <style:default-style style:family="graphic">
    <style:graphic-properties svg:stroke-color="#3465a4" draw:fill-color="#729fcf" fo:wrap-option="no-wrap" draw:shadow-offset-x="0.3cm" draw:shadow-offset-y="0.3cm" draw:start-line-spacing-horizontal="0.283cm" draw:start-line-spacing-vertical="0.283cm" draw:end-line-spacing-horizontal="0.283cm" draw:end-line-spacing-vertical="0.283cm" style:writing-mode="lr-tb" style:flow-with-text="false"/>
-   <style:paragraph-properties style:text-autospace="ideograph-alpha" style:line-break="strict" loext:tab-stop-distance="0cm" style:font-independent-line-spacing="false">
+   <style:paragraph-properties style:text-autospace="ideograph-alpha" style:line-break="strict" loext:tab-stop-distance="0cm" style:writing-mode="lr-tb" style:font-independent-line-spacing="false">
     <style:tab-stops/>
    </style:paragraph-properties>
    <style:text-properties style:use-window-font-color="true" loext:opacity="0%" style:font-name="Liberation Serif" fo:font-size="12pt" fo:language="it" fo:country="IT" style:letter-kerning="true" style:font-name-asian="NSimSun1" style:font-size-asian="10.5pt" style:language-asian="zh" style:country-asian="CN" style:font-name-complex="Lucida Sans1" style:font-size-complex="12pt" style:language-complex="hi" style:country-complex="IN"/>
@@ -449,6 +449,24 @@
    <style:table-column-properties style:column-width="10.691cm"/>
   </style:style>
   <style:style style:name="Table5.A1" style:family="table-cell">
+   <style:table-cell-properties style:vertical-align="middle" fo:padding="0.049cm" fo:border="none"/>
+  </style:style>
+  <style:style style:name="Table8" style:family="table">
+   <style:table-properties style:width="10.954cm" table:align="left"/>
+  </style:style>
+  <style:style style:name="Table8.A" style:family="table-column">
+   <style:table-column-properties style:column-width="2.085cm"/>
+  </style:style>
+  <style:style style:name="Table8.B" style:family="table-column">
+   <style:table-column-properties style:column-width="2.268cm"/>
+  </style:style>
+  <style:style style:name="Table8.C" style:family="table-column">
+   <style:table-column-properties style:column-width="3.096cm"/>
+  </style:style>
+  <style:style style:name="Table8.D" style:family="table-column">
+   <style:table-column-properties style:column-width="1.238cm"/>
+  </style:style>
+  <style:style style:name="Table8.A1" style:family="table-cell">
    <style:table-cell-properties style:vertical-align="middle" fo:padding="0.049cm" fo:border="none"/>
   </style:style>
   <style:style style:name="P1" style:family="paragraph" style:parent-style-name="Text_20_body">
@@ -798,16 +816,44 @@
    <style:text-properties officeooo:rsid="00598f19" officeooo:paragraph-rsid="00598f19"/>
   </style:style>
   <style:style style:name="P105" style:family="paragraph" style:parent-style-name="Text_20_body">
+   <style:text-properties officeooo:rsid="005e97a1" officeooo:paragraph-rsid="005e97a1"/>
+  </style:style>
+  <style:style style:name="P106" style:family="paragraph" style:parent-style-name="Text_20_body">
+   <style:text-properties officeooo:rsid="006062e1" officeooo:paragraph-rsid="006062e1"/>
+  </style:style>
+  <style:style style:name="P107" style:family="paragraph" style:parent-style-name="Table_20_Heading">
+   <style:text-properties officeooo:rsid="0062bfbe" officeooo:paragraph-rsid="0062bfbe"/>
+  </style:style>
+  <style:style style:name="P108" style:family="paragraph" style:parent-style-name="Table_20_Contents">
+   <style:text-properties officeooo:rsid="0062bfbe" officeooo:paragraph-rsid="0062bfbe"/>
+  </style:style>
+  <style:style style:name="P109" style:family="paragraph" style:parent-style-name="Text_20_body">
+   <style:text-properties officeooo:paragraph-rsid="0062bfbe"/>
+  </style:style>
+  <style:style style:name="P110" style:family="paragraph" style:parent-style-name="Heading_20_3">
+   <style:text-properties officeooo:rsid="0062bfbe" officeooo:paragraph-rsid="0062bfbe"/>
+  </style:style>
+  <style:style style:name="P111" style:family="paragraph" style:parent-style-name="Preformatted_20_Text">
+   <style:text-properties officeooo:rsid="0062bfbe" officeooo:paragraph-rsid="0062bfbe"/>
+  </style:style>
+  <style:style style:name="P112" style:family="paragraph" style:parent-style-name="Preformatted_20_Text">
+   <style:paragraph-properties fo:margin-top="0cm" fo:margin-bottom="0.247cm" style:contextual-spacing="false" fo:line-height="115%"/>
+   <style:text-properties officeooo:rsid="0062bfbe"/>
+  </style:style>
+  <style:style style:name="P113" style:family="paragraph" style:parent-style-name="Text_20_body">
+   <style:text-properties officeooo:rsid="0062bfbe" officeooo:paragraph-rsid="0062bfbe"/>
+  </style:style>
+  <style:style style:name="P114" style:family="paragraph" style:parent-style-name="Text_20_body">
    <style:text-properties officeooo:paragraph-rsid="000ca53f"/>
   </style:style>
-  <style:style style:name="P106" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L9">
+  <style:style style:name="P115" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L9">
    <style:text-properties officeooo:rsid="000ca53f" officeooo:paragraph-rsid="00598f19"/>
   </style:style>
-  <style:style style:name="P107" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L9">
+  <style:style style:name="P116" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L9">
    <style:text-properties style:text-underline-style="none" officeooo:rsid="00598f19" officeooo:paragraph-rsid="00598f19"/>
   </style:style>
-  <style:style style:name="P108" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L9">
-   <style:text-properties officeooo:rsid="0040a23e" officeooo:paragraph-rsid="00598f19"/>
+  <style:style style:name="P117" style:family="paragraph" style:parent-style-name="Text_20_body" style:list-style-name="L9">
+   <style:text-properties style:text-underline-style="none" officeooo:rsid="0040a23e" officeooo:paragraph-rsid="00598f19"/>
   </style:style>
   <style:style style:name="T1" style:family="text">
    <style:text-properties officeooo:rsid="00171e5c"/>
@@ -1252,6 +1298,15 @@
   </style:style>
   <style:style style:name="T148" style:family="text">
    <style:text-properties fo:font-style="italic" fo:font-weight="normal" officeooo:rsid="00598f19" style:font-style-asian="italic" style:font-weight-asian="normal" style:font-style-complex="italic" style:font-weight-complex="normal"/>
+  </style:style>
+  <style:style style:name="T149" style:family="text">
+   <style:text-properties officeooo:rsid="006062e1"/>
+  </style:style>
+  <style:style style:name="T150" style:family="text">
+   <style:text-properties officeooo:rsid="00622c29"/>
+  </style:style>
+  <style:style style:name="T151" style:family="text">
+   <style:text-properties officeooo:rsid="0062bfbe"/>
   </style:style>
   <text:list-style style:name="L1">
    <text:list-level-style-bullet text:level="1" text:style-name="Bullet_20_Symbols" loext:num-list-format="%1%" text:bullet-char="•">
@@ -2520,21 +2575,105 @@
     </table:table-row>
    </table:table>
    <text:h text:style-name="P102" text:outline-level="2">Benchmark</text:h>
-   <text:p text:style-name="P78"/>
-   <text:h text:style-name="Heading_20_3" text:outline-level="3">Timing e Performance</text:h>
+   <text:p text:style-name="P105">Per verificare il comportamento degli allocatori a seguito di pattern più complessi di richieste e rilasci di memoria, è stato ritenuto opportuno aggiungere al programma una funzionalità che permetta di manipolare facilmente le richieste senza doverle esplicitare nel codice. Ciò permette una maggiore flessibilità e non impone di ricompilare ogni volta che si renda necessario cambiare i benchmark. Le funzioni che permettono questa funzionalità sono negli helper benchmark e parse.</text:p>
+   <text:p text:style-name="P106">Questa funzionalità è resa possibile dall’implementazione da parte di ogni allocatore dell’interfaccia &lt;Allocator&gt;. Poiché abbiamo a nostra disposizione i puntatori alle funzioni necessarie, possiamo standardizzare il funzionamento delle classi dividendole in due categorie: allocatori a taglia fissa, che permettono di richiedere blocchi di grandezza prestabilita (e.g. SlabAllocator) e allocatori a taglia variabile, i quali invece lasciano all’utente la scelta della dimensione dell’area di memoria richiesta (ossia BuddyAllocator e BitmapBuddyAllocator, nella nostra implementazione).</text:p>
+   <text:p text:style-name="P105"><text:soft-page-break/>Il programma cerca all’interno della cartella ./benchmarks file che abbiano l’estensione .alloc. Modificando il testo al loro interno si possono definire la tipologia di allocatore, i suoi parametri di inizializzazione e la sequenza di malloc/free da provare. I comandi sono terminati dal carattere “a capo” (\n) e le componenti sono divise da una virgola. Comandi che sono preceduti dal carattere percentuale (%) sono considerati commenti e ignorati. </text:p>
+   <text:p text:style-name="P105">Vediamo ora come descrivere la classe di allocatore da sottoporre al benchmark e le sue caratteristiche. La prima riga non preceduta da un segno percentuale deve avere necessariamente la seguente struttura: i,&lt;allocator class&gt; dove la classe può essere slab, buddy o. bitmap. Il secondo comando informa il programma su i parametri di creazione: p,&lt;param1&gt;,&lt;param2&gt;,…, il numero e il tipo dei quali varia in base alla classe scelta precedentemente. </text:p>
+   <table:table table:name="Table8" table:style-name="Table8">
+    <table:table-column table:style-name="Table8.A"/>
+    <table:table-column table:style-name="Table8.B"/>
+    <table:table-column table:style-name="Table8.C"/>
+    <table:table-column table:style-name="Table8.D"/>
+    <table:table-header-rows>
+     <table:table-row>
+      <table:table-cell table:style-name="Table8.A1" office:value-type="string">
+       <text:p text:style-name="Table_20_Heading">Allocatore</text:p>
+      </table:table-cell>
+      <table:table-cell table:style-name="Table8.A1" office:value-type="string">
+       <text:p text:style-name="P107">Dimensione</text:p>
+      </table:table-cell>
+      <table:table-cell table:style-name="Table8.A1" office:value-type="string">
+       <text:p text:style-name="Table_20_Heading">Parametro 1</text:p>
+      </table:table-cell>
+      <table:table-cell table:style-name="Table8.A1" office:value-type="string">
+       <text:p text:style-name="Table_20_Heading">Parametro 2</text:p>
+      </table:table-cell>
+     </table:table-row>
+    </table:table-header-rows>
+    <table:table-row>
+     <table:table-cell table:style-name="Table8.A1" office:value-type="string">
+      <text:p text:style-name="Table_20_Contents">Slab</text:p>
+     </table:table-cell>
+     <table:table-cell table:style-name="Table8.A1" office:value-type="string">
+      <text:p text:style-name="P108">Fissa</text:p>
+     </table:table-cell>
+     <table:table-cell table:style-name="Table8.A1" office:value-type="string">
+      <text:p text:style-name="Table_20_Contents">slab_size</text:p>
+     </table:table-cell>
+     <table:table-cell table:style-name="Table8.A1" office:value-type="string">
+      <text:p text:style-name="Table_20_Contents">num_slabs</text:p>
+     </table:table-cell>
+    </table:table-row>
+    <table:table-row>
+     <table:table-cell table:style-name="Table8.A1" office:value-type="string">
+      <text:p text:style-name="Table_20_Contents">Buddy</text:p>
+     </table:table-cell>
+     <table:table-cell table:style-name="Table8.A1" office:value-type="string">
+      <text:p text:style-name="P108">Variabile</text:p>
+     </table:table-cell>
+     <table:table-cell table:style-name="Table8.A1" office:value-type="string">
+      <text:p text:style-name="Table_20_Contents">memory_size</text:p>
+     </table:table-cell>
+     <table:table-cell table:style-name="Table8.A1" office:value-type="string">
+      <text:p text:style-name="Table_20_Contents">max_levels</text:p>
+     </table:table-cell>
+    </table:table-row>
+    <table:table-row>
+     <table:table-cell table:style-name="Table8.A1" office:value-type="string">
+      <text:p text:style-name="Table_20_Contents">Bitmap</text:p>
+     </table:table-cell>
+     <table:table-cell table:style-name="Table8.A1" office:value-type="string">
+      <text:p text:style-name="P108">Variabile</text:p>
+     </table:table-cell>
+     <table:table-cell table:style-name="Table8.A1" office:value-type="string">
+      <text:p text:style-name="Table_20_Contents">memory_size</text:p>
+     </table:table-cell>
+     <table:table-cell table:style-name="Table8.A1" office:value-type="string">
+      <text:p text:style-name="Table_20_Contents">max_levels</text:p>
+     </table:table-cell>
+    </table:table-row>
+   </table:table>
+   <text:p text:style-name="P106">La tabella illustra i parametri per le classi da noi implementate, ma sarebbe facilmente possibile estenderla per poter accogliere altre tipologie di allocatori.</text:p>
+   <text:p text:style-name="P109"><text:span text:style-name="T149">Per </text:span><text:span text:style-name="T150">allocare e liberare memoria, l’istruzione deve iniziare rispettivamente con “a” o “f”. </text:span><text:span text:style-name="T151">Il benchmark per tenere traccia delle allocazioni usa un array avente lunghezza pari al numero massimo possibile di frammenti di memoria. </text:span>Il comando <text:span text:style-name="Source_20_Text">a,&lt;index&gt;</text:span> alloca memoria in una posizione specifica dell&apos;array, mentre <text:span text:style-name="Source_20_Text">f,&lt;index&gt;</text:span> la libera. <text:span text:style-name="T151">Nel caso di allocatore a richiesta variabile, dopo l’index dell’array va specificato il numero di byte da allocare (con struttura </text:span><text:span text:style-name="Source_20_Text">a,&lt;index&gt;,&lt;size&gt;</text:span> <text:span text:style-name="T151">). </text:span>È <text:span text:style-name="Strong_20_Emphasis"><text:span text:style-name="T134">fondamentale</text:span></text:span> non allocare più volte sullo stesso indice senza prima liberarlo, altrimenti si perderà il riferimento al puntatore e non sarà più possibile gestirlo correttamente. </text:p>
+   <text:h text:style-name="P110" text:outline-level="3">Esempi di file .alloc</text:h>
+   <text:p text:style-name="P111">i,slab <text:s text:c="8"/>% Tipo di allocatore (Slab)</text:p>
+   <text:p text:style-name="P112">p,64,16 <text:s text:c="7"/>% Parametri: slab_size=64, num_slabs=16</text:p>
+   <text:p text:style-name="P112">a,0 <text:s text:c="11"/>% Alloca un blocco nell&apos;indice 0</text:p>
+   <text:p text:style-name="P112">a,1 <text:s text:c="11"/>% Alloca un blocco nell&apos;indice 1</text:p>
+   <text:p text:style-name="P112">f,0 <text:s text:c="11"/>% Libera il blocco nell&apos;indice 0</text:p>
+   <text:p text:style-name="P113"/>
+   <text:p text:style-name="P111">% Benchmark per allocatore variabile</text:p>
+   <text:p text:style-name="P112">i,buddy</text:p>
+   <text:p text:style-name="P112">p,1024,5 <text:s text:c="6"/>% memory_size=1024, max_levels=5</text:p>
+   <text:p text:style-name="P112">a,0,256 <text:s text:c="7"/>% Alloca 256 byte nell&apos;indice 0</text:p>
+   <text:p text:style-name="P112">a,1,128 <text:s text:c="7"/>% Alloca 128 byte nell&apos;indice 1</text:p>
+   <text:p text:style-name="P112">f,0 <text:s text:c="11"/>% Libera l&apos;indice 0</text:p>
+   <text:p text:style-name="P112">a,2,64 <text:s text:c="8"/>% Alloca 64 byte nell&apos;indice 2</text:p>
+   <text:p text:style-name="P113"/>
+   <text:h text:style-name="Heading_20_3" text:outline-level="3"><text:soft-page-break/>Timing e Performance</text:h>
    <text:p text:style-name="P101"/>
    <text:p text:style-name="P101"/>
-   <text:p text:style-name="P105"/>
+   <text:p text:style-name="P114"/>
    <text:h text:style-name="P98" text:outline-level="1">5. Conclusioni</text:h>
    <text:list text:style-name="L9">
     <text:list-item>
-     <text:p text:style-name="P106">Riprendi la <text:span text:style-name="T101">dichiarazione d’intenti al capitolo uno e metti le spunte</text:span></text:p>
+     <text:p text:style-name="P115">Riprendi la <text:span text:style-name="T101">dichiarazione d’intenti al capitolo uno e metti le spunte</text:span></text:p>
     </text:list-item>
     <text:list-item>
-     <text:p text:style-name="P107">Cosa poteva essere esplorato?</text:p>
+     <text:p text:style-name="P116">Cosa poteva essere esplorato?</text:p>
      <text:list>
       <text:list-item>
-       <text:p text:style-name="P108"><text:span text:style-name="T101">Deferred coalescing</text:span></text:p>
+       <text:p text:style-name="P117">Deferred coalescing</text:p>
       </text:list-item>
      </text:list>
     </text:list-item>

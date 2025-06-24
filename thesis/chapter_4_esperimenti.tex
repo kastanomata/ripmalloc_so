@@ -4,7 +4,7 @@ La letteratura descritta nel secondo capitolo giunge a una conclusione concorde 
 
 Quando le tracce sono casualmente generate, il risultato finale ci dice ben poco sulle capacità effettive dell’allocatore. Le richieste prodotte da un algoritmo probabilistico creano un modello di comportamento, ma questo non è sufficiente: riprodurre le complesse interazioni tra allocazioni e deallocazioni di memoria è molto difficile, poiché queste ultime sono poco comprese e differiscono grandemente tra tipologie di applicazione. Il comportamento a fasi dei programmi dà vita a fenomeni di interconnessione sistematica che sono per la maggior parte ignorati.
 
-Nel 1998, Wilson e Johnston approfondiscono i risultati del procedente paper sull’allocazione dinamica di memoria indagando il comportamento di diversi noti programmi scritti in C e C++. Nell’articolo \emph{The Memory Fragmentation Problem: Solved?} gli autori tentano di dimostrare come la frammentazione può essere evitata laddove sia scelta con attenzione una politica di allocazione appropriata a prescindere dall’implementazione.
+Nel 1998, Wilson e Johnston approfondiscono i risultati del procedente paper sull’allocazione dinamica di memoria indagando il comportamento di diversi noti programmi scritti in C e C++. Nell’articolo \emph{The Memory Fragmentation Problem: Solved?}~\cite{wilson1998} gli autori tentano di dimostrare come la frammentazione può essere evitata laddove sia scelta con attenzione una politica di allocazione appropriata a prescindere dall’implementazione.
 
 \begin{quote}
 ``This substantially strengthens our previous results showing that the memory fragmentation problem has generally been misunderstood, and that good allocator policies can provide good memory usage for most programs. The new results indicate that for most programs, excellent allocator policies are readily available, and efficiency of implementation is the major challenge.''
@@ -63,5 +63,56 @@ I test delle funzionalità si concentrano unicamente sulla correttezza del codic
 
 
 \section{Benchmark}
+Per verificare il comportamento degli allocatori a seguito di pattern più complessi di richieste e rilasci di memoria, è stato ritenuto opportuno aggiungere al programma una funzionalità che permetta di manipolare facilmente le richieste senza doverle esplicitare nel codice. Ciò permette una maggiore flessibilità e non impone di ricompilare ogni volta che si renda necessario cambiare i benchmark. Le funzioni che permettono questa funzionalità sono negli helper \texttt{benchmark} e \texttt{parse}.
+
+Questa funzionalità è resa possibile dall’implementazione da parte di ogni allocatore dell’interfaccia \texttt{<Allocator>}. Poiché abbiamo a nostra disposizione i puntatori alle funzioni necessarie, possiamo standardizzare il funzionamento delle classi dividendole in due categorie: allocatori a taglia fissa, che permettono di richiedere blocchi di grandezza prestabilita (e.g. \texttt{SlabAllocator}) e allocatori a taglia variabile, i quali invece lasciano all’utente la scelta della dimensione dell’area di memoria richiesta (ossia \texttt{BuddyAllocator} e \texttt{BitmapBuddyAllocator}, nella nostra implementazione).
+
+Il programma cerca all’interno della cartella \texttt{./benchmarks} file che abbiano l’estensione \texttt{.alloc}. Modificando il testo al loro interno si possono definire la tipologia di allocatore, i suoi parametri di inizializzazione e la sequenza di \texttt{malloc}/\texttt{free} da provare. I comandi sono terminati dal carattere ``a capo'' (\textbackslash n) e le componenti sono divise da una virgola. Comandi che sono preceduti dal carattere percentuale (\%) sono considerati commenti e ignorati.
+
+Vediamo ora come descrivere la classe di allocatore da sottoporre al benchmark e le sue caratteristiche. La prima riga non preceduta da un segno percentuale deve avere necessariamente la seguente struttura: \texttt{i,<allocator class>} dove la classe può essere \texttt{slab}, \texttt{buddy} o \texttt{bitmap}. Il secondo comando informa il programma sui parametri di creazione: \texttt{p,<param1>,<param2>,\ldots}, il numero e il tipo dei quali varia in base alla classe scelta precedentemente.
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|l|l|l|l|}
+\textbf{Allocatore} & \textbf{Dimensione} & \textbf{Parametro 1} & \textbf{Parametro 2} \\
+Slab    & Fissa     & slab\_size   & num\_slabs   \\
+Buddy   & Variabile & memory\_size & max\_levels  \\
+Bitmap  & Variabile & memory\_size & max\_levels  \\
+\end{tabularx}
+\caption{Parametri di inizializzazione per ciascuna classe di allocatore}
+\end{table}
+
+La tabella illustra i parametri per le classi da noi implementate, ma sarebbe facilmente possibile estenderla per poter accogliere altre tipologie di allocatori.
+
+Per allocare e liberare memoria, l’istruzione deve iniziare rispettivamente con ``a'' o ``f''. Il benchmark per tenere traccia delle allocazioni usa un array avente lunghezza pari al numero massimo possibile di frammenti di memoria. Il comando \texttt{a,<index>} alloca memoria in una posizione specifica dell'array, mentre \texttt{f,<index>} la libera. Nel caso di allocatore a richiesta variabile, dopo l’index dell’array va specificato il numero di byte da allocare (con struttura \texttt{a,<index>,<size>}). È fondamentale non allocare più volte sullo stesso indice senza prima liberarlo, altrimenti si perderà il riferimento al puntatore e non sarà più possibile gestirlo correttamente.
+
+\subsection{Esempi di file \texttt{.alloc}}
+\begin{lstlisting}[language={}]
+% Tipo di allocatore (Slab)
+i,slab         
+% Parametri: slab_size=64, num_slabs=16
+p,64,16        
+% Alloca un blocco nell'indice 0
+a,0            
+% Alloca un blocco nell'indice 1
+a,1            
+% Libera il blocco nell'indice 0
+f,0      
+\end{lstlisting}      
+\begin{lstlisting}[language={}]
+% Benchmark per allocatore variabile
+i,buddy
+% memory_size=1024, max_levels=5
+p,1024,5       
+% Alloca 256 byte nell'indice 0
+a,0,256        
+% Alloca 128 byte nell'indice 1
+a,1,128        
+% Libera l'indice 0
+f,0            
+% Alloca 64 byte nell'indice 2
+a,2,64         
+\end{lstlisting}
+
 
 \subsection{Timing e Performance}
