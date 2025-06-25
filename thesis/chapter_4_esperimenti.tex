@@ -8,10 +8,11 @@ Nel 1998, Wilson e Johnston approfondiscono i risultati del procedente paper sul
 
 \begin{quote}
 ``This substantially strengthens our previous results showing that the memory fragmentation problem has generally been misunderstood, and that good allocator policies can provide good memory usage for most programs. The new results indicate that for most programs, excellent allocator policies are readily available, and efficiency of implementation is the major challenge.''
+
+[...]
+
+``If these results hold up to further study with additional programs, we arrive at the conclusion that the fragmentation problem is a problem of recognizing that good allocation policies already exist, and have inexpensive implementations. For most programs, the problem of simple overheads is more significant than the problem of fragmentation itself.''
 \end{quote}
-
-Il programma dunque 
-
 
 \pagebreak 
 
@@ -106,9 +107,14 @@ Per allocare e liberare memoria, l’istruzione deve iniziare rispettivamente co
 
 \subsection{Analisi dei pattern di allocazione}
 
-% TODO this chapter 
+La letteratura sull'argomento ha identificato tre modelli principali che possono essere applicati alla maggior parte dei programmi: rampe, picchi e plateau\footnote{Altri pattern dell'uso di memoria possono essere incontrati, ma sono meno comuni: allo stesso modo, variazioni o combinazioni dei modelli qui citati sono spesso presenti.}. Facciamo riferimento principalmente alla ricerca di Wilson et al., che sottolinea anche come la presenza di un modello nel lungo termine o lungo l'intero ciclo di vita del programma non escluda la presenza di comportamenti osservabili di dimensione minore al suo interno.
+\begin{itemize}
+  \item \textbf{Rampe}: molti programmi accumulano determinate strutture dati in modo monotono. Ciò può essere dovuto al fatto che conservano un registro degli eventi o perché la strategia di risoluzione del problema richiede la costruzione di una rappresentazione di grandi dimensioni, dopo la quale è possibile trovare rapidamente una soluzione.
+  \item \textbf{Picchi}: molti programmi utilizzano la memoria in modo discontinuo, creando strutture dati relativamente grandi che vengono utilizzate per la durata di una particolare fase e poi la maggior parte o tutte le strutture dati viene scartata. Si noti che le strutture di dati “sopravvissute” sono probabilmente di tipo diverso, perché rappresentano i risultati di una fase, rispetto a valori intermedi che possono essere rappresentati in modo diverso. (Un picco è come una rampa, ma di durata più breve).
+  \item \textbf{Plateau}: molti programmi costruiscono rapidamente strutture dati e poi le utilizzano per lunghi periodi (spesso per quasi tutto il tempo di esecuzione del programma).
+\end{itemize}
 
-
+Utilizzando lo strumento da noi creato, siamo in grado di simulare questi pattern e verificare il comportamento degli allocatori in loro presenza. Questo permette di compiere un'analisi più approfondita su quale allocatore sia più adatto per un determinato programma.
 
 \pagebreak
 
