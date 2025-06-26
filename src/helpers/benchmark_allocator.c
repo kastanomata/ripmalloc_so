@@ -86,13 +86,31 @@ int Allocator_malloc_free(struct AllocatorBenchmarkConfig *config, void *instruc
     
     // Check for memory leaks
     int leaks_found = 0;
+    // Prepare to append leak info to the log file
+    size_t leak_log_start = config->log_offset;
+    int leak_count = 0;
     for (int i = 0; i < n_pointers; ++i) {
         if (pointers[i] != NULL) {
-                        #ifdef DEBUG
+            #ifdef DEBUG
             printf(RED "Pointer at index %d was not freed: %p\n" RESET, i, pointers[i]);
-                        #endif
+            #endif
             leaks_found = 1;
+            // Write leak info to the log
+            int written = snprintf((char *)config->log_data + config->log_offset,
+                                   config->max_log_size - config->log_offset,
+                                   "# leak: index=%d ptr=%p\n", i, pointers[i]);
+            if (written > 0)
+                config->log_offset += written;
+            leak_count++;
         }
+    }
+    // Optionally, write a summary line if leaks were found
+    if (leak_count > 0) {
+        int written = snprintf((char *)config->log_data + config->log_offset,
+                               config->max_log_size - config->log_offset,
+                               "# total_leaks=%d\n", leak_count);
+        if (written > 0)
+            config->log_offset += written;
     }
     
     return leaks_found ? -1 : result;
@@ -135,7 +153,7 @@ int Allocator_benchmark_initialize(const char *file_name) {
     }
 
     // get how many characters should the log be long
-    size_t max_log_size = (size_t) count_remaining_characters(file);
+    size_t max_log_size = (size_t) count_remaining_characters(file) * 2;
     
     if (ftruncate(fileno(log_fp), max_log_size) != 0) {
         perror("Failed to set log file size");
