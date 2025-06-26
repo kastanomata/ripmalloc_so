@@ -1,7 +1,7 @@
 % initialize allocator (choose bitmap for this example)
 i,buddy
 % bitmap allocator parameters: memory_size=131072 bytes, max_levels=10
-p,131072,10
+p,4096,10
 
 % Allocate symbol table (large)
 a,0,64

@@ -14,6 +14,7 @@
 
 #define PAGESIZE sysconf(_SC_PAGESIZE)
 #define DEF_LEVELS_NUMBER 4
+#define MAX_LEVELS 32
 
 
 int freeform();

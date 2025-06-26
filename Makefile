@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -fsanitize=address -g -I$(HEADDIR) -I$(HEADDIR)/data_structures -I$(HEADDIR)/test -I$(HEADDIR)/helpers
+CFLAGS = -Wall -Wextra -g -I$(HEADDIR) -I$(HEADDIR)/data_structures -I$(HEADDIR)/test -I$(HEADDIR)/helpers
 
 # Directories
 SRCDIR = src
@@ -87,10 +87,10 @@ $(BUILDDIR)/allocator.o: $(SRCDIR)/allocator.c $(HEADDIR)/allocator.h
 $(BUILDDIR)/slab_allocator.o: $(SRCDIR)/slab_allocator.c $(HEADDIR)/slab_allocator.h $(HEADDIR)/allocator.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-$(BUILDDIR)/buddy_allocator.o: $(SRCDIR)/buddy_allocator.c $(HEADDIR)/buddy_allocator.h $(HEADDIR)/allocator.h
+$(BUILDDIR)/buddy_allocator.o: $(SRCDIR)/buddy_allocator.c $(HEADDIR)/buddy_allocator.h $(HEADDIR)/variable_block_allocator.h $(HEADDIR)/allocator.h 
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-$(BUILDDIR)/bitmap_buddy_allocator.o: $(SRCDIR)/bitmap_buddy_allocator.c $(HEADDIR)/bitmap_buddy_allocator.h $(HEADDIR)/allocator.h
+$(BUILDDIR)/bitmap_buddy_allocator.o: $(SRCDIR)/bitmap_buddy_allocator.c $(HEADDIR)/bitmap_buddy_allocator.h $(HEADDIR)/variable_block_allocator.h $(HEADDIR)/allocator.h
 	$(CC) $(CFLAGS) -c -o $@ $< 
 
 # Data structures

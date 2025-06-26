@@ -109,9 +109,17 @@ int benchmark() {
         }
         
         // Option to continue or quit
-        printf("\nPress Enter to continue...");
-				getchar(); // Wait for Enter key
-				while (getchar() != '\n'); // Clear input buffer
+        printf("\nPress any key to continue, or 'q' to quit...");
+        // Clear input buffer before waiting for key press
+        int ch;
+        while ((ch = getchar()) != '\n' && ch != EOF); // Discard leftover input
+        ch = getchar(); // Wait for actual key press
+        if (ch == 'q' || ch == 'Q') {
+            printf("Exiting benchmark menu.\n");
+            break;
+        }
+        // Clear input buffer after key press
+        while (ch != '\n' && ch != EOF) ch = getchar();
     }
     
     // Free the allocated memory for file names

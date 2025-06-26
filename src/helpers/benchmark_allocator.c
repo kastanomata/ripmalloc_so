@@ -61,10 +61,19 @@ int Allocator_malloc_free(struct AllocatorBenchmarkConfig *config, void *instruc
             break;
         }
         
-        // Write the instruction with success/failure indicator
-        int written = snprintf((char *)config->log_data + config->log_offset, 
+        int written;
+        if (config->is_variable_size_allocation) {
+            // Assume get_internal_fragmentation is a function that returns the current fragmentation
+            Allocator * vballocator = config->allocator;
+            size_t internal_fragmentation = ((VariableBlockAllocator *) vballocator)->internal_fragmentation;
+            written = snprintf((char *)config->log_data + config->log_offset, 
+            config->max_log_size - config->log_offset, 
+            "%s,%d,%zu\n", instruction_str, (ret == 0) ? 0 : 1, internal_fragmentation);
+        } else {
+            written = snprintf((char *)config->log_data + config->log_offset, 
             config->max_log_size - config->log_offset, 
             "%s,%d\n", instruction_str, (ret == 0) ? 0 : 1);
+        }
         
         if (written < 0) {
             fprintf(stderr, "Log write error\n");
@@ -87,7 +96,7 @@ int Allocator_malloc_free(struct AllocatorBenchmarkConfig *config, void *instruc
     // Check for memory leaks
     int leaks_found = 0;
     // Prepare to append leak info to the log file
-    size_t leak_log_start = config->log_offset;
+    // size_t leak_log_start = config->log_offset;
     int leak_count = 0;
     for (int i = 0; i < n_pointers; ++i) {
         if (pointers[i] != NULL) {
@@ -153,7 +162,7 @@ int Allocator_benchmark_initialize(const char *file_name) {
     }
 
     // get how many characters should the log be long
-    size_t max_log_size = (size_t) count_remaining_characters(file) * 2;
+    size_t max_log_size = (size_t) count_remaining_characters(file) * 3;
     
     if (ftruncate(fileno(log_fp), max_log_size) != 0) {
         perror("Failed to set log file size");
@@ -174,6 +183,7 @@ int Allocator_benchmark_initialize(const char *file_name) {
     config.allocator = NULL;
     config.log_data = log_map; // Pointer to mmaped log data
     config.max_log_size = max_log_size;
+    config.log_offset = 0;
     config.is_variable_size_allocation = (type > VARIABLE_ALLOCATION_DELIMITER);
 
     union AllocatorParameterData params = parse_allocator_create_parameters(file, &config);
@@ -241,10 +251,12 @@ int Allocator_benchmark_initialize(const char *file_name) {
             n_pointers = ((SlabAllocator *)config.allocator)->free_list_size_max;
             break;
         case BUDDY_ALLOCATOR:
-            n_pointers = 1 << (((BuddyAllocator *)config.allocator)->num_levels - 1);
+            BuddyAllocator* buddy = (BuddyAllocator *) config.allocator;
+            n_pointers = 1 << (buddy->num_levels - 1);
             break;
         case BITMAP_BUDDY_ALLOCATOR:
-            n_pointers = ((BitmapBuddyAllocator *)config.allocator)->bitmap.num_bits;
+            BitmapBuddyAllocator* bitmap = (BitmapBuddyAllocator *) config.allocator;
+            n_pointers = 1 << (bitmap->num_levels - 1);
             break;
         default:
             fprintf(stderr, "Unknown allocator type: %d\n", type);
@@ -311,6 +323,7 @@ int Allocator_benchmark_initialize(const char *file_name) {
         }
     }
     #else
+    printf("N_pointers: %d\n", n_pointers);
     result = Allocator_malloc_free(&config, instructions, remaining, n_pointers);
     #endif
 
@@ -348,6 +361,22 @@ cleanup:
     if (log_map != NULL && log_map != MAP_FAILED) {
         printf("Log offset: %zu bytes\n", config.log_offset);
         ftruncate(fileno(log_fp), config.log_offset);
+
+        printf("Do you want to save .log for graph generation? [y/N] ");
+        fflush(stdout);
+
+        char first_char = 0;
+        if (scanf(" %c", &first_char) == 1 && tolower(first_char) == 'y') {
+            char cmd[512];
+            snprintf(cmd, sizeof(cmd), "mkdir -p ./thesis/graphs/benchmarks && cp '%s' ./thesis/graphs/benchmarks/", log_path);
+            int ret = system(cmd);
+            if (ret != 0) {
+                fprintf(stderr, "Failed to copy log file to ./thesis/graphs/benchmarks\n");
+            } else {
+                printf("Log file copied to ./thesis/graphs/benchmarks\n");
+            }
+        }
+
         munmap(log_map, max_log_size);
     }
     if (log_fp) fclose(log_fp);

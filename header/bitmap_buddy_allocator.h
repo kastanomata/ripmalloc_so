@@ -1,13 +1,23 @@
 #pragma once
-#include <allocator.h>
+#include <variable_block_allocator.h>
 #include <data_structures/bitmap.h>
 #include <math.h>
 
-#define BITMAP_BUDDY_MAX_LEVELS 20
-#define BITMAP_METADATA_SIZE (2 * sizeof(int))  // Metadata size for each allocation
+#include <stdio.h>
+#include <assert.h>
+#include <stdarg.h>
+#include <sys/mman.h>
+
+#define BITMAP_BUDDY_MAX_LEVELS 32
 
 typedef struct {
-    Allocator base;          // Base allocator interface
+    int level;
+    int size;
+} BitmapBuddyMetadata;
+#define BITMAP_METADATA_SIZE sizeof(BitmapBuddyMetadata)  // Metadata size for each allocation
+
+typedef struct {
+    VariableBlockAllocator base;          // Base allocator interface
     char* memory_start;      // Managed memory area
     int memory_size;         // Size of managed memory
     int num_levels;          // Number of levels in the hierarchy
@@ -33,7 +43,7 @@ inline BitmapBuddyAllocator* BitmapBuddyAllocator_create(BitmapBuddyAllocator* a
 }
 
 inline int BitmapBuddyAllocator_destroy(BitmapBuddyAllocator* alloc) {   
-    if (alloc->base.dest((Allocator*)alloc) != NULL) {
+    if (((Allocator*) alloc)->dest((Allocator*)alloc) != NULL) {
         #ifdef DEBUG
         printf(RED "Error: Failed to destroy BitmapBuddyAllocator\n" RESET);
         #endif
@@ -43,7 +53,7 @@ inline int BitmapBuddyAllocator_destroy(BitmapBuddyAllocator* alloc) {
 }
 
 inline void* BitmapBuddyAllocator_malloc(BitmapBuddyAllocator* alloc, size_t size) {
-    void* ptr = alloc->base.malloc((Allocator*)alloc, size);
+    void* ptr = ((Allocator*) alloc)->malloc((Allocator*)alloc, size);
     if( ptr == NULL ) {
         #ifdef DEBUG
         printf(RED "Error: Failed to allocate memory\n" RESET);
@@ -53,7 +63,7 @@ inline void* BitmapBuddyAllocator_malloc(BitmapBuddyAllocator* alloc, size_t siz
     return ptr;
 }
 inline int BitmapBuddyAllocator_free(BitmapBuddyAllocator* alloc, void* ptr) {
-    if (alloc->base.free((Allocator*)alloc, ptr) == (void*) -1) {
+    if (((Allocator*) alloc)->free((Allocator*)alloc, ptr) == (void*) -1) {
         #ifdef DEBUG
         printf(RED "Error: Failed to free memory in BitmapBuddyAllocator_free\n" RESET);
         #endif

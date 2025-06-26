@@ -1,9 +1,9 @@
 #include <buddy_allocator.h>
 
-extern inline BuddyAllocator* BuddyAllocator_create(BuddyAllocator* a, size_t total_size, int num_levels);
-extern inline int BuddyAllocator_destroy(BuddyAllocator* a);
-extern inline void* BuddyAllocator_malloc(BuddyAllocator* a, size_t size);
-extern inline int BuddyAllocator_free(BuddyAllocator* a, void* ptr);
+extern inline BuddyAllocator* BuddyAllocator_create(BuddyAllocator* alloc, size_t total_size, int num_levels);
+extern inline int BuddyAllocator_destroy(BuddyAllocator* alloc);
+extern inline void* BuddyAllocator_malloc(BuddyAllocator* alloc, size_t size);
+extern inline int BuddyAllocator_free(BuddyAllocator* alloc, void* ptr);
 
 static struct Buddies BuddyAllocator_divide_block(BuddyAllocator* a, BuddyNode* parent) {
     struct Buddies buddies = {NULL, NULL};
@@ -112,6 +112,9 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
         level_nodes *= 2;
     }
 
+    ((VariableBlockAllocator *) alloc)->internal_fragmentation = 0;
+    ((VariableBlockAllocator *) alloc)->external_fragmentation = 0;
+
     // Initialize memory
     buddy->memory_start = mmap(NULL, total_size, PROT_READ | PROT_WRITE, 
                              MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
@@ -180,10 +183,10 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
     list_push_front(buddy->free_lists[0], (Node*)&first_node->node);
 
     // Initialize function pointers
-    buddy->base.init = BuddyAllocator_init;
-    buddy->base.dest = BuddyAllocator_cleanup;
-    buddy->base.malloc = BuddyAllocator_reserve;
-    buddy->base.free = BuddyAllocator_release;
+    alloc->init = BuddyAllocator_init;
+    alloc->dest = BuddyAllocator_cleanup;
+    alloc->malloc = BuddyAllocator_reserve;
+    alloc->free = BuddyAllocator_release;
     return buddy;
 }
 
@@ -252,9 +255,6 @@ void* BuddyAllocator_reserve(Allocator* alloc, ...) {
         return NULL;
     }
     
-    if (adjusted_size < buddy->min_block_size) {
-        adjusted_size = buddy->min_block_size;
-    }
     // Calculate the appropriate level for the requested adjusted_size
     size_t block_size = buddy->total_size;
     int level = 0;
@@ -321,6 +321,16 @@ void* BuddyAllocator_reserve(Allocator* alloc, ...) {
     }
 
     free_block->is_free = false;
+    free_block->requested_size = adjusted_size;
+    size_t internal_fragmentation = free_block->size - free_block->requested_size;
+    ((VariableBlockAllocator *) alloc)->internal_fragmentation += internal_fragmentation;
+
+    // printf("ALLOCATION: Requested size: %zu bytes\n", adjusted_size);
+    // printf("Level requested at: %d, size of blocks at that level: %zu\n", level, block_size);
+    // printf("For this block, internal frag is %zu bytes\n", internal_fragmentation);
+    // printf("Total internal frag is %zu bytes\n", 
+    //        ((VariableBlockAllocator *) alloc)->internal_fragmentation);
+
     // Store metadata at start of block
     void* raw_block = free_block->data;
     *((BuddyNode**)raw_block) = free_block;
@@ -377,6 +387,16 @@ void *BuddyAllocator_release(Allocator* alloc, ...) {
         return (void*)-1;
     }    
     node->is_free = 1;
+    
+    size_t internal_fragmentation = node->size - node->requested_size;
+    ((VariableBlockAllocator *) alloc)->internal_fragmentation -= internal_fragmentation;
+
+    // printf("FREE: freeing block of size %zu bytes, was a request for %zu\n", node->size, node->requested_size);
+    // printf("Level freed at: %d, size of blocks at that level: %zu\n", 
+    //        node->level, a->total_size / (1 << node->level));
+    // printf("Total internal frag is %zu bytes\n", 
+    //        ((VariableBlockAllocator *) alloc)->internal_fragmentation);
+
     list_push_front(a->free_lists[node->level], (Node*)&node->node);
 
     // Try to merge with buddy if possible

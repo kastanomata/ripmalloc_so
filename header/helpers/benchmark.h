@@ -5,6 +5,7 @@
 #include <limits.h>  // For PATH_MAX
 #include <string.h>
 #include <dirent.h>
+#include <ctype.h> 
 
 #include <allocator.h>
 #include <slab_allocator.h>
