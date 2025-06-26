@@ -48,7 +48,7 @@ enum AllocatorType parse_allocator_create(FILE *file) {
   return type;
 }
 
-union AllocatorConfigData parse_allocator_create_parameters(FILE *file, struct AllocatorConfig *config) {
+union AllocatorParameterData parse_allocator_create_parameters(FILE *file, struct AllocatorBenchmarkConfig *config) {
   char line[256];
   while (fgets(line, sizeof(line), file)) {
     if (line[0] != '%') 
@@ -63,7 +63,7 @@ union AllocatorConfigData parse_allocator_create_parameters(FILE *file, struct A
     fprintf(stderr, RED "Invalid allocator parameters format: %s\n" RESET, line);
     #endif
   }
-  union AllocatorConfigData data = {0}; 
+  union AllocatorParameterData data = {0}; 
   if (config->type == SLAB_ALLOCATOR) {
     token = strtok(NULL, ",");
     if (!token) {
@@ -112,14 +112,19 @@ union AllocatorConfigData parse_allocator_create_parameters(FILE *file, struct A
   return data;
 }
 
-int parse_allocator_request(const char *line, struct AllocatorConfig *config, char **pointers, int num_pointers, long *allocation_counter) {
+int parse_allocator_request(const char *line, struct AllocatorBenchmarkConfig *config, char **pointers, int num_pointers, long *allocation_counter) {
   // the structure of the line is:
   // for variable size allocation:
   // a,<index>,<size>
   // for fixed size allocation:
   // a,<index>
   Allocator *allocator = config->allocator;
-  char *token = strtok((char *)line, ",");
+  char line_copy[256];
+  strncpy(line_copy, line, sizeof(line_copy) - 1);
+  line_copy[sizeof(line_copy) - 1] = '\0';
+
+  char *saveptr = NULL;
+  char *token = strtok_r(line_copy, ",", &saveptr);
   enum RequestType request_type = ALLOCATE;
   if (strcmp(token, "a") == 0) {
     request_type = ALLOCATE;
@@ -131,7 +136,7 @@ int parse_allocator_request(const char *line, struct AllocatorConfig *config, ch
     #endif
     return -1;
   }
-  token = strtok(NULL, ",");
+  token = strtok_r(NULL, ",", &saveptr);
   if (!token) {
     #ifdef DEBUG
     printf(RED "No index specified in allocator request\n" RESET);
@@ -169,7 +174,7 @@ int parse_allocator_request(const char *line, struct AllocatorConfig *config, ch
         (*allocation_counter)++;
       } else {
         // Variable size allocation
-        token = strtok(NULL, ",");
+        token = strtok_r(NULL, ",", &saveptr);
         if (!token) {
           #ifdef DEBUG
           printf(RED "No size specified for variable size allocation\n" RESET);

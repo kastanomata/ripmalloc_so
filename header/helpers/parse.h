@@ -18,13 +18,16 @@ enum RequestType {
   FREE
 };
 
-struct AllocatorConfig {
+struct AllocatorBenchmarkConfig {
+  Allocator *allocator;
   enum AllocatorType type;
   bool is_variable_size_allocation;
-  Allocator *allocator;
+  const char *log_data; // Pointer to log data that is mmaped to a file
+  size_t max_log_size;
+  size_t log_offset;
 };
 
-union AllocatorConfigData {
+union AllocatorParameterData {
   struct {
     size_t slab_size;
     size_t n_slabs;
@@ -35,10 +38,15 @@ union AllocatorConfigData {
   } buddy;
 };
 
+struct RequestResult {
+  bool success;
+  size_t fragmentation;
+};
+
 
 
 int parse(const char *filename);
 enum AllocatorType parse_allocator_create(FILE *file);
-union AllocatorConfigData parse_allocator_create_parameters(FILE *file, struct AllocatorConfig *config);
-int parse_allocator_request(const char *line, struct AllocatorConfig *config, char **pointers, int num_pointers, long *allocation_counter);
+union AllocatorParameterData parse_allocator_create_parameters(FILE *file, struct AllocatorBenchmarkConfig *config);
+int parse_allocator_request(const char *line, struct AllocatorBenchmarkConfig *config, char **pointers, int num_pointers, long *allocation_counter);
 

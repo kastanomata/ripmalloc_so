@@ -1,0 +1,8 @@
+# type=SLAB_ALLOCATOR
+# slab_size=44,n_slabs=200
+a,0,0
+a,1,0
+a,2,0
+f,0,0
+f,1,0
+f,2,0

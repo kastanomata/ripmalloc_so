@@ -1,10 +1,20 @@
 #include <benchmark.h>
 
-int Allocator_malloc_free(struct AllocatorConfig config, void *instructions, long remaining, int n_pointers) {
+// Function to count how many characters are remaining in the file after headers
+long count_remaining_characters(FILE *file) {
+    long offset = ftell(file); // Get current file position (after parsing headers)
+    fseek(file, 0, SEEK_END);
+    long file_size = ftell(file);
+    long remaining = file_size - offset;
+    fseek(file, offset, SEEK_SET); // Restore file position
+    return (remaining < 0) ? -1 : remaining;
+}
+
+int Allocator_malloc_free(struct AllocatorBenchmarkConfig *config, void *instructions, long remaining, int n_pointers) {
     int result = 0;
     char *pointers[n_pointers];
     long allocation_counter = 0;
-    
+
     // Initialize pointers array safely
     memset(pointers, 0, sizeof(char*) * n_pointers);
     
@@ -34,14 +44,42 @@ int Allocator_malloc_free(struct AllocatorConfig config, void *instructions, lon
         // Process valid instruction
         memcpy(instruction_str, line_start, line_len);
         instruction_str[line_len] = '\0';
-				#ifdef VERBOSE
-        printf("Instruction: %s -- ", instruction_str);
-				#endif
-        int ret = parse_allocator_request(instruction_str, &config, pointers, 
-                                        n_pointers, &allocation_counter);
+
+        
+        // Evaluate the instruction
+        int ret = parse_allocator_request(instruction_str, config, pointers, 
+            n_pointers, &allocation_counter);
         if (ret != 0 && result == 0) {
             result = ret;  // Capture first error
         }
+        
+        // Ensure we have space for: instruction + ",0\n" or ",1\n" + null terminator
+        size_t required_space = line_len + 3 + 1; // instruction + ,0/1 + \n + \0
+        if (config->log_offset + required_space >= config->max_log_size) {
+            fprintf(stderr, "Log buffer overflow\n");
+            result = -1;
+            break;
+        }
+        
+        // Write the instruction with success/failure indicator
+        int written = snprintf((char *)config->log_data + config->log_offset, 
+            config->max_log_size - config->log_offset, 
+            "%s,%d\n", instruction_str, (ret == 0) ? 0 : 1);
+        
+        if (written < 0) {
+            fprintf(stderr, "Log write error\n");
+            result = -1;
+            break;
+        }
+        
+        // Verify we didn't exceed expected write size
+        if ((size_t)written > (config->max_log_size - config->log_offset - 1)) {
+            fprintf(stderr, "Log buffer overflow (unexpected)\n");
+            result = -1;
+            break;
+        }
+        
+        config->log_offset += written;
         // Advance past newline if present
         if (instr < end && *instr == '\n') instr++;
     }
@@ -50,9 +88,9 @@ int Allocator_malloc_free(struct AllocatorConfig config, void *instructions, lon
     int leaks_found = 0;
     for (int i = 0; i < n_pointers; ++i) {
         if (pointers[i] != NULL) {
-						#ifdef DEBUG
+                        #ifdef DEBUG
             printf(RED "Pointer at index %d was not freed: %p\n" RESET, i, pointers[i]);
-						#endif
+                        #endif
             leaks_found = 1;
         }
     }
@@ -71,7 +109,7 @@ int Allocator_benchmark_initialize(const char *file_name) {
         perror("Failed to open benchmark file");
         return -1;
     }
-    
+    struct AllocatorBenchmarkConfig config;
     // Parse allocator type
     enum AllocatorType type = parse_allocator_create(file);
     if (type < 0) {
@@ -79,12 +117,49 @@ int Allocator_benchmark_initialize(const char *file_name) {
         return -1;
     }
 
-    struct AllocatorConfig config;
+    // Create or overwrite the log file with .log extension
+    char log_path[256];
+    snprintf(log_path, sizeof(log_path), "%s/%s", BENCHMARK_FOLDER "/logs", file_name);
+    char *dot = strrchr(log_path, '.');
+    if (dot) {
+        strcpy(dot, ".log");
+    } else {
+        strncat(log_path, ".log", sizeof(log_path) - strlen(log_path) - 1);
+    }
+
+    // Open log file with fopen
+    FILE *log_fp = fopen(log_path, "w+");
+    if (!log_fp) {
+        perror("Failed to create log file");
+        goto cleanup;
+    }
+
+    // get how many characters should the log be long
+    size_t max_log_size = (size_t) count_remaining_characters(file);
+    
+    if (ftruncate(fileno(log_fp), max_log_size) != 0) {
+        perror("Failed to set log file size");
+        goto cleanup;
+    }
+
+    void *log_map = mmap(NULL, max_log_size, PROT_READ | PROT_WRITE, MAP_SHARED, fileno(log_fp), 0);
+    if (log_map == MAP_FAILED) {
+        perror("Failed to mmap log file");
+        goto cleanup;
+    }
+
+    memset(log_map, EOF, max_log_size);
+
+    // Log file is now memory-mapped at log_map
+
     config.type = type;
     config.allocator = NULL;
+    config.log_data = log_map; // Pointer to mmaped log data
+    config.max_log_size = max_log_size;
     config.is_variable_size_allocation = (type > VARIABLE_ALLOCATION_DELIMITER);
 
-    union AllocatorConfigData params = parse_allocator_create_parameters(file, &config);
+    union AllocatorParameterData params = parse_allocator_create_parameters(file, &config);
+
     void *map_base = NULL;
     long delta = 0;
     long remaining = 0;
@@ -94,15 +169,36 @@ int Allocator_benchmark_initialize(const char *file_name) {
     switch (type) {
         case SLAB_ALLOCATOR:
             printf("Running SLAB_ALLOCATOR benchmark...\n");
+            config.log_offset += snprintf((char *)config.log_data + config.log_offset,
+                                      config.max_log_size - config.log_offset,
+                                      "# type=SLAB_ALLOCATOR\n");
+            config.log_offset += snprintf((char *)config.log_data + config.log_offset,
+                                      config.max_log_size - config.log_offset,
+                                      "# slab_size=%zu,n_slabs=%zu\n",
+                                      params.slab.slab_size, params.slab.n_slabs);
             config.allocator = (Allocator*) &allocator;
             SlabAllocator_create((SlabAllocator *) &allocator, params.slab.slab_size, params.slab.n_slabs);
             break;
         case BUDDY_ALLOCATOR:
+            config.log_offset += snprintf((char *)config.log_data + config.log_offset,
+                                config.max_log_size - config.log_offset,
+                                "# type=BUDDY_ALLOCATOR\n");
+            config.log_offset += snprintf((char *)config.log_data + config.log_offset,
+                                        config.max_log_size - config.log_offset,
+                                        "# total_size=%zu,max_levels=%zu\n",
+                                        params.buddy.total_size, params.buddy.max_levels);
             printf("Running BUDDY_ALLOCATOR benchmark...\n");
             config.allocator = (Allocator*) &allocator;
             BuddyAllocator_create((BuddyAllocator *)&allocator, params.buddy.total_size, params.buddy.max_levels);
             break;
         case BITMAP_BUDDY_ALLOCATOR:
+            config.log_offset += snprintf((char *)config.log_data + config.log_offset,
+                        config.max_log_size - config.log_offset,
+                        "# type=BITMAP_BUDDY_ALLOCATOR\n");
+            config.log_offset += snprintf((char *)config.log_data + config.log_offset,
+                                        config.max_log_size - config.log_offset,
+                                        "# total_size=%zu,max_levels=%zu\n",
+                                        params.buddy.total_size, params.buddy.max_levels);
             printf("Running BITMAP_BUDDY_ALLOCATOR benchmark...\n");
             config.allocator = (Allocator*) &allocator;
             BitmapBuddyAllocator_create((BitmapBuddyAllocator *)&allocator, params.buddy.total_size, params.buddy.max_levels);
@@ -138,11 +234,9 @@ int Allocator_benchmark_initialize(const char *file_name) {
             goto cleanup;
     }
 
-    // Memory map the file for reading instructions
-    long offset = ftell(file); // Get current file position (after parsing headers)
-    fseek(file, 0, SEEK_END);
-    long file_size = ftell(file);
-    remaining = file_size - offset;
+    // Use the function to get remaining characters
+    long offset = ftell(file);
+    remaining = count_remaining_characters(file);
     if (remaining < 0) {
         result = -1;
         goto cleanup;
@@ -169,19 +263,17 @@ int Allocator_benchmark_initialize(const char *file_name) {
 
     // Execute the benchmark
     #ifdef TIME
-    // Setup timing variables
     struct timespec start, end;
     struct rusage usage_start, usage_end;
     double elapsed_seconds = 0.0;
     double user_seconds = 0.0, sys_seconds = 0.0;
 
-    // Start timing
     if (clock_gettime(CLOCK_MONOTONIC, &start) != 0 || getrusage(RUSAGE_SELF, &usage_start) != 0) {
         perror("Failed to get start time");
         result = -1;
     } else {
         // Execute benchmark
-        result = Allocator_malloc_free(config, instructions, remaining, n_pointers);
+        result = Allocator_malloc_free(&config, instructions, remaining, n_pointers);
 
         // End timing
         if (clock_gettime(CLOCK_MONOTONIC, &end) != 0 || getrusage(RUSAGE_SELF, &usage_end) != 0) {
@@ -198,15 +290,10 @@ int Allocator_benchmark_initialize(const char *file_name) {
             sys_seconds = (usage_end.ru_stime.tv_sec - usage_start.ru_stime.tv_sec)
                         + (usage_end.ru_stime.tv_usec - usage_start.ru_stime.tv_usec) / 1e6;
 
-            printf("\nBenchmark timing results:\n");
-            printf("  Wall time: %.6f seconds\n", elapsed_seconds);
-            printf("  User CPU time: %.6f seconds\n", user_seconds);
-            printf("  Kernel (system) CPU time: %.6f seconds\n", sys_seconds);
-            printf("  Operations: %ld\n", remaining);
         }
     }
     #else
-    result = Allocator_malloc_free(config, instructions, remaining, n_pointers);
+    result = Allocator_malloc_free(&config, instructions, remaining, n_pointers);
     #endif
 
     if (result < 0) {
@@ -233,13 +320,19 @@ int Allocator_benchmark_initialize(const char *file_name) {
     #endif
 
 cleanup:
-    // Cleanup resources
     if (config.allocator && config.allocator->dest) {
         config.allocator->dest(config.allocator);
     }
     if (map_base != NULL && map_base != MAP_FAILED) {
         munmap(map_base, remaining + delta);
     }
-    fclose(file);
+    // Truncate log file to actual log_offset size BEFORE munmap and fclose
+    if (log_map != NULL && log_map != MAP_FAILED) {
+        printf("Log offset: %zu bytes\n", config.log_offset);
+        ftruncate(fileno(log_fp), config.log_offset);
+        munmap(log_map, max_log_size);
+    }
+    if (log_fp) fclose(log_fp);
+    if (file) fclose(file);
     return result;
 }
