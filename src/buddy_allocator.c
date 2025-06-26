@@ -113,7 +113,7 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
     }
 
     ((VariableBlockAllocator *) alloc)->internal_fragmentation = 0;
-    ((VariableBlockAllocator *) alloc)->external_fragmentation = 0;
+    ((VariableBlockAllocator *) alloc)->sparse_free_memory = total_size;
 
     // Initialize memory
     buddy->memory_start = mmap(NULL, total_size, PROT_READ | PROT_WRITE, 
@@ -317,6 +317,12 @@ void* BuddyAllocator_reserve(Allocator* alloc, ...) {
         #ifdef DEBUG
         printf(RED "ERROR: No free blocks available at any level\n" RESET);
         #endif
+        if(adjusted_size < ((VariableBlockAllocator *) alloc)->sparse_free_memory) {
+            printf("\t External fragmentation caused by request of %zu bytes, "
+                   "but only %zu bytes of sparse free memory available.\n",
+                   adjusted_size, ((VariableBlockAllocator *) alloc)->sparse_free_memory);
+            ((VariableBlockAllocator *) alloc)->sparse_free_memory -= adjusted_size;
+        }
         return NULL;
     }
 
@@ -324,6 +330,7 @@ void* BuddyAllocator_reserve(Allocator* alloc, ...) {
     free_block->requested_size = adjusted_size;
     size_t internal_fragmentation = free_block->size - free_block->requested_size;
     ((VariableBlockAllocator *) alloc)->internal_fragmentation += internal_fragmentation;
+    ((VariableBlockAllocator *) alloc)->sparse_free_memory -= free_block->size;
 
     // printf("ALLOCATION: Requested size: %zu bytes\n", adjusted_size);
     // printf("Level requested at: %d, size of blocks at that level: %zu\n", level, block_size);
@@ -390,6 +397,7 @@ void *BuddyAllocator_release(Allocator* alloc, ...) {
     
     size_t internal_fragmentation = node->size - node->requested_size;
     ((VariableBlockAllocator *) alloc)->internal_fragmentation -= internal_fragmentation;
+    ((VariableBlockAllocator *) alloc)->sparse_free_memory += node->size;
 
     // printf("FREE: freeing block of size %zu bytes, was a request for %zu\n", node->size, node->requested_size);
     // printf("Level freed at: %d, size of blocks at that level: %zu\n", 

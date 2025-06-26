@@ -65,6 +65,7 @@ dkms.conf
 # My notes
 thesis/.~lock.*.fodt#
 *.txt
+benchmarks/logs/*.log
 benchmarks/generated_*.alloc
 .vscode
 

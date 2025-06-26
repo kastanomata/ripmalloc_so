@@ -135,8 +135,14 @@ static void* get_buddy(BitmapBuddyAllocator* buddy, int level, int size) {
     metadata->level = level;
     metadata->size = size;
 
+    printf("sparse_free_memory before: %zu bytes\n", ((VariableBlockAllocator *) buddy)->sparse_free_memory);
+
     size_t internal_fragmentation = block_size - size;
     ((VariableBlockAllocator *) buddy)->internal_fragmentation += internal_fragmentation;
+    ((VariableBlockAllocator *) buddy)->sparse_free_memory -= block_size;
+    printf("Allocated block at level %d, size %zu bytes\n", level, block_size);
+    printf("Original requested size: %d bytes\n", size);
+    printf("sparse_free_memory after: %zu bytes\n", ((VariableBlockAllocator *) buddy)->sparse_free_memory);
     
     return (void*)(ret + BITMAP_METADATA_SIZE);
 }
@@ -180,7 +186,7 @@ void* BitmapBuddyAllocator_init(Allocator* alloc, ...) {
 
     // Initialize fields of VariableBlockAllocator
     ((VariableBlockAllocator *) alloc)->internal_fragmentation = 0;
-    // ((VariableBlockAllocator *) alloc)->external_fragmentation = 0;
+    ((VariableBlockAllocator *) alloc)->sparse_free_memory = total_size;
     
     // Initialize buddy allocator properties
     buddy->num_levels = num_levels;
@@ -340,6 +346,7 @@ void* BitmapBuddyAllocator_release(Allocator* alloc, ...) {
 
     size_t internal_fragmentation = block_size - size;
     ((VariableBlockAllocator *) alloc)->internal_fragmentation -= internal_fragmentation;
+    ((VariableBlockAllocator *) alloc)->sparse_free_memory += block_size;
     // Update bitmap
     update_child(&buddy->bitmap, bit, 0);
     merge_block(&buddy->bitmap, bit, buddy->num_levels);

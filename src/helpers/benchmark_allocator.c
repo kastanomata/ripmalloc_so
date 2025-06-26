@@ -63,12 +63,14 @@ int Allocator_malloc_free(struct AllocatorBenchmarkConfig *config, void *instruc
         
         int written;
         if (config->is_variable_size_allocation) {
-            // Assume get_internal_fragmentation is a function that returns the current fragmentation
+            // put internal_fragmentation and sparse_free_space
             Allocator * vballocator = config->allocator;
             size_t internal_fragmentation = ((VariableBlockAllocator *) vballocator)->internal_fragmentation;
+            size_t sparse_free_space = ((VariableBlockAllocator *) vballocator)->sparse_free_memory;
             written = snprintf((char *)config->log_data + config->log_offset, 
             config->max_log_size - config->log_offset, 
-            "%s,%d,%zu\n", instruction_str, (ret == 0) ? 0 : 1, internal_fragmentation);
+            "%s,%d,%zu,%zu\n", instruction_str, (ret == 0) ? 0 : 1, internal_fragmentation, sparse_free_space);
+            // 
         } else {
             written = snprintf((char *)config->log_data + config->log_offset, 
             config->max_log_size - config->log_offset, 
@@ -162,7 +164,7 @@ int Allocator_benchmark_initialize(const char *file_name) {
     }
 
     // get how many characters should the log be long
-    size_t max_log_size = (size_t) count_remaining_characters(file) * 3;
+    size_t max_log_size = (size_t) count_remaining_characters(file) * 10;
     
     if (ftruncate(fileno(log_fp), max_log_size) != 0) {
         perror("Failed to set log file size");
