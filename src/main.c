@@ -4,10 +4,6 @@
 
 
 int main(int argc, char* argv[]) {
-  // printf("Program arguments (%d):\n", argc);
-  // for (int i = 0; i < argc; ++i) {
-  //   printf("  argv[%d]: %s\n", i, argv[i]);
-  // }
   line
   test_bitmap();
   line
@@ -19,7 +15,16 @@ int main(int argc, char* argv[]) {
   line
   test_bitmap_buddy_allocator();
   line
-  // freeform();
-  line
-  benchmark();
+  if(argc>0) {
+    printf("Program arguments (%d):\n", argc);
+    for (int i = 0; i < argc; ++i) {
+      printf("  argv[%d]: %s\n", i, argv[i]);
+      if (strcmp(argv[i], "freeform") == 0) {
+        freeform();
+      }
+      if (strcmp(argv[i], "benchmark") == 0) {
+        benchmark();
+      }
+    }
+  }
 }
