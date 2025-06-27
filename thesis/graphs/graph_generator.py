@@ -100,7 +100,7 @@ def produce_graph():
                         size /= 1024.0
                     return f"{size:.2f} {unit}" if unit != 'bytes' else f"{int(size)} {unit}"
                 
-                fig, ax1 = plt.subplots(figsize=(16, 12))  # Increased figure size
+                fig, ax1 = plt.subplots(figsize=(6.3, 4.5))  # A4-friendly size for articles
                 
                 # Plot allocated memory (primary axis)
                 ax1.plot(range(len(allocations)), allocations, marker='o', markersize=3, 
@@ -135,10 +135,10 @@ def produce_graph():
                 
                 ax1.annotate(
                     stats_text,
-                    xy=(0.1, 0.85), xycoords='axes fraction',
-                    fontsize=11, family='monospace',
+                    xy=(0.02, 0.98), xycoords='axes fraction',
+                    fontsize=9, family='monospace',
                     horizontalalignment='left', verticalalignment='top',
-                    bbox=dict(alpha=0.5, pad=1, boxstyle='square')
+                    bbox=dict(alpha=0.4, pad=0.3, boxstyle='round')
                 )
 
                 ax1.legend(loc='upper right')

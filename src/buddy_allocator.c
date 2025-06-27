@@ -127,8 +127,19 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
     }
 
     buddy->total_size = total_size;
+    // Initialize buddy allocator properties
+    // Calculate minimum block size (min_bucket_size) and adjust num_levels if needed
+    size_t min_block_size = total_size >> (num_levels - 1);
+    while (min_block_size < (BUDDY_METADATA_SIZE + 1) && num_levels > 1) {
+        num_levels--;
+        min_block_size = total_size >> (num_levels - 1);
+    }
     buddy->num_levels = num_levels;
-    buddy->min_block_size = total_size >> (num_levels - 1);
+    buddy->min_block_size = min_block_size;
+    #ifdef DEBUG
+    printf("num_levels: %d\n", num_levels);
+    printf("min_block_size: %zu\n", min_block_size);
+    #endif
 
     // Initialize list allocator
     SlabAllocator* list_allocator = SlabAllocator_create(&(buddy->list_allocator), sizeof(DoubleLinkedList), num_levels);
@@ -318,10 +329,12 @@ void* BuddyAllocator_reserve(Allocator* alloc, ...) {
         printf(RED "ERROR: No free blocks available at any level\n" RESET);
         #endif
         if(adjusted_size < ((VariableBlockAllocator *) alloc)->sparse_free_memory) {
-            printf("\t External fragmentation caused by request of %zu bytes, "
-                   "but only %zu bytes of sparse free memory available.\n",
+            printf("\t EXTERNAL FRAGMENTATION: request of %zu bytes and %zu bytes of sparse free memory available.\n",
                    adjusted_size, ((VariableBlockAllocator *) alloc)->sparse_free_memory);
-            ((VariableBlockAllocator *) alloc)->sparse_free_memory -= adjusted_size;
+        }
+        if(adjusted_size < (((VariableBlockAllocator *) alloc)->internal_fragmentation)) {
+            printf("\t INTERNAL FRAGMENTATION: request of %zu bytes and %zu bytes of internal fragmentation.\n",
+                   adjusted_size, ((VariableBlockAllocator *) alloc)->internal_fragmentation);
         }
         return NULL;
     }

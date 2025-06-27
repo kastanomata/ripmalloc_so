@@ -6,6 +6,8 @@
 #include <string.h>
 #include <dirent.h>
 #include <ctype.h> 
+#include <time.h>
+#include <sys/resource.h>
 
 #include <allocator.h>
 #include <slab_allocator.h>
@@ -13,9 +15,8 @@
 #include <bitmap_buddy_allocator.h>
 
 #include <helpers/parse.h>
-#ifdef TIME
-  #include <time.h>
-#endif
+
+
 
 #define PROJECT_FOLDER "."
 #define BENCHMARK_FOLDER "./benchmarks"

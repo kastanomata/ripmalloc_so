@@ -1,7 +1,7 @@
 # How to Use the Memory Profiler
 
 **Note:** Files must be in the `./benchmarks` folder and have the `.alloc` extension.  
-Lines starting with `%` will be ignored. Comments should have their own line.
+Lines starting with `%`(percent) will be ignored. Comments should have their own line.
 
 ## Commands
 - `i,<allocator type>`  

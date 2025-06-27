@@ -21,6 +21,16 @@ int Allocator_malloc_free(struct AllocatorBenchmarkConfig *config, void *instruc
     const unsigned char *instr = (unsigned char *)instructions;
     const unsigned char *end = instr + remaining;
     char instruction_str[256];
+
+    if (config->is_variable_size_allocation) {
+        config->log_offset += snprintf((char *)config->log_data + config->log_offset,
+                                       config->max_log_size - config->log_offset,
+                                       "# instruction,<param1>,<param2>,...,failure,internal_fragmentation,sparse_free_space\n");
+    } else {
+        config->log_offset += snprintf((char *)config->log_data + config->log_offset,
+                                       config->max_log_size - config->log_offset,
+                                       "# instruction,<param1>,<param2>,...,failure\n");
+    }
     
     // Process instructions in single pass
     while (instr < end) {
@@ -294,7 +304,6 @@ int Allocator_benchmark_initialize(const char *file_name) {
     }
 
     // Execute the benchmark
-    #ifdef TIME
     struct timespec start, end;
     struct rusage usage_start, usage_end;
     double elapsed_seconds = 0.0;
@@ -324,10 +333,17 @@ int Allocator_benchmark_initialize(const char *file_name) {
 
         }
     }
-    #else
-    printf("N_pointers: %d\n", n_pointers);
-    result = Allocator_malloc_free(&config, instructions, remaining, n_pointers);
-    #endif
+
+    // Print timing information at the end of the log
+    int written = snprintf((char *)config.log_data + config.log_offset,
+                           config.max_log_size - config.log_offset,
+                           "# elapsed_seconds=%.6f user_seconds=%.6f sys_seconds=%.6f\n",
+                           elapsed_seconds, user_seconds, sys_seconds);
+
+    // Also print timing information to the screen
+    printf("Elapsed time: %.6f s (user: %.6f s, sys: %.6f s)\n", elapsed_seconds, user_seconds, sys_seconds);
+    if (written > 0)
+        config.log_offset += written;
 
     if (result < 0) {
         fprintf(stderr, RED "Failed to parse some allocator requests\n" RESET);

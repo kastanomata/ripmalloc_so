@@ -120,7 +120,20 @@ static void* get_buddy(BitmapBuddyAllocator* buddy, int level, int size) {
     
     if (bitmap_idx == -1) {
         bitmap_idx = split_block(buddy, level);
-        if (bitmap_idx == -1) return NULL;
+        if (bitmap_idx == -1) {
+            #ifdef DEBUG
+            printf(RED "ERROR: Block of appropriate size not found! %d\n" RESET, level);
+            #endif
+            if((size_t) size < ((VariableBlockAllocator *) buddy)->sparse_free_memory) {
+                printf("\t EXTERNAL FRAGMENTATION: request of %d bytes and %zu bytes of sparse free memory available.\n",
+                       size, ((VariableBlockAllocator *) buddy)->sparse_free_memory);
+            }
+            if((size_t) size < ((VariableBlockAllocator *) buddy)->internal_fragmentation) {
+                printf("\t INTERNAL FRAGMENTATION: request of %d bytes and %zu bytes of internal fragmentation.\n",
+                       size, ((VariableBlockAllocator *) buddy)->internal_fragmentation);
+            }
+            return NULL;
+        }
     }
     
     // Mark the block as allocated
@@ -135,14 +148,9 @@ static void* get_buddy(BitmapBuddyAllocator* buddy, int level, int size) {
     metadata->level = level;
     metadata->size = size;
 
-    printf("sparse_free_memory before: %zu bytes\n", ((VariableBlockAllocator *) buddy)->sparse_free_memory);
-
     size_t internal_fragmentation = block_size - size;
     ((VariableBlockAllocator *) buddy)->internal_fragmentation += internal_fragmentation;
     ((VariableBlockAllocator *) buddy)->sparse_free_memory -= block_size;
-    printf("Allocated block at level %d, size %zu bytes\n", level, block_size);
-    printf("Original requested size: %d bytes\n", size);
-    printf("sparse_free_memory after: %zu bytes\n", ((VariableBlockAllocator *) buddy)->sparse_free_memory);
     
     return (void*)(ret + BITMAP_METADATA_SIZE);
 }
@@ -189,8 +197,17 @@ void* BitmapBuddyAllocator_init(Allocator* alloc, ...) {
     ((VariableBlockAllocator *) alloc)->sparse_free_memory = total_size;
     
     // Initialize buddy allocator properties
+    size_t min_bucket_size = total_size >> num_levels;
+    while (min_bucket_size < (BITMAP_METADATA_SIZE + 1) && num_levels > 0) {
+        num_levels--;
+        min_bucket_size = total_size >> num_levels;
+    }
     buddy->num_levels = num_levels;
-    buddy->min_bucket_size = total_size >> num_levels;
+    buddy->min_bucket_size = min_bucket_size;
+    #ifdef DEBUG
+    printf("num_levels: %d\n", num_levels);
+    printf("min_bucket_size: %zu\n", min_bucket_size);
+    #endif
     
     // Initialize bitmap
     if (!bitmap_create(&buddy->bitmap, num_bits, bitmap_memory)) {
