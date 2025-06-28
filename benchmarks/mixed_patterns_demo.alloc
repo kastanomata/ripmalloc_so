@@ -1,4 +1,4 @@
-i,buddy
+i,bitmap
 % 200KiB memory, max_levels=15
 p,262144,20
 
