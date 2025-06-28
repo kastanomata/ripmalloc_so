@@ -33,6 +33,8 @@ int Allocator_malloc_free(struct AllocatorBenchmarkConfig *config, void *instruc
                                        "# instruction,<param1>,<param2>,...,failure\n");
     }
     
+    int line_number = 1; // Start at 1 for the first line after headers
+
     // Process instructions in single pass
     while (instr < end) {
         const unsigned char *line_start = instr;
@@ -41,26 +43,28 @@ int Allocator_malloc_free(struct AllocatorBenchmarkConfig *config, void *instruc
         size_t line_len = instr - line_start;
         // Skip empty lines and comments
         if (line_len == 0 || *line_start == '%') {
-            instr++;
+            if (instr < end && *instr == '\n') instr++;
+            line_number++;
             continue;
         }
         // Handle line overflow safely
         if (line_len >= sizeof(instruction_str)) {
-            fprintf(stderr, "Line too long (%zu bytes), max %zu allowed\n",
-                    line_len, sizeof(instruction_str)-1);
+            fprintf(stderr, "Line %d: Line too long (%zu bytes), max %zu allowed\n",
+                    line_number, line_len, sizeof(instruction_str)-1);
             result = -1;
-            instr++;
+            if (instr < end && *instr == '\n') instr++;
+            line_number++;
             continue;
         }
         // Process valid instruction
         memcpy(instruction_str, line_start, line_len);
         instruction_str[line_len] = '\0';
 
-        
         // Evaluate the instruction
         int ret = parse_allocator_request(instruction_str, config, pointers, 
             n_pointers, &allocation_counter);
-        if (ret != 0 && result == 0) {
+        if (ret != 0) {
+            fprintf(stderr, RESET "\t Error at line %d: failed to parse instruction: %s\n", line_number, instruction_str);
             result = ret;  // Capture first error
         }
         
@@ -104,6 +108,7 @@ int Allocator_malloc_free(struct AllocatorBenchmarkConfig *config, void *instruc
         config->log_offset += written;
         // Advance past newline if present
         if (instr < end && *instr == '\n') instr++;
+        line_number++;
     }
     
     // Check for memory leaks

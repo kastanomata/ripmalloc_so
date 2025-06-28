@@ -66,18 +66,6 @@ static void update_parent(Bitmap* bitmap, int bit) {
     update_parent(bitmap, parent);
 }
 
-static bool block_is_free(Bitmap* bm, int idx) {
-    if (bitmap_test(bm, idx)) 
-        return false;           // this block itself is already marked used
-    // walk up the tree: if any ancestor is used, this child is off‑limits
-    while (idx > 0) {
-        idx = parentIdx(idx);
-        if (bitmap_test(bm, idx)) 
-            return false;
-    }
-    return true;
-}
-
 static void update_child(Bitmap* bitmap, int bit, int value) {
     if (bit >= bitmap->num_bits) return;
     
@@ -162,7 +150,6 @@ static void* get_buddy(BitmapBuddyAllocator* buddy, int level, int size) {
             return NULL;
         }
     }
-    print_user_pointer(bitmap_idx,buddy->num_levels, buddy);
     
     // Mark the block as allocated
     bitmap_set(&buddy->bitmap, bitmap_idx);
@@ -377,7 +364,6 @@ void* BitmapBuddyAllocator_release(Allocator* alloc, ...) {
     int offset = (char_ptr - BITMAP_METADATA_SIZE - memory_start)
                 / full_block_size;
     bit = firstIdx(metadata->level) + offset;
-    print_user_pointer(bit,buddy->num_levels,buddy);
 
     // Validate bitmap index
     if (bit < 0 || bit >= buddy->bitmap.num_bits) {
