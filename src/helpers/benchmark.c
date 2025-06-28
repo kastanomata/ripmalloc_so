@@ -103,13 +103,13 @@ int benchmark() {
             // Run the selected file
             printf("\n=== Running benchmark: %s ===\n", files[run]);
             Allocator_benchmark_initialize(files[run]);  
-            printf("\nBenchmark completed.\n");
+            printf("\nBenchmark completed. ");
         } else {
-            printf("No valid benchmark selected.\n");
+            printf(RED "No valid benchmark selected. " RESET);
         }
         
         // Option to continue or quit
-        printf("\nPress any key to continue, or 'q' to quit...");
+        printf("Press any key to continue, or 'q' to quit...");
         // Clear input buffer before waiting for key press
         int ch;
         while ((ch = getchar()) != '\n' && ch != EOF); // Discard leftover input

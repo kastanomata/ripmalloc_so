@@ -26,150 +26,53 @@ void print_user_pointer(int bitmap_idx, int num_levels, BitmapBuddyAllocator* bu
 }
 
 static int levelIdx(size_t idx) {
-    return (int)floor(log2(idx+1));
+    return idx < 0? -1 : (int)floor(log2(idx+1));
 }
 
 static int buddyIdx(int idx) {
-    if (idx == 0) return 0;
-    return idx % 2 ? idx - 1 : idx + 1;
+    if (idx == 0) return -1;
+    // formula: even goes to idx - 1, odd goes to idx + 1
+    if (idx % 2 == 0) {
+        return idx - 1; // even index, buddy is left
+    } else {
+        return idx + 1; // odd index, buddy is right
+    }
 }
 
 static int parentIdx(int idx) {
+    if(idx == 0 ) return -1;
     return (idx - 1) / 2;
 }
 
 static int firstIdx(int level) {
-    return (1 << level) - 1;
+    return (1 << level) - 1; // 2^(level-1)
 }
 
-static int startIdx(int idx, int num_levels) {
-    int level = levelIdx(idx);
-    if (level >= num_levels) return -1;  // Invalid level
-    return idx - firstIdx(level);
-}
 
-static void update_parent(Bitmap* bitmap, int bit) {
-    if (bit == 0) return; 
-    
-    int parent = parentIdx(bit);
-    int left = parent * 2 + 1;
-    int right = parent * 2 + 2;
-    
-    // Parent is set if one of the children is allocated
-    if (bitmap_test(bitmap, left) || bitmap_test(bitmap, right)) {
-        bitmap_set(bitmap, parent);
-    } else {
-        bitmap_clear(bitmap, parent);
-    }
-    
-    // Recursively update ancestors
-    update_parent(bitmap, parent);
-}
-
-static void update_child(Bitmap* bitmap, int bit, int value) {
-    if (bit >= bitmap->num_bits) return;
+static void update_parents(Bitmap* bitmap, int bit, int value) {
     
     if (value) {
         bitmap_set(bitmap, bit);
     } else {
         bitmap_clear(bitmap, bit);
     }
-    update_child(bitmap, bit * 2 + 1, value);
-    update_child(bitmap, bit * 2 + 2, value);
+    int parent = parentIdx(bit);
+    if(parent == -1) return;
+    
+    // Recursively update ancestors
+    update_parents(bitmap, parent,value);
 }
 
-static void merge_block(Bitmap* bitmap, int bit, int num_levels) {
-    if (bit == 0) return;
-    
-    int buddy = buddyIdx(bit);
-    if (buddy >= bitmap->num_bits) return;
-    
-    // Only merge if both are free and at same level
-    if (!bitmap_test(bitmap, bit) && !bitmap_test(bitmap, buddy) && 
-        levelIdx(bit) == levelIdx(buddy)) {
-        int parent = parentIdx(bit);
-        bitmap_clear(bitmap, parent);
-        merge_block(bitmap, parent, num_levels);
-    }
-}
+static void update_children(Bitmap* bitmap, int bit, int value) {
+    if (bit >= bitmap->num_bits) return;
 
-static int split_block(BitmapBuddyAllocator* buddy, int level) {
-    int original_bit = -1;
-    for (int upper = level - 1; upper >= 0; --upper) {
-        int first = firstIdx(upper);
-        int last = firstIdx(upper + 1);
-        for (int i = first; i < last; ++i) {
-            if (!bitmap_test(&buddy->bitmap, i)) {
-                original_bit = i;
-                bitmap_set(&buddy->bitmap, i);
-                
-                int cur = i;
-                while (levelIdx(cur) < level) {
-                    int left = cur * 2 + 1;
-                    int right = cur * 2 + 2;
-                    if (left >= buddy->bitmap.num_bits || right >= buddy->bitmap.num_bits) {
-                        // Rollback
-                        bitmap_clear(&buddy->bitmap, original_bit);
-                        return -1;
-                    }
-                    bitmap_clear(&buddy->bitmap, left);
-                    bitmap_clear(&buddy->bitmap, right);
-                    cur = left;
-                }
-                return cur;
-            }
-        }
+    if (value) {
+        bitmap_set(bitmap, bit);
+    } else {
+        bitmap_clear(bitmap, bit);
     }
-    return -1;
-}
-
-static void* get_buddy(BitmapBuddyAllocator* buddy, int level, int size) {
-    int bitmap_idx = -1;
-    
-    for (int i = firstIdx(level); i < firstIdx(level + 1); i++) {
-        if (!bitmap_test(&buddy->bitmap, i)) {
-            bitmap_idx = i;
-            break;
-        }
-    }
-    
-    if (bitmap_idx == -1) {
-        bitmap_idx = split_block(buddy, level);
-        if (bitmap_idx == -1) {
-            #ifdef DEBUG
-            printf(RED "ERROR: Block of appropriate size not found! %d\n" RESET, level);
-            #endif
-            if((size_t) size < ((VariableBlockAllocator *) buddy)->sparse_free_memory) {
-                printf("\t EXTERNAL FRAGMENTATION: request of %d bytes and %zu bytes of sparse free memory available.\n",
-                       size, ((VariableBlockAllocator *) buddy)->sparse_free_memory);
-            }
-            if((size_t) size < ((VariableBlockAllocator *) buddy)->internal_fragmentation) {
-                printf("\t INTERNAL FRAGMENTATION: request of %d bytes and %zu bytes of internal fragmentation.\n",
-                       size, ((VariableBlockAllocator *) buddy)->internal_fragmentation);
-            }
-            return NULL;
-        }
-    }
-    
-    // Mark the block as allocated
-    bitmap_set(&buddy->bitmap, bitmap_idx);
-    update_parent(&buddy->bitmap, bitmap_idx); // Ensure parents are updated
-
-    level = levelIdx(bitmap_idx);
-    int user_idx = bitmap_idx - firstIdx(level);
-    size_t usable_block_size = buddy->min_bucket_size << (buddy->num_levels - level);
-    size_t full_block_size   = usable_block_size + BITMAP_METADATA_SIZE;
-    char*  block_start       = buddy->memory_start
-                            + user_idx * full_block_size;
-    // write metadata at the very top of each full_block
-    BitmapBuddyMetadata* meta = (BitmapBuddyMetadata*)block_start;
-    meta->level = level;
-    meta->size  = size;
-    size_t internal_fragmentation = usable_block_size - size;
-    ((VariableBlockAllocator *) buddy)->internal_fragmentation += internal_fragmentation;
-    ((VariableBlockAllocator *) buddy)->sparse_free_memory -= usable_block_size;
-    // and return the payload area (just past metadata)
-    return (void*)(block_start + BITMAP_METADATA_SIZE);
+    update_children(bitmap, bit * 2 + 1, value);
+    update_children(bitmap, bit * 2 + 2, value);
 }
 
 void* BitmapBuddyAllocator_init(Allocator* alloc, ...) {
@@ -188,6 +91,10 @@ void* BitmapBuddyAllocator_init(Allocator* alloc, ...) {
         #endif
         return NULL;
     }
+
+    // Round down total_size to the largest power of two
+    size_t pow2 = 1UL << ((size_t)floor(log2((double)total_size)));
+    total_size = pow2;
     
     // Calculate bitmap memory requirements
     int num_bits = (1 << (num_levels + 1)) - 1;
@@ -237,6 +144,11 @@ void* BitmapBuddyAllocator_init(Allocator* alloc, ...) {
     
     // Clear the bitmap
     memset(bitmap_memory, 0, bitmap_size);
+
+    /* Set the metadata for the biggest block to -1 (mark as free) */
+    BitmapBuddyMetadata* meta = (BitmapBuddyMetadata*)buddy->memory_start;
+    meta->bitmap_idx = -1;
+    meta->size = -1;
     
     // Set up function pointers
     alloc->init = BitmapBuddyAllocator_init;
@@ -272,121 +184,155 @@ void* BitmapBuddyAllocator_cleanup(Allocator* alloc, ...) {
 void* BitmapBuddyAllocator_reserve(Allocator* alloc, ...) {
     va_list args;
     va_start(args, alloc);
-    
-    BitmapBuddyAllocator* buddy = (BitmapBuddyAllocator*)alloc;
     size_t size = va_arg(args, size_t);
     va_end(args);
-    
-    if (!buddy || size <= 0) {
-        #ifdef DEBUG
-        printf(RED "Error: NULL allocator or invalid size\n" RESET);
-        #endif
-        return NULL;
-    }
-    
-    // Add metadata overhead
-    size_t real_size = size + BITMAP_METADATA_SIZE;
-    real_size = (real_size + 7) & ~7;  // Align to 8 bytes
 
-    if (real_size > (size_t) buddy->memory_size) {
+    BitmapBuddyAllocator* buddy = (BitmapBuddyAllocator*)alloc;
+    size_t total_size = size + BITMAP_METADATA_SIZE;
+    if (!buddy || size == 0 || total_size > (size_t)buddy->memory_size) {
         #ifdef DEBUG
-        printf(RED "ERROR: Requested size too large\n" RESET);
+        printf(RED "ERROR: NULL allocator or invalid allocation size !\n");
         #endif
         return NULL;
     }
-    if (real_size < (size_t)buddy->min_bucket_size) {
-        real_size = buddy->min_bucket_size;
+    #ifdef DEBUG
+    printf("Before alloc:\n");
+    print_bitmap_status(buddy);
+    #endif
+
+    // Trova il livello più piccolo che può contenere la richiesta
+    int level_new_block = buddy->num_levels;
+    size_t start_size = buddy->min_bucket_size;
+    for (int i = 0; i <= level_new_block; i++) {
+        if (start_size >= total_size) {
+            break;
+        } else {
+            start_size *= 2;
+            level_new_block--;
+        }
     }
-    
-    // Find appropriate level
-    int level = 0;
-    size_t block_size = buddy->memory_size;
-    if (block_size < (size_t) buddy->min_bucket_size) {
+
+    // Cerca un blocco libero al livello scelto
+    int freeidx = -1;
+    for (int j = firstIdx(level_new_block); j < firstIdx(level_new_block + 1); j++) {
+        if (!bitmap_test(&buddy->bitmap, j)) {
+            freeidx = j;
+            break;
+        }
+    }
+
+    if (freeidx == -1) {
         #ifdef DEBUG
-        printf(RED "ERROR: Requested size too small\n" RESET);
+        printf(RED "ERROR: No free blocks at any level\n");
         #endif
         return NULL;
     }
-    while (block_size / 2 >= real_size && level < buddy->num_levels - 1) {
-        block_size /= 2;
-        level++;
+    printf("Found free block at bitmap index %d (level %d)\n", freeidx, level_new_block);
+
+    // Setta il blocco e i suoi antenati/discendenti come allocati
+    update_parents(&buddy->bitmap, freeidx, RESERVED);
+    update_children(&buddy->bitmap, freeidx, RESERVED);
+
+    // Calcola l'indirizzo e salva i metadati
+    int user_idx = freeidx - firstIdx(level_new_block);
+    size_t usable_block_size = buddy->min_bucket_size << (buddy->num_levels - level_new_block);
+    size_t full_block_size = usable_block_size + BITMAP_METADATA_SIZE;
+    char* block_start = buddy->memory_start + user_idx * full_block_size;
+    BitmapBuddyMetadata* meta = (BitmapBuddyMetadata*)block_start;
+    meta->bitmap_idx = freeidx;
+    meta->size = size;
+
+    size_t internal_fragmentation = usable_block_size - size;
+    ((VariableBlockAllocator *) buddy)->internal_fragmentation += internal_fragmentation;
+    ((VariableBlockAllocator *) buddy)->sparse_free_memory -= usable_block_size;
+
+    // Restituisce il puntatore all'area payload (dopo i metadati)
+    #ifdef DEBUG
+    printf("After alloc:\n");
+    print_bitmap_status(buddy);
+    printf("Allocating block at bitmap index %d (level %d) with size %zu: %p\n", meta->bitmap_idx, level_new_block, size, (void*)(block_start + BITMAP_METADATA_SIZE));
+    #endif
+    return (void*)(block_start + BITMAP_METADATA_SIZE);
+}
+
+static void merge(Bitmap* bitmap, int idx) {
+    if (idx == 0) return; // root, nothing to merge up
+    int buddy_idx = buddyIdx(idx);
+    int parent = parentIdx(idx);
+    #ifdef DEBUG
+    printf("Merging block at bitmap index %d\n", idx);
+    printf("Buddy  at bitmap index %d\n", buddy_idx);
+    printf("Parent at bitmap index %d\n", parent);
+    printf("Status: idx is %s, buddy is %s, parent is %s\n",
+           bitmap_test(bitmap, idx) ? "allocated" : "free",
+           bitmap_test(bitmap, buddy_idx) ? "allocated" : "free",
+           bitmap_test(bitmap, parent) ? "allocated" : "free");
+    #endif
+    // Only merge if both buddies are free
+    if (!bitmap_test(bitmap, idx) && !bitmap_test(bitmap, buddy_idx)) {
+        #ifdef DEBUG
+        printf("Both buddies are free, merging...\n");
+        #endif
+        bitmap_clear(bitmap, parent);
+        merge(bitmap, parent);
+    } else {
+        #ifdef DEBUG
+        printf("Cannot merge: at least one buddy is allocated.\n");
+        #endif
     }
-    
-    return get_buddy(buddy, level, size);
 }
 
 void* BitmapBuddyAllocator_release(Allocator* alloc, ...) {
     va_list args;
     va_start(args, alloc);
-    
-    BitmapBuddyAllocator* buddy = (BitmapBuddyAllocator*)alloc;
     void* ptr = va_arg(args, void*);
     va_end(args);
 
+    BitmapBuddyAllocator* buddy = (BitmapBuddyAllocator*)alloc;
     if (!buddy || !ptr) {
         #ifdef DEBUG
-        printf(RED "Error: NULL allocator or pointer in BitmapBuddyAllocator_free\n" RESET);
+        printf(RED "ERROR: NULL allocator or pointer to free!\n" RESET);
         #endif
         return (void*)-1;
     }
+    #ifdef DEBUG
+    printf("Before free:\n");
+    print_bitmap_status(buddy);
+    #endif
 
-    // Convert to char* for pointer arithmetic
     char* char_ptr = (char*)ptr;
-    char* memory_start = (char*)buddy->memory_start;
-    char* memory_end = memory_start + buddy->memory_size;
+    BitmapBuddyMetadata* meta = (BitmapBuddyMetadata*)(char_ptr - BITMAP_METADATA_SIZE);
+    int idx_to_free = meta->bitmap_idx;
+    #ifdef DEBUG
+    printf("Freeing block at metadata bitmap index %d\n", idx_to_free);
+    #endif
+    int size = meta->size;
+    int level = levelIdx(idx_to_free);
+    int usable_block_size = buddy->min_bucket_size << (buddy->num_levels - level);
 
-    // Validate pointer range
-    if (char_ptr < memory_start || char_ptr >= memory_end) {
+    // Controlla se già libero (double free)
+    if (idx_to_free == -1) {
         #ifdef DEBUG
-        printf(RED "ERROR: Pointer %p outside allocator range [%p, %p)\n" RESET, 
-               ptr, memory_start, memory_end);
+        printf(RED "ERROR: Double free!\n" RESET);
+        printf("\t tried to free block number %d at level %d with size %d\n", idx_to_free, level, size);
         #endif
         return (void*)-1;
     }
-
-    // Validate metadata location (must be at least BITMAP_METADATA_SIZE before end)
-    if ((char_ptr - memory_start) < (long int) BITMAP_METADATA_SIZE) {
-        #ifdef DEBUG
-        printf(RED "ERROR: Pointer %p too close to start for metadata\n" RESET, ptr);
-        #endif
-        return (void*)-1;
-    }
-
-    // Retrieve metadata using BitmapBuddyMetadata struct
-    BitmapBuddyMetadata* metadata = (BitmapBuddyMetadata*)(char_ptr - BITMAP_METADATA_SIZE);
-    int bit = metadata->level; 
-    int size = metadata->size;
-
-    // Calculate bitmap index from level and offset
-    int usable_block_size = buddy->min_bucket_size 
-                        << (buddy->num_levels - metadata->level);
-    int full_block_size   = usable_block_size + BITMAP_METADATA_SIZE;
-    int offset = (char_ptr - BITMAP_METADATA_SIZE - memory_start)
-                / full_block_size;
-    bit = firstIdx(metadata->level) + offset;
-
-    // Validate bitmap index
-    if (bit < 0 || bit >= buddy->bitmap.num_bits) {
-        #ifdef DEBUG
-        printf(RED "ERROR: Invalid metadata (calculated bit index %d)\n" RESET, bit);
-        #endif
-        return (void*)-1;
-    }
-
-    // Check if the pointer is already free
-    if (bitmap_test(&buddy->bitmap, bit) == 0) {
-        #ifdef DEBUG
-        printf(RED "Error: Memory already free!\n" RESET);
-        #endif
-        return (void*)-1;
-    }
-
-    size_t internal_fragmentation = usable_block_size - size;
-    ((VariableBlockAllocator *) alloc)->internal_fragmentation -= internal_fragmentation;
-    ((VariableBlockAllocator *) alloc)->sparse_free_memory += usable_block_size;
-    // Update bitmap
-    update_child(&buddy->bitmap, bit, 0);
-    merge_block(&buddy->bitmap, bit, buddy->num_levels);
+    
+    ((VariableBlockAllocator *) buddy)->internal_fragmentation -= (usable_block_size - size);
+    ((VariableBlockAllocator *) buddy)->sparse_free_memory += usable_block_size;
+    // Libera i discendenti e tenta il merge
+    update_children(&buddy->bitmap, idx_to_free, RELEASED);
+    merge(&buddy->bitmap, idx_to_free);
+    
+    // put metadata to 0
+    meta->bitmap_idx = -1; // Clear metadata
+    meta->size = -1;       // Clear size
+    #ifdef DEBUG
+    printf("After free:\n");
+    print_bitmap_status(buddy);
+    printf("Freed block at bitmap index %d (level %d) with size %d\n", idx_to_free, level, size);
+    #endif
 
     return (void*)0;
 }
@@ -404,12 +350,8 @@ int BitmapBuddyAllocator_print_state(BitmapBuddyAllocator* buddy) {
     printf("  Number of Levels: %d\n", buddy->num_levels);
     printf("  Minimum Bucket Size: %d bytes\n", buddy->min_bucket_size);
     
-    printf("Bitmap Status:\n");
-    for (int i = 0; i < buddy->bitmap.num_bits; i++) {
-        printf("%s ", bitmap_test(&buddy->bitmap, i) ? "■" : "□");
-        if ((i + 1) && !((i + 2) & (i + 1))) printf("| ");
-    }
-    printf("\n");
+    print_bitmap_status(buddy);
     
     return 0;
 }
+

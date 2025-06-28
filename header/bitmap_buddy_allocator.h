@@ -10,10 +10,14 @@
 
 #define BITMAP_BUDDY_MAX_LEVELS 32
 
+#define RELEASED 0
+#define RESERVED 1
+
 typedef struct {
-    int level;
+    int bitmap_idx;
     int size;
 } BitmapBuddyMetadata;
+
 #define BITMAP_METADATA_SIZE sizeof(BitmapBuddyMetadata)  // Metadata size for each allocation
 
 typedef struct {
@@ -74,3 +78,11 @@ inline int BitmapBuddyAllocator_free(BitmapBuddyAllocator* alloc, void* ptr) {
 
 // Debug/Info functions
 int BitmapBuddyAllocator_print_state(BitmapBuddyAllocator* alloc);
+static void print_bitmap_status(BitmapBuddyAllocator* buddy) {
+    printf("Bitmap Status:\n");
+    for (int i = 0; i < buddy->bitmap.num_bits; i++) {
+        printf("%c ", bitmap_test(&buddy->bitmap, i) ? 'A' : 'F');
+        if ((i + 1) && !((i + 2) & (i + 1))) printf("| ");
+    }
+    printf("\n");
+}
