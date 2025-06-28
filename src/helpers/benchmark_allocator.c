@@ -1,5 +1,6 @@
 #include <benchmark.h>
 
+
 // Function to count how many characters are remaining in the file after headers
 long count_remaining_characters(FILE *file) {
     long offset = ftell(file); // Get current file position (after parsing headers)

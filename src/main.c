@@ -15,10 +15,10 @@ int main(int argc, char* argv[]) {
   line
   test_bitmap_buddy_allocator();
   line
-  if(argc>0) {
+  benchmark();
+  if(argc>1) {
     printf("Program arguments (%d):\n", argc);
     for (int i = 0; i < argc; ++i) {
-      printf("  argv[%d]: %s\n", i, argv[i]);
       if (strcmp(argv[i], "freeform") == 0) {
         freeform();
       }

@@ -10,6 +10,21 @@ extern int BitmapBuddyAllocator_destroy(BitmapBuddyAllocator* buddy);
 extern void* BitmapBuddyAllocator_malloc(BitmapBuddyAllocator* buddy, size_t size);
 extern int BitmapBuddyAllocator_free(BitmapBuddyAllocator* buddy, void* ptr);
 
+void print_user_pointer(int bitmap_idx, int num_levels, BitmapBuddyAllocator* buddy) {
+    int level = (int)floor(log2(bitmap_idx + 1));
+    int user_idx = bitmap_idx - ((1 << level) - 1);
+    size_t usable_block_size = buddy->min_bucket_size << (buddy->num_levels - level);
+    size_t full_block_size   = usable_block_size + BITMAP_METADATA_SIZE;
+    char*  user_ptr = buddy->memory_start
+                    + user_idx * full_block_size
+                    + BITMAP_METADATA_SIZE;
+    printf("memory_start %p + user_idx %d*full_block_size %d + METADATA_SIZE %ld (%d) = %p\n",
+           (void*)buddy->memory_start, user_idx, (int)full_block_size, BITMAP_METADATA_SIZE, 
+           (int)(user_idx * full_block_size + BITMAP_METADATA_SIZE), 
+           (void*)(buddy->memory_start + user_idx * full_block_size + BITMAP_METADATA_SIZE));
+    printf("User pointer for bitmap index %d (level %d of %d): %p\n", bitmap_idx, level, num_levels, (void*)user_ptr);
+}
+
 static int levelIdx(size_t idx) {
     return (int)floor(log2(idx+1));
 }
@@ -40,8 +55,8 @@ static void update_parent(Bitmap* bitmap, int bit) {
     int left = parent * 2 + 1;
     int right = parent * 2 + 2;
     
-    // Parent is set only if both children are allocated
-    if (bitmap_test(bitmap, left) && bitmap_test(bitmap, right)) {
+    // Parent is set if one of the children is allocated
+    if (bitmap_test(bitmap, left) || bitmap_test(bitmap, right)) {
         bitmap_set(bitmap, parent);
     } else {
         bitmap_clear(bitmap, parent);
@@ -49,6 +64,18 @@ static void update_parent(Bitmap* bitmap, int bit) {
     
     // Recursively update ancestors
     update_parent(bitmap, parent);
+}
+
+static bool block_is_free(Bitmap* bm, int idx) {
+    if (bitmap_test(bm, idx)) 
+        return false;           // this block itself is already marked used
+    // walk up the tree: if any ancestor is used, this child is off‑limits
+    while (idx > 0) {
+        idx = parentIdx(idx);
+        if (bitmap_test(bm, idx)) 
+            return false;
+    }
+    return true;
 }
 
 static void update_child(Bitmap* bitmap, int bit, int value) {
@@ -135,24 +162,27 @@ static void* get_buddy(BitmapBuddyAllocator* buddy, int level, int size) {
             return NULL;
         }
     }
+    print_user_pointer(bitmap_idx,buddy->num_levels, buddy);
     
     // Mark the block as allocated
     bitmap_set(&buddy->bitmap, bitmap_idx);
     update_parent(&buddy->bitmap, bitmap_idx); // Ensure parents are updated
-    
-    size_t block_size = buddy->min_bucket_size << (buddy->num_levels - level);
-    char* ret = buddy->memory_start + (startIdx(bitmap_idx, buddy->num_levels) * block_size);
-    
-    // Store metadata using BitmapBuddyMetadata struct
-    BitmapBuddyMetadata* metadata = (BitmapBuddyMetadata*)ret;
-    metadata->level = level;
-    metadata->size = size;
 
-    size_t internal_fragmentation = block_size - size;
+    level = levelIdx(bitmap_idx);
+    int user_idx = bitmap_idx - firstIdx(level);
+    size_t usable_block_size = buddy->min_bucket_size << (buddy->num_levels - level);
+    size_t full_block_size   = usable_block_size + BITMAP_METADATA_SIZE;
+    char*  block_start       = buddy->memory_start
+                            + user_idx * full_block_size;
+    // write metadata at the very top of each full_block
+    BitmapBuddyMetadata* meta = (BitmapBuddyMetadata*)block_start;
+    meta->level = level;
+    meta->size  = size;
+    size_t internal_fragmentation = usable_block_size - size;
     ((VariableBlockAllocator *) buddy)->internal_fragmentation += internal_fragmentation;
-    ((VariableBlockAllocator *) buddy)->sparse_free_memory -= block_size;
-    
-    return (void*)(ret + BITMAP_METADATA_SIZE);
+    ((VariableBlockAllocator *) buddy)->sparse_free_memory -= usable_block_size;
+    // and return the payload area (just past metadata)
+    return (void*)(block_start + BITMAP_METADATA_SIZE);
 }
 
 void* BitmapBuddyAllocator_init(Allocator* alloc, ...) {
@@ -341,9 +371,13 @@ void* BitmapBuddyAllocator_release(Allocator* alloc, ...) {
     int size = metadata->size;
 
     // Calculate bitmap index from level and offset
-    int block_size = buddy->min_bucket_size << (buddy->num_levels - metadata->level);
-    int offset = (char_ptr - BITMAP_METADATA_SIZE - memory_start) / block_size;
+    int usable_block_size = buddy->min_bucket_size 
+                        << (buddy->num_levels - metadata->level);
+    int full_block_size   = usable_block_size + BITMAP_METADATA_SIZE;
+    int offset = (char_ptr - BITMAP_METADATA_SIZE - memory_start)
+                / full_block_size;
     bit = firstIdx(metadata->level) + offset;
+    print_user_pointer(bit,buddy->num_levels,buddy);
 
     // Validate bitmap index
     if (bit < 0 || bit >= buddy->bitmap.num_bits) {
@@ -361,9 +395,9 @@ void* BitmapBuddyAllocator_release(Allocator* alloc, ...) {
         return (void*)-1;
     }
 
-    size_t internal_fragmentation = block_size - size;
+    size_t internal_fragmentation = usable_block_size - size;
     ((VariableBlockAllocator *) alloc)->internal_fragmentation -= internal_fragmentation;
-    ((VariableBlockAllocator *) alloc)->sparse_free_memory += block_size;
+    ((VariableBlockAllocator *) alloc)->sparse_free_memory += usable_block_size;
     // Update bitmap
     update_child(&buddy->bitmap, bit, 0);
     merge_block(&buddy->bitmap, bit, buddy->num_levels);

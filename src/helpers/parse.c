@@ -189,6 +189,7 @@ int parse_allocator_request(const char *line, struct AllocatorBenchmarkConfig *c
           return -1;
         }
         pointers[index] = allocator->malloc(allocator, size);
+        printf("Allocating %d bytes at index %d, returning ptr: %p\n", size, index, pointers[index]);
         if (pointers[index] == NULL) {
           #ifdef DEBUG
           printf(RED "Failed to allocate memory for pointer at index %d\n" RESET, index);
@@ -209,6 +210,7 @@ int parse_allocator_request(const char *line, struct AllocatorBenchmarkConfig *c
         #endif
         return -1;
       }
+      printf("Freeing pointer, saved as pointer number %d: %p\n", index, pointers[index]);
       if (allocator->free(allocator, pointers[index]) == (void *) -1) {
         #ifdef DEBUG
         printf(RED "Failed to free pointer at index %d\n" RESET, index);
