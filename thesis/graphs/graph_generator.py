@@ -1,6 +1,7 @@
 import os
 import matplotlib.pyplot as plt
 import re
+from os.path import join
 
 def parse_log_file(filepath):
     allocations = []
@@ -82,10 +83,18 @@ def parse_log_file(filepath):
     )
 
 def produce_graph():
-    benchmarks_dir = './benchmarks'
+    graphs_dir = "./graphs"
+    benchmarks_dir = os.path.join(graphs_dir, "benchmarks")
+    if not os.path.exists(benchmarks_dir):
+        print(f"Benchmarks directory '{benchmarks_dir}' does not exist. Please create it and add .log files.")
+        return
     for filename in os.listdir(benchmarks_dir):
         if filename.endswith('.log'):
             try:
+                # Ask the user for each file
+                answer = input(f"Include statistics box below the graph for '{filename}'? [y/N]: ").strip().lower()
+                show_stats = (answer == 'y')
+
                 filepath = os.path.join(benchmarks_dir, filename)
                 allocator, allocations, frag_list, total_size, total_alloc_requests, failure_indices, elapsed_seconds, user_seconds, sys_seconds, operation_count = parse_log_file(filepath)
 
@@ -124,18 +133,24 @@ def produce_graph():
                     f"Throughput: {throughput:.2f} ops/sec"
                 )
 
-                fig, (ax1, ax2) = plt.subplots(
-                    nrows=2, ncols=1, 
-                    figsize=(6.3, 4.5), 
-                    gridspec_kw={'height_ratios': [4, 1]}
-                )
-                
+                if show_stats:
+                    fig, (ax1, ax2) = plt.subplots(
+                        nrows=2, ncols=1, 
+                        figsize=(6.3, 4.5), 
+                        gridspec_kw={'height_ratios': [4, 1]}
+                    )
+                else:
+                    fig, ax1 = plt.subplots(
+                        nrows=1, ncols=1, 
+                        figsize=(6.3, 4.5)
+                    )
+                    ax2 = None
+
                 # Plot allocated memory (primary axis)
                 ax1.plot(range(len(allocations)), allocations, marker='o', markersize=3, 
                         linestyle='-', linewidth=1, color='b', label='Allocated Memory')
                 ax1.axhline(y=total_size, color='r', linestyle='--', 
                         label=f'Total Memory: {format_bytes(total_size)}')
-                                    
                 ax1.set_title(f'Memory Allocation Pattern\n{filename}', pad=20)
                 ax1.set_xlabel('Operation Sequence')
                 ax1.set_ylabel('Memory Allocated (bytes)', color='b')
@@ -153,17 +168,18 @@ def produce_graph():
                 ax1.legend(loc='upper right')
 
                 # Add statistics as text in the lower subplot
-                ax2.axis('off')
-                ax2.text(
-                    0, 1, stats_text,
-                    fontsize=9, family='monospace',
-                    verticalalignment='top', horizontalalignment='left'
-                )
+                if show_stats and ax2 is not None:
+                    ax2.axis('off')
+                    ax2.text(
+                        0, 1, stats_text,
+                        fontsize=9, family='monospace',
+                        verticalalignment='top', horizontalalignment='left'
+                    )
 
                 plt.tight_layout(rect=[0, 0, 1, 1])  # Use full space
                 
                 outname = filename.replace('.log', '.png')
-                outpath = os.path.join(outname)
+                outpath = join(graphs_dir, outname)
                 plt.savefig(outpath, dpi=150, bbox_inches='tight')
                 plt.close()
                 

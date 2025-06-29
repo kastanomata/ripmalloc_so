@@ -1,6 +1,6 @@
 # type=BUDDY_ALLOCATOR
 # total_size=4096,max_levels=10
-# instruction,success,internal_fragmentation,sparse_free_space
+# instruction,<param1>,<param2>,...,failure,internal_fragmentation,sparse_free_space
 a,0,8,0,0,4080
 a,1,8,0,0,4064
 a,2,8,0,0,4048
@@ -127,4 +127,4 @@ f,1,0,0,4080
 f,0,0,0,4096
 a,0,1016,0,0,3072
 f,0,0,0,4096
-# elapsed_seconds=0.002972 user_seconds=0.001328 sys_seconds=0.001454
+# elapsed_seconds=0.000696 user_seconds=0.000176 sys_seconds=0.000000

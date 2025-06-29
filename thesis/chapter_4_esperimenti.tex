@@ -9,16 +9,18 @@ Nel 1998, Wilson e Johnston approfondiscono i risultati del procedente paper sul
 \begin{quote}
 ``This substantially strengthens our previous results showing that the memory fragmentation problem has generally been misunderstood, and that good allocator policies can provide good memory usage for most programs. The new results indicate that for most programs, excellent allocator policies are readily available, and efficiency of implementation is the major challenge.''
 
+\begin{center}
 [...]
+\end{center}
 
 ``If these results hold up to further study with additional programs, we arrive at the conclusion that the fragmentation problem is a problem of recognizing that good allocation policies already exist, and have inexpensive implementations. For most programs, the problem of simple overheads is more significant than the problem of fragmentation itself.''
-\end{quote}
+\end{quote} 
 
-\pagebreak 
+Il programma è stato sottoposto anche ad analisi attraverso \textit{valgrind}, il popolare programma di \textit{debugging} e \textit{memory analysis}, in particolare adoperando i \textit{tool} \textit{memcheck, massif} e \textit{cachegrind}. Questi strumenti sono stati fondamentali per comprendere in primo luogo se il programma accedesse alla memoria come previsto, e secondariamente per comprendere dove si trovassero le ostruzioni e i punti critici che causavano perdita di efficienza.
 
 \section{Test delle funzionalità}
 
-I test delle funzionalità si concentrano unicamente sulla correttezza del codice: verificano che le funzioni rispondano correttamente a parametri sbagliati o richieste inappropriate. Definendo la flag DEBUG a tempo di compilazione abbiamo accesso a maggiori informazioni sugli errori e sulle loro cause.
+I test delle funzionalità si concentrano unicamente sulla correttezza del codice: verificano che le funzioni rispondano correttamente a parametri sbagliati o richieste inappropriate. Definendo la flag \lstinline|DEBUG| a tempo di compilazione abbiamo accesso a maggiori informazioni sugli errori e sulle loro cause. 
 
 \subsection{SlabAllocator}
 \begin{table}[H]
@@ -69,13 +71,19 @@ I test per lo SlabAllocator sono generalmente semplici in natura: poiché la gra
 \caption{Test funzionali per BuddyAllocator e BitmapBuddyAllocator}
 \end{table}
 
-Gli allocatori che accettano richieste a taglia variabile vanno incontro a maggiori problematiche, perché devono manipolare maggiornmente la memoria per sistemare i blocchi correttamente. Ciononostante, i test aiutano a comprendere se qualcosa non è corretto nella loro implementazione.
+Gli allocatori che accettano richieste a taglia variabile presentano una complessità maggiore rispetto a quelli a taglia fissa, poiché devono gestire dinamicamente la suddivisione e la fusione dei blocchi di memoria per rispondere a richieste di dimensioni differenti. Questo comporta una maggiore probabilità di introdurre errori nella gestione della memoria come la perdita di riferimenti o la mancata fusione dei blocchi liberi (\emph{buddy merging}). I test svolgono un ruolo fondamentale nell'evidenziare anomalie e comportamenti indesiderati
 
+Oltre ai test elencati, è utile prevedere casi limite e scenari di stress, come sequenze di allocazioni e deallocazioni ripetute con dimensioni variabili, tentativi di allocazione che saturano la memoria disponibile, e la verifica della corretta gestione di errori (ad esempio, \emph{double free} o allocazioni fuori dai limiti consentiti).
 
 \section{Benchmark}
-Per verificare il comportamento degli allocatori a seguito di pattern più complessi di richieste e rilasci di memoria, è stato ritenuto opportuno aggiungere al programma una funzionalità che permetta di manipolare facilmente le richieste senza doverle compilare esplicitamente nel codice. Ciò permette una maggiore flessibilità e non impone di ricompilare ogni volta che si renda necessario cambiare i benchmark. Le funzioni che permettono questa funzionalità sono negli helper \texttt{benchmark} e \texttt{parse}.
+Poiché la nostra analisi si concentra principalmente sulla correttezza dell'implementazione, i test sopra delineati forniscono una prima conferma del nostro operato. Tuttavia, l'importanza della \textit{performance} dell'allocatore in diversi casi applicativi risulta essenziale per poter veramente trarre delle conclusioni a riguardo. 
+Nel corso delle ricerche, l'articolo \textit{"Designing a Trace Format for Heap Allocation Events"}~\cite{chilimbi2000} di T.Chilimbi et al ha fornito un'interessante base teorica per il parser qui descritto. Tuttavia, il nostro vuole essere unicamente un prototipo di funzionamento al fine di svolgere analisi più profonde, e sicuramente fornisce ben poche delle capacità descritte nell'articolo o altrimenti rese disponibili da altri strumenti simili applicati nel campo.\footnotemark
 
-Questa funzionalità è resa possibile dall’implementazione da parte di ogni allocatore dell’interfaccia \texttt{<Allocator>}. Poiché abbiamo a nostra disposizione i puntatori alle funzioni necessarie per svolgere tutte le operazioni, possiamo standardizzare il funzionamento delle classi dividendole in due categorie: allocatori a taglia fissa, che permettono di richiedere blocchi di grandezza prestabilita (e.g. \texttt{SlabAllocator}) e allocatori a taglia variabile, i quali invece lasciano all’utente la scelta della dimensione dell’area di memoria richiesta (ossia \texttt{BuddyAllocator} e \texttt{BitmapBuddyAllocator}, nella nostra implementazione).
+\footnotetext{Alcuni di questi che menzioniamo per dovere di cronaca sono \texttt{perf, LTTng} e \texttt{ETW}. }
+
+Per facilitare dunque l’analisi del comportamento degli allocatori in presenza di pattern complessi di allocazione e deallocazione, è stata introdotta una funzionalità che consente di definire facilmente le sequenze di richieste di memoria tramite file di configurazione esterni, senza dover modificare o ricompilare il codice sorgente. In questo modo è possibile variare rapidamente i benchmark e testare diversi scenari. Il codice sorgente di questa funzionalità si trova nei moduli \texttt{benchmark} e \texttt{parse}.
+
+Ciò è reso possibile dall’implementazione da parte di ogni allocatore dell’interfaccia \texttt{<Allocator>}. Poiché abbiamo a nostra disposizione i puntatori alle funzioni necessarie per svolgere tutte le operazioni, possiamo standardizzare il funzionamento delle classi dividendole in due categorie: allocatori a taglia fissa, che permettono di richiedere blocchi di grandezza prestabilita (e.g. \texttt{SlabAllocator}) e allocatori a taglia variabile, ossia le classi "figlie" di \texttt{VariableBlockAllocator}, le quali invece lasciano all’utente la scelta della dimensione dell’area di memoria richiesta (ossia \texttt{BuddyAllocator} e \texttt{BitmapBuddyAllocator}, nella nostra implementazione).
 
 \begin{lstlisting}
   // template per allocatore a dimensione fissa
@@ -92,29 +100,118 @@ Vediamo ora come descrivere la classe di allocatore da sottoporre al benchmark e
 
 \begin{table}[H]
 \centering
-\begin{tabularx}{\textwidth}{|l|l|l|l|}
+\begin{tabularx}{\textwidth}{|X|X|X|X|}
+\hline
 \textbf{Allocatore} & \textbf{Dimensione} & \textbf{Parametro 1} & \textbf{Parametro 2} \\
+\hline
 Slab    & Fissa     & slab\_size   & num\_slabs   \\
+\hline
 Buddy   & Variabile & memory\_size & max\_levels  \\
+\hline
 Bitmap  & Variabile & memory\_size & max\_levels  \\
+\hline
 \end{tabularx}
 \caption{Parametri di inizializzazione per ciascuna classe di allocatore}
 \end{table}
 
 Per allocare e liberare memoria, l’istruzione deve iniziare rispettivamente con ``a'' o ``f''. Il benchmark per tenere traccia delle allocazioni usa un array avente lunghezza pari al numero massimo possibile di frammenti di memoria. Il comando \texttt{a,<index>} alloca memoria in una posizione specifica dell'array, mentre \texttt{f,<index>} la libera. Nel caso di allocatore a richiesta variabile, dopo l’index dell’array va specificato il numero di byte da allocare (con struttura \texttt{a,<index>,<size>}). 
 
-È fondamentale non allocare più volte sullo stesso indice senza prima liberarlo, altrimenti si perderà il riferimento al puntatore e non sarà più possibile gestirlo correttamente\footnote{Il programma di benchmarking non esegue istruzioni che porterebbero alla perdita di un indirizzo e avverte se il benchmark termina senza deallocare tutti gli indirizzi.}. Compilando con la flag TIME, il programma stampa a schermo una serie di informazioni sulla durata del benchmark: \textit{elapsed\_seconds}, \textit{user\_seconds} e \textit{kernel\_seconds}. L'analisi di queste informazioni fornisce alcune metriche aggiuntive sul comportamento dell'allocatore e sulla sua \textit{performance}.
+È fondamentale non allocare più volte sullo stesso indice senza prima liberarlo, altrimenti si perderà il riferimento al puntatore e non sarà più possibile gestirlo correttamente\footnotemark. Il programma esegue la sequenza di \textit{request} e \textit{release}, informa l'utente di eventuali errori e stampa a schermo informazioni sul tempo richiesto: \textit{elapsed\_seconds}, \textit{user\_seconds} e \textit{kernel\_seconds}. In più, produce un file di \texttt{.log} che contiene informazioni sulle singole istruzioni (in particolare, per i\texttt{VariableBlockAllocator}, inserisce anche lo stato della frammentazione interna ed esterna dell'allocatore a ogni istruzione) L'analisi di queste informazioni fornisce alcune metriche aggiuntive sul comportamento dell'allocatore e sulla sua \textit{performance}.
+
+\footnotetext{Il programma di benchmarking non esegue istruzioni che porterebbero alla perdita di un indirizzo e avverte se il benchmark termina senza deallocare tutti gli indirizzi.}
 
 \subsection{Analisi dei pattern di allocazione}
-
-La letteratura sull'argomento ha identificato tre modelli principali che possono essere applicati alla maggior parte dei programmi: rampe, picchi e plateau\footnote{Altri pattern dell'uso di memoria possono essere incontrati, ma sono meno comuni: allo stesso modo, variazioni o combinazioni dei modelli qui citati sono spesso presenti.}. Facciamo riferimento principalmente alla ricerca di Wilson et al., che sottolinea anche come la presenza di un modello nel lungo termine o lungo l'intero ciclo di vita del programma non escluda la presenza di comportamenti osservabili di dimensione minore al suo interno.
+La letteratura sull'argomento ha identificato tre modelli di comportamento principali che possono essere applicati alla maggior parte dei programmi: rampe, picchi e plateau\footnotemark Facciamo riferimento principalmente alla ricerca di Wilson et al., che sottolinea anche come la presenza di un modello nel lungo termine o lungo l'intero ciclo di vita del programma non escluda la presenza di comportamenti osservabili di dimensione minore al suo interno.
+\footnotetext{Altri pattern dell'uso di memoria possono essere incontrati, ma sono meno comuni: allo stesso modo, variazioni o combinazioni dei modelli qui citati sono spesso presenti.}
 \begin{itemize}
   \item \textbf{Rampe}: molti programmi accumulano determinate strutture dati in modo monotono. Ciò può essere dovuto al fatto che conservano un registro degli eventi o perché la strategia di risoluzione del problema richiede la costruzione di una rappresentazione di grandi dimensioni, dopo la quale è possibile trovare rapidamente una soluzione.
   \item \textbf{Picchi}: molti programmi utilizzano la memoria in modo discontinuo, creando strutture dati relativamente grandi che vengono utilizzate per la durata di una particolare fase e poi la maggior parte o tutte le strutture dati viene scartata. Si noti che le strutture di dati “sopravvissute” sono probabilmente di tipo diverso, perché rappresentano i risultati di una fase, rispetto a valori intermedi che possono essere rappresentati in modo diverso. (Un picco è come una rampa, ma di durata più breve).
   \item \textbf{Plateau}: molti programmi costruiscono rapidamente strutture dati e poi le utilizzano per lunghi periodi (spesso per quasi tutto il tempo di esecuzione del programma).
 \end{itemize}
 
-Utilizzando lo strumento da noi creato, siamo in grado di simulare questi pattern e verificare il comportamento degli allocatori in loro presenza. Questo permette di compiere un'analisi più approfondita su quale allocatore sia più adatto per un determinato programma.
+Utilizzando lo strumento da noi creato, siamo in grado di simulare questi pattern e verificare il comportamento degli allocatori in loro presenza. 
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{graphs/mixed_patterns_bitmap.png}
+  \caption{Comportamento del BitmapBuddyAllocator su un benchmark contenente in ordine, \textit{peaks, plateaus} e \textit{ramps}.}
+  \label{fig:mixed_patterns_bitmap}
+\end{figure}
+
+
+
+\subsection{Allocazioni sfavorevoli: frammentazione interna}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{graphs/ramp_bitmap_unoptimized.png}
+  \caption{Sequenza di istruzioni che causano nel BuddyAllocator grande frammentazione interna. Notiamo che la quantità di memoria inutilizzabile è pari a quella allocata.}
+  \label{fig:ramp_bitmap_unoptimized}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{minipage}{0.5\textwidth}
+    \centering
+    \includegraphics[width=0.95\textwidth]{graphs/ramp_bitmap_optimized_size.png}
+    \caption{Con richieste di dimensione leggermente minore, la frammentazione diventa irrilevante.}
+    \label{fig:ramp_bitmap_optimized_size}
+  \end{minipage}\hfill
+  \begin{minipage}{0.5\textwidth}
+    \centering
+    \includegraphics[width=0.95\textwidth]{graphs/ramp_bitmap_optimized_size.png}
+    \caption{Allocando relativamente poca memoria in più, la frammentazione diminuisce sostanzialmente.}
+    \label{fig:ramp_bitmap_optimized_size}
+  \end{minipage}
+\end{figure}
+
+
+\subsection{\textit{LinkedList} e \textit{Bitmap}}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{graphs/throughput_buddy.png}
+  \label{fig:throughput_buddy}
+\end{figure}
+\begin{lstlisting}[language={}]
+I refs:        1,992,021
+I1  misses:        2,862
+LLi misses:        2,436
+I1  miss rate:      0.14%
+LLi miss rate:      0.12%
+
+D refs:        1,002,895  (736,165 rd   + 266,730 wr)
+D1  misses:        4,364  (  2,184 rd   +   2,180 wr)
+LLd misses:        3,429  (  1,541 rd   +   1,888 wr)
+D1  miss rate:       0.4% (    0.3%     +     0.8%  )
+LLd miss rate:       0.3% (    0.2%     +     0.7%  )
+
+LL refs:           7,226  (  5,046 rd   +   2,180 wr)
+LL misses:         5,865  (  3,977 rd   +   1,888 wr)
+LL miss rate:        0.2% (    0.1%     +     0.7%  )
+\end{lstlisting}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{graphs/throughput_bitmap.png}
+  \label{fig:throughput_bitmap}
+\end{figure}
+\begin{lstlisting}[language={}]
+I refs:        3,522,521
+I1  misses:        2,786
+LLi misses:        2,436
+I1  miss rate:      0.08%
+LLi miss rate:      0.07%
+
+D refs:        1,744,339  (1,234,079 rd   + 510,260 wr)
+D1  misses:        3,487  (    2,133 rd   +   1,354 wr)
+LLd misses:        2,620  (    1,500 rd   +   1,120 wr)
+D1  miss rate:       0.2% (      0.2%     +     0.3%  )
+LLd miss rate:       0.2% (      0.1%     +     0.2%  )
+
+LL refs:           6,273  (    4,919 rd   +   1,354 wr)
+LL misses:         5,056  (    3,936 rd   +   1,120 wr)
+LL miss rate:        0.1% (      0.1%     +     0.2%  )
+\end{lstlisting}
 
 \pagebreak
 
@@ -145,6 +242,7 @@ f,0
 % Alloca 64 byte nell'indice 2
 a,2,64         
 \end{lstlisting}
+\pagebreak
 
 
 
