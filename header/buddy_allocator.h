@@ -14,12 +14,12 @@
 typedef struct BuddyNode {
     Node node;
     char *data;
-    size_t size;           // Size of this block (including header)
-    size_t requested_size;
-    int level;            // Level in the buddy system
-    int is_free;          // Whether this block is free
-    struct BuddyNode* buddy;  // Pointer to buddy block
-    struct BuddyNode* parent;   // Pointer to parent block
+    size_t size; // Size of this block (including header)
+    size_t requested_size; // Requested size (for logging)
+    int level; // Level in the buddy system
+    int is_free; // Whether this block is free
+    struct BuddyNode* buddy; // Pointer to buddy block
+    struct BuddyNode* parent; // Pointer to parent block
 } BuddyNode;
 
 struct Buddies {
@@ -28,14 +28,14 @@ struct Buddies {
 };
 
 typedef struct BuddyAllocator {
-    VariableBlockAllocator base;           // Base allocator interface
-    void* memory_start;       // Start of managed memory
-    size_t total_size;        // Total size of managed memory
-    size_t min_block_size;    // Minimum block size (power of 2)
-    int num_levels;          // Number of levels in the system
+    VariableBlockAllocator base; // Base allocator interface
+    void* memory_start; // Start of managed memory
+    size_t total_size; // Total size of managed memory
+    size_t min_block_size; // Minimum block size (power of 2)
+    int num_levels; // Number of levels in the system
     SlabAllocator list_allocator;
     SlabAllocator node_allocator;
-    DoubleLinkedList* free_lists[BUDDY_MAX_LEVELS];  // Array of free lists for each level
+    DoubleLinkedList** free_lists;  // Array of free lists for each level (in mmap)
 } BuddyAllocator;
 
 // Core allocator interface

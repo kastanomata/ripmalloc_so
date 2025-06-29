@@ -115,18 +115,6 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
     ((VariableBlockAllocator *) alloc)->internal_fragmentation = 0;
     ((VariableBlockAllocator *) alloc)->sparse_free_memory = total_size;
 
-    // Initialize memory
-    buddy->memory_start = mmap(NULL, total_size, PROT_READ | PROT_WRITE, 
-                             MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-    if (buddy->memory_start == MAP_FAILED) {
-        #ifdef DEBUG
-        printf(RED "ERROR: Failed to allocate memory in init!\n" RESET);
-        perror("mmap failed");
-        #endif
-        return NULL;
-    }
-
-    buddy->total_size = total_size;
     // Initialize buddy allocator properties
     // Calculate minimum block size (min_bucket_size) and adjust num_levels if needed
     size_t min_block_size = total_size >> (num_levels - 1);
@@ -136,10 +124,27 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
     }
     buddy->num_levels = num_levels;
     buddy->min_block_size = min_block_size;
-    #ifdef DEBUG
-    printf("num_levels: %d\n", num_levels);
-    printf("min_block_size: %zu\n", min_block_size);
-    #endif
+
+
+    size_t free_lists_size = sizeof(DoubleLinkedList*) * num_levels;
+
+    // Initialize memory
+    void* mmap_ptr = mmap(NULL, total_size + free_lists_size, PROT_READ | PROT_WRITE, 
+                             MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+    if (mmap_ptr == MAP_FAILED) {
+        #ifdef DEBUG
+        printf(RED "ERROR: Failed to allocate memory in init!\n" RESET);
+        perror("mmap failed");
+        #endif
+        return NULL;
+    }
+
+    // Place free_lists at the start of the mmap'd region
+    buddy->free_lists = (DoubleLinkedList**)mmap_ptr;
+    memset(buddy->free_lists, 0, free_lists_size);
+    
+    buddy->memory_start = (void*)((char*)mmap_ptr + free_lists_size);
+    buddy->total_size = total_size;
 
     // Initialize list allocator
     SlabAllocator* list_allocator = SlabAllocator_create(&(buddy->list_allocator), sizeof(DoubleLinkedList), num_levels);
@@ -217,7 +222,9 @@ void* BuddyAllocator_cleanup(Allocator* alloc, ...) {
         return (void*)-1;
     }
 
-    if (munmap(buddy->memory_start, buddy->total_size) != 0) {
+    void* mmap_ptr = (void*)buddy->free_lists;
+
+    if (munmap(mmap_ptr, buddy->total_size) != 0) {
         #ifdef DEBUG
         printf(RED "ERROR: Failed to unmap memory in destructor\n" RESET);
         #endif

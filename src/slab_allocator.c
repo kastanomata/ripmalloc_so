@@ -195,6 +195,9 @@ void *SlabAllocator_release(Allocator* alloc, ...) {
 
     // Check if node is already in free list
     if (list_find(slab->free_list, &slab_node->node) != NULL) {
+        #ifdef DEBUG
+        printf(RED "ERROR: Failed to free: slab node already in free list!\n" RESET);
+        #endif
         return NULL;
     }
     

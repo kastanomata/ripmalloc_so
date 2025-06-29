@@ -21,12 +21,12 @@ typedef struct {
 #define BITMAP_METADATA_SIZE sizeof(BitmapBuddyMetadata)  // Metadata size for each allocation
 
 typedef struct {
-    VariableBlockAllocator base;          // Base allocator interface
-    char* memory_start;      // Managed memory area
-    int memory_size;         // Size of managed memory
-    int num_levels;          // Number of levels in the hierarchy
-    int min_bucket_size;     // Minimum allocation size
-    Bitmap bitmap;           // Bitmap tracking block status
+    VariableBlockAllocator base; // 
+    char* memory_start; // Managed memory area
+    int memory_size; // Size of managed memory
+    int num_levels; // Number of levels in the hierarchy
+    int min_bucket_size; // Minimum allocation size
+    Bitmap bitmap; // Bitmap tracking block status
 } BitmapBuddyAllocator;
 
 // Core allocator interface
