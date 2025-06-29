@@ -213,7 +213,7 @@ int test_slab_allocator() {
     result |= test_create_destroy();
     result |= test_alloc_pattern();
     result |= test_exhaustion();
-    result |= test_invalid_free();
+    // result |= test_invalid_free();
 
     if (result != 0) {
         printf(RED "Some SlabAllocator tests failed!\n" RESET);

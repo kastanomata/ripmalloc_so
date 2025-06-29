@@ -76,6 +76,7 @@ void *SlabAllocator_init(Allocator* alloc, ...) {
         // memset(current, 0, slab->slab_size);
         // Set data pointer to just after the SlabNode structure
         slab_node->data = current + sizeof(SlabNode);
+        slab_node->in_free_list = 1; // Mark as free
         list_push_front(slab->free_list, &slab_node->node);
         current += slab->slab_size;
     }
@@ -126,7 +127,6 @@ void *SlabAllocator_reserve(Allocator* alloc, ...) {
         #endif
         return NULL;  // Out of memory
     }
-
     Node* node = list_pop_front(slab->free_list);
     if (!node) {
         #ifdef DEBUG
@@ -136,11 +136,13 @@ void *SlabAllocator_reserve(Allocator* alloc, ...) {
     }
     
     SlabNode* slab_node = (SlabNode*)node;
+    slab_node->in_free_list = 0; // Mark as used
     slab->free_list_size--;
 
     // Clear the user data area
     // memset(slab_node->data, 0, slab->user_size);
 
+    return slab_node->data;
     return slab_node->data;
 }
 
@@ -192,9 +194,8 @@ void *SlabAllocator_release(Allocator* alloc, ...) {
         #endif
         return NULL;
     }
-
-    // Check if node is already in free list
-    if (list_find(slab->free_list, &slab_node->node) != NULL) {
+    // Check if node is already in free list using a flag
+    if (slab_node->in_free_list) {
         #ifdef DEBUG
         printf(RED "ERROR: Failed to free: slab node already in free list!\n" RESET);
         #endif
@@ -203,11 +204,12 @@ void *SlabAllocator_release(Allocator* alloc, ...) {
     
     // Clear the entire slab area before adding to free list
     // memset(slab_node, 0, slab->slab_size);
-    slab_node->data = (char*)slab_node + sizeof(SlabNode);  // Restore data pointer
-    
     // Add to free list
+    slab_node->in_free_list = 1; // Mark as free
     list_push_front(slab->free_list, &slab_node->node);
     slab->free_list_size++;
+    
+    return (void*)1;
     
     return (void*)1;
 }

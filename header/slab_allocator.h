@@ -12,6 +12,7 @@
 typedef struct {
     Node node;
     char* data;
+    int in_free_list;
 } SlabNode;
 
 // Forward declaration
