@@ -398,28 +398,28 @@ cleanup:
         printf("Log offset: %zu bytes\n", config.log_offset);
         ftruncate(fileno(log_fp), config.log_offset);
 
-        printf("Do you want to save .log for graph generation? [y/N/q] ");
-        fflush(stdout);
+        // printf("Do you want to save .log for graph generation? [y/N/q] ");
+        // fflush(stdout);
 
-        char first_char = 0;
-        if (scanf(" %c", &first_char) == 1) {
-            if (tolower(first_char) == 'y') {
-            char cmd[512];
-            snprintf(cmd, sizeof(cmd), "mkdir -p ./thesis/graphs/benchmarks && cp '%s' ./thesis/graphs/benchmarks/", log_path);
-            int ret = system(cmd);
-            if (ret != 0) {
-                fprintf(stderr, "Failed to copy log file to ./thesis/graphs/benchmarks\n");
-            } else {
-                printf("Log file copied to ./thesis/graphs/benchmarks\n");
-            }
-            } else if (tolower(first_char) == 'q') {
-            printf("Exiting as requested.\n");
-            munmap(log_map, max_log_size);
-            if (log_fp) fclose(log_fp);
-            if (file) fclose(file);
-            exit(0);
-            }
-        }
+        // char first_char = 0;
+        // if (scanf(" %c", &first_char) == 1) {
+        //     if (tolower(first_char) == 'y') {
+        //     char cmd[512];
+        //     snprintf(cmd, sizeof(cmd), "mkdir -p ./thesis/graphs/benchmarks && cp '%s' ./thesis/graphs/benchmarks/", log_path);
+        //     int ret = system(cmd);
+        //     if (ret != 0) {
+        //         fprintf(stderr, "Failed to copy log file to ./thesis/graphs/benchmarks\n");
+        //     } else {
+        //         printf("Log file copied to ./thesis/graphs/benchmarks\n");
+        //     }
+        //     } else if (tolower(first_char) == 'q') {
+        //     printf("Exiting as requested.\n");
+        //     munmap(log_map, max_log_size);
+        //     if (log_fp) fclose(log_fp);
+        //     if (file) fclose(file);
+        //     exit(0);
+        //     }
+        // }
 
         munmap(log_map, max_log_size);
     }
