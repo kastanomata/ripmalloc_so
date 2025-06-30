@@ -16,8 +16,8 @@ typedef struct BuddyNode {
     char *data;
     size_t size; // Size of this block (including header)
     size_t requested_size; // Requested size (for logging)
-    int level; // Level in the buddy system
-    int is_free; // Whether this block is free
+    uint level; // Level in the buddy system
+    bool is_free; // Whether this block is free
     struct BuddyNode* buddy; // Pointer to buddy block
     struct BuddyNode* parent; // Pointer to parent block
 } BuddyNode;
@@ -31,8 +31,9 @@ typedef struct BuddyAllocator {
     VariableBlockAllocator base; // Base allocator interface
     void* memory_start; // Start of managed memory
     size_t memory_size; // Total size of managed memory
+    size_t total_memory_size;
     size_t min_block_size; // Minimum block size (power of 2)
-    int num_levels; // Number of levels in the system
+    uint num_levels; // Number of levels in the system
     SlabAllocator list_allocator;
     SlabAllocator node_allocator;
     DoubleLinkedList** free_lists;  // Array of free lists for each level (in mmap)

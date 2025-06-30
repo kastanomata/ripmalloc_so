@@ -9,7 +9,7 @@ Bitmap* bitmap_create(Bitmap *bitmap, int num_bits, void *bits) {
     bitmap->num_words = (num_bits + 31) / 32;
     if(bits == NULL) {
         // Allocate memory for the bits array
-        bits = calloc(bitmap->num_words, sizeof(unsigned int));
+        bits = calloc(bitmap->num_words, sizeof(uint));
         if (!bits) {
             #ifdef DEBUG
             printf("ERROR: Failed to allocate memory for bitmap bits\n");

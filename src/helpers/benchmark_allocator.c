@@ -226,7 +226,7 @@ int Allocator_benchmark_initialize(const char *file_name) {
             config.allocator = (Allocator*) &allocator;
             // Print actual info
             SlabAllocator *slab = (SlabAllocator *)&allocator;
-            printf("Actual SLAB_ALLOCATOR info: buslab_size=%zu, user_size: %zu, n_slabs=%zu",
+            printf("Actual SLAB_ALLOCATOR info: buslab_size=%zu, user_size: %zu, n_slabs=%u",
                    slab->slab_size, slab->user_size, slab->num_slabs);
             break;
         case BUDDY_ALLOCATOR:
@@ -242,8 +242,8 @@ int Allocator_benchmark_initialize(const char *file_name) {
             config.allocator = (Allocator*) &allocator;
             // Print actual info
             BuddyAllocator *buddy = (BuddyAllocator *)&allocator;
-            printf("Actual BUDDY_ALLOCATOR info: memory_size=%d, num_levels=%d, min_block_size=%d\n",
-                   buddy->memory_size, buddy->num_levels, buddy->min_block_size);
+            printf("Actual BUDDY_ALLOCATOR info: memory_size=%zu, num_levels=%u, min_block_size=%zu, total_memory_size=%zu\n",
+                   buddy->memory_size, buddy->num_levels, buddy->min_block_size, buddy->total_memory_size);
             break;
         case BITMAP_BUDDY_ALLOCATOR:
             printf("Running BITMAP_BUDDY_ALLOCATOR benchmark...\n");
@@ -258,7 +258,7 @@ int Allocator_benchmark_initialize(const char *file_name) {
             config.allocator = (Allocator*) &allocator;
             // Print actual info
             BitmapBuddyAllocator *bitmap = (BitmapBuddyAllocator *)&allocator;
-            printf("Actual BITMAP_BUDDY_ALLOCATOR info: memory_size=%d, num_levels=%d, min_block_size=%d\n",
+            printf("Actual BITMAP_BUDDY_ALLOCATOR info: memory_size=%zu, num_levels=%u, min_block_size=%zu\n",
                    bitmap->memory_size, bitmap->num_levels, bitmap->min_block_size);
             break;
         default:

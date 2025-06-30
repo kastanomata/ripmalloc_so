@@ -71,7 +71,7 @@ static BuddyNode* BuddyAllocator_merge_blocks(BuddyAllocator* a, BuddyNode* left
     }
     
     // Verify parent level makes sense
-    int expected_parent_level = left->level - 1;
+    uint expected_parent_level = left->level - 1;
     if (parent->level != expected_parent_level) {
         printf(RED "ERROR: Parent level mismatch! Is %d, should be %d\n" RESET,
                parent->level, expected_parent_level);
@@ -114,7 +114,6 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
 
     ((VariableBlockAllocator *) alloc)->internal_fragmentation = 0;
     ((VariableBlockAllocator *) alloc)->sparse_free_memory = memory_size;
-
     // Initialize buddy allocator properties
     // Calculate minimum block size (min_block_size) and adjust num_levels if needed
     size_t min_block_size = memory_size >> (num_levels - 1);
@@ -124,10 +123,10 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
     }
     buddy->num_levels = num_levels;
     buddy->min_block_size = min_block_size;
-
-
+    
+    
     size_t free_lists_size = sizeof(DoubleLinkedList*) * num_levels;
-
+    
     // Initialize memory
     void* mmap_ptr = mmap(NULL, memory_size + free_lists_size, PROT_READ | PROT_WRITE, 
                              MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
@@ -138,6 +137,7 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
         #endif
         return NULL;
     }
+    buddy->total_memory_size = memory_size + free_lists_size;
 
     // Place free_lists at the start of the mmap'd region
     buddy->free_lists = (DoubleLinkedList**)mmap_ptr;
@@ -177,6 +177,9 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
         return NULL;
     }
     buddy->node_allocator = *slab;
+
+    buddy->total_memory_size += buddy->node_allocator.memory_size + 
+                                buddy->list_allocator.memory_size; 
 
     // Create first node
     BuddyNode* first_node = (BuddyNode*)SlabAllocator_malloc(&buddy->node_allocator);
@@ -275,7 +278,7 @@ void* BuddyAllocator_reserve(Allocator* alloc, ...) {
     
     // Calculate the appropriate level for the requested adjusted_size
     size_t block_size = buddy->memory_size;
-    int level = 0;
+    uint level = 0;
     while (level < buddy->num_levels - 1 && block_size / 2 >= adjusted_size) {
         block_size /= 2;
         level++;
@@ -290,7 +293,7 @@ void* BuddyAllocator_reserve(Allocator* alloc, ...) {
     }
 
     
-    if (level < 0 || level >= buddy->num_levels) {
+    if (level >= buddy->num_levels) {
         #ifdef DEBUG
         printf(RED "ERROR: Invalid level %d (max %d)\n" RESET, level, buddy->num_levels-1);
         #endif
@@ -305,7 +308,7 @@ void* BuddyAllocator_reserve(Allocator* alloc, ...) {
     }
 
     BuddyNode* free_block = (BuddyNode*) list_pop_front(buddy->free_lists[level]);    
-    int current_level = level;
+    uint current_level = level;
     
     // Search larger blocks if needed
     while (!free_block && current_level > 0) {
@@ -404,7 +407,7 @@ void *BuddyAllocator_release(Allocator* alloc, ...) {
         return (void*)-1;
     }
     
-    if (node->level < 0 || node->level >= a->num_levels) {
+    if (node->level >= a->num_levels) {
         printf(RED "ERROR: Invalid level %d (max %d)\n" RESET, 
                node->level, a->num_levels-1);
         return (void*)-1;
@@ -456,7 +459,7 @@ int BuddyAllocator_print_state(BuddyAllocator* a) {
     printf("\tMemory start: %p\n", a->memory_start);
     SlabAllocator_print_state(&a->node_allocator);
     printf("\tFree lists:\n");
-    for (int i = 0; i < a->num_levels; i++) {
+    for (uint i = 0; i < a->num_levels; i++) {
         printf("Level %d (block size %zu):\n", i, a->memory_size / (1 << i));
         
         Node* current = a->free_lists[i]->head;

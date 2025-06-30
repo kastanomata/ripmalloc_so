@@ -104,11 +104,11 @@ Vediamo ora come descrivere la classe di allocatore da sottoporre al benchmark e
 \hline
 \textbf{Allocatore} & \textbf{Dimensione} & \textbf{Parametro 1} & \textbf{Parametro 2} \\
 \hline
-Slab    & Fissa     & slab\_size   & num\_slabs   \\
+Slab    & Fissa     & \texttt{slab\_size}   & \texttt{num\_slabs}   \\
 \hline
-Buddy   & Variabile & memory\_size & max\_levels  \\
+Buddy   & Variabile & \texttt{memory\_size} & \texttt{max\_levels}  \\
 \hline
-Bitmap  & Variabile & memory\_size & max\_levels  \\
+Bitmap  & Variabile & \texttt{memory\_size} & \texttt{max\_levels}  \\
 \hline
 \end{tabularx}
 \caption{Parametri di inizializzazione per ciascuna classe di allocatore}
@@ -116,20 +116,28 @@ Bitmap  & Variabile & memory\_size & max\_levels  \\
 
 Per allocare e liberare memoria, l’istruzione deve iniziare rispettivamente con ``a'' o ``f''. Il benchmark per tenere traccia delle allocazioni usa un array avente lunghezza pari al numero massimo possibile di frammenti di memoria. Il comando \texttt{a,<index>} alloca memoria in una posizione specifica dell'array, mentre \texttt{f,<index>} la libera. Nel caso di allocatore a richiesta variabile, dopo l’index dell’array va specificato il numero di byte da allocare (con struttura \texttt{a,<index>,<size>}). 
 
-È fondamentale non allocare più volte sullo stesso indice senza prima liberarlo, altrimenti si perderà il riferimento al puntatore e non sarà più possibile gestirlo correttamente\footnotemark. Il programma esegue la sequenza di \textit{request} e \textit{release}, informa l'utente di eventuali errori e stampa a schermo informazioni sul tempo richiesto: \textit{elapsed\_seconds}, \textit{user\_seconds} e \textit{kernel\_seconds}. In più, produce un file di \texttt{.log} che contiene informazioni sulle singole istruzioni (in particolare, per i\texttt{VariableBlockAllocator}, inserisce anche lo stato della frammentazione interna ed esterna dell'allocatore a ogni istruzione) L'analisi di queste informazioni fornisce alcune metriche aggiuntive sul comportamento dell'allocatore e sulla sua \textit{performance}.
+È fondamentale non allocare più volte sullo stesso indice senza prima liberarlo, altrimenti si perderà il riferimento all'area di memoria e non sarà più possibile gestirla correttamente\footnotemark. Il programma esegue la sequenza di \textit{request} e \textit{release}, informa l'utente di eventuali errori e stampa a schermo informazioni sul tempo richiesto: \texttt{elapsed\_seconds}, \texttt{user\_seconds} e \texttt{kernel\_seconds}. In più, produce un file di \texttt{.log} che contiene informazioni sulle singole istruzioni (in particolare, per i \texttt{VariableBlockAllocator}, inserisce anche lo stato della frammentazione interna ed esterna dell'allocatore a ogni istruzione).
+L'analisi di queste informazioni fornisce alcune metriche aggiuntive sul comportamento dell'allocatore e sulla sua \textit{performance}.
 
 \footnotetext{Il programma di benchmarking non esegue istruzioni che porterebbero alla perdita di un indirizzo e avverte se il benchmark termina senza deallocare tutti gli indirizzi.}
 
 \subsection{Analisi dei pattern di allocazione}
-La letteratura sull'argomento ha identificato tre modelli di comportamento principali che possono essere applicati alla maggior parte dei programmi: rampe, picchi e plateau\footnotemark Facciamo riferimento principalmente alla ricerca di Wilson et al., che sottolinea anche come la presenza di un modello nel lungo termine o lungo l'intero ciclo di vita del programma non escluda la presenza di comportamenti osservabili di dimensione minore al suo interno.
-\footnotetext{Altri pattern dell'uso di memoria possono essere incontrati, ma sono meno comuni: allo stesso modo, variazioni o combinazioni dei modelli qui citati sono spesso presenti.}
+La letteratura individua tre principali pattern di utilizzo della memoria che ricorrono nella maggior parte dei programmi: rampe, picchi e plateau\footnotemark. In particolare, Wilson et al. evidenziano come sia spesso possibile riconoscere, nel ciclo di vita di un programma, macrosequenze di allocazione e deallocazione che seguono questi modelli: inoltre, all'interno di tali pattern principali, possono emergere sottostrutture più piccole che ripetono dinamiche simili, riflettendo la complessità e la varietà dei comportamenti reali di gestione della memoria.
+
+\footnotetext{Altri \textit{pattern} dell'uso di memoria possono essere incontrati, ma sono meno comuni: allo stesso modo, variazioni o combinazioni dei modelli qui citati sono spesso presenti.}
+
 \begin{itemize}
-  \item \textbf{Rampe}: molti programmi accumulano determinate strutture dati in modo monotono. Ciò può essere dovuto al fatto che conservano un registro degli eventi o perché la strategia di risoluzione del problema richiede la costruzione di una rappresentazione di grandi dimensioni, dopo la quale è possibile trovare rapidamente una soluzione.
-  \item \textbf{Picchi}: molti programmi utilizzano la memoria in modo discontinuo, creando strutture dati relativamente grandi che vengono utilizzate per la durata di una particolare fase e poi la maggior parte o tutte le strutture dati viene scartata. Si noti che le strutture di dati “sopravvissute” sono probabilmente di tipo diverso, perché rappresentano i risultati di una fase, rispetto a valori intermedi che possono essere rappresentati in modo diverso. (Un picco è come una rampa, ma di durata più breve).
-  \item \textbf{Plateau}: molti programmi costruiscono rapidamente strutture dati e poi le utilizzano per lunghi periodi (spesso per quasi tutto il tempo di esecuzione del programma).
+  \item \textbf{Rampe}: molti programmi accumulano determinate strutture dati in modo monotono. Ciò può essere dovuto al fatto che conservano un registro degli eventi o perché la strategia di risoluzione del problema richiede la costruzione di una rappresentazione di grandi dimensioni, dopo la quale è possibile trovare rapidamente una soluzione.\\
+  \textit{Esempio:} parser di log che accumulano eventi in memoria, compilatori che costruiscono un AST, o applicazioni che caricano progressivamente dati da una sorgente esterna.
+
+  \item \textbf{Picchi}: molti programmi utilizzano la memoria in modo discontinuo, creando strutture dati relativamente grandi che vengono utilizzate per la durata di una particolare fase e poi la maggior parte o tutte le strutture dati viene scartata. Si noti che le strutture di dati “sopravvissute” sono probabilmente di tipo diverso, perché rappresentano i risultati di una fase, rispetto a valori intermedi che possono essere rappresentati in modo diverso. (Un picco è come una rampa, ma di durata più breve).\\
+  \textit{Esempio:} algoritmi di sorting che allocano buffer temporanei, elaborazione di immagini o video dove ogni frame richiede molta memoria temporanea, oppure fasi di calcolo numerico in cui vengono creati e poi distrutti grandi array temporanei.
+
+  \item \textbf{Plateau}: molti programmi costruiscono rapidamente strutture dati e poi le utilizzano per lunghi periodi (spesso per quasi tutto il tempo di esecuzione del programma).\\
+  \textit{Esempio:} server web che mantengono strutture dati per la gestione delle connessioni attive, database in-memory che caricano dati all’avvio e li mantengono residenti, o giochi che caricano la mappa di gioco all’inizio e la usano per tutta la sessione.
 \end{itemize}
 
-Utilizzando lo strumento da noi creato, siamo in grado di simulare questi pattern e verificare il comportamento degli allocatori in loro presenza. 
+Utilizzando lo strumento da noi creato, siamo in grado di simulare questi pattern e verificare il comportamento degli allocatori in loro presenza. Nel considerare i risultati ottenuti ricordiamo tuttavia che l'applicazione del \textit{profiling} comporta ovviamente un costo non trascurabile: i risultati successivamente riportati sono chiaramente influenzati dalle operazioni di \textit{logging} svolte dal programma. Sono state fatte numerose scelte nel tentativo di evitare costi eccessivi, ma sfortunatamente è impossibile analizzare gli allocatori così a fondo senza introdurre una misura di \textit{overhead}.
 
 \begin{figure}[H]
   \centering
@@ -140,14 +148,18 @@ Utilizzando lo strumento da noi creato, siamo in grado di simulare questi patter
 
 
 
+
 \subsection{Allocazioni sfavorevoli: frammentazione interna}
 
+Come abbiamo menzionato precedentemente nella nostra analisi dell'implementazione degli allocatori che implementano un \textit{buddy system}, la possibilità di frammentazione interna molto elevata al punto da essere debilitante non è da trascurarsi. Adoperando lo strumento da noi creato per simulare un caso estremo, possiamo facilmente osservare dai grafici come determinate combinazioni di parametri di inizializzazione e richieste mal formulate possano rendere l'allocatore molto inefficace nel gestire la memoria a sua disposizione. Le linee rosse sul grafico rappresentano richieste che non è stato possibile soddisfare per via di frammentazione interna o esterna.
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.9\textwidth]{graphs/ramp_bitmap_unoptimized.png}
   \caption{Sequenza di istruzioni che causano nel BuddyAllocator grande frammentazione interna. Notiamo che la quantità di memoria inutilizzabile è pari a quella allocata.}
   \label{fig:ramp_bitmap_unoptimized}
 \end{figure}
+
+Chiaramente, il caso riportato sopra risulta essere manipolato per esasperare il nostro punto. Non vi è alcun dubbio che sarebbe ben difficile incontrare in natura un pattern così sfortunato: tuttavia, bastano una serie di allocazioni mal concepite per rendere, soprattutto in corrispondenza di picchi di utilizzo, una cospicua parte della memoria inutilizzabile e pertanto riteniamo sia importante che il programmatore avveduto faccia uso di strumenti simili per comprendere il comportamento del proprio allocatore e, se necessario, apportare cambiamenti che lo rendano più adatto al proprio caso d'uso. Di seguito riportiamo altri due esempi di pattern in cui tuttavia è stata presa cura di minimizzare la frammentazione diminuendo le taglie degli oggetti allocati oppure, più semplicemente, aumentando di poco la dimensione dell'area di memoria che l'allocatore amministra.
 
 \begin{figure}[H]
   \centering
@@ -166,51 +178,119 @@ Utilizzando lo strumento da noi creato, siamo in grado di simulare questi patter
 \end{figure}
 
 
-\subsection{\textit{LinkedList} e \textit{Bitmap}}
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.9\textwidth]{graphs/throughput_buddy.png}
-  \label{fig:throughput_buddy}
-\end{figure}
+\subsection{\textit{LinkedList} vs. \textit{Bitmap}}
+
+Sebbene esse siano quasi uguali in termini di frammentazione interna ed esterna (la politica di allocazione è difatti la medesima), la caratteristica che distigue il \texttt{BuddyAllocator} e il \texttt{BitmapBuddyAllocator} è la struttura dati adoperata per mantenere i riferimenti ai blocchi liberi, in quanto l'implementazione del primo adopera liste concatenate per rappresentare ogni livello. Questa scelta è stata fatta in quanto in ogni momento in ogni lista può essere presente un numero di elementi altamente variabile: la natura delle \textit{LinkedList} le rende quindi particolarmente adatte a svolgere questo ruolo. Ciononostante, nella prima iterazione questo allocatore è andato incontro a una problematica, di cui svolgiamo un'analisi nella sezione successiva.
+
+Utilizzando lo strumento \texttt{cachegrind} e gli altri \textit{tool} compresi in \textit{valgrind}, abbiamo potuto svolgere un analisi più approfondita del comportamento del nostro programma, in particolare rilevando le differenze tra le due implementazioni del \textit{buddy system}. Il comportamento della cache dipende dalle caratteristiche del calcolatore. I test eseguiti di seguito sono stati svolti su un sistema avente le seguenti caratteristiche:
 \begin{lstlisting}[language={}]
-I refs:        1,992,021
-I1  misses:        2,862
-LLi misses:        2,436
-I1  miss rate:      0.14%
-LLi miss rate:      0.12%
-
-D refs:        1,002,895  (736,165 rd   + 266,730 wr)
-D1  misses:        4,364  (  2,184 rd   +   2,180 wr)
-LLd misses:        3,429  (  1,541 rd   +   1,888 wr)
-D1  miss rate:       0.4% (    0.3%     +     0.8%  )
-LLd miss rate:       0.3% (    0.2%     +     0.7%  )
-
-LL refs:           7,226  (  5,046 rd   +   2,180 wr)
-LL misses:         5,865  (  3,977 rd   +   1,888 wr)
-LL miss rate:        0.2% (    0.1%     +     0.7%  )
+desc: I1 cache:   32768 B, 64 B, 8-way associative
+desc: D1 cache:   32768 B, 64 B, 8-way associative
+desc: LL cache:   6291456 B, 64 B, 12-way associative
 \end{lstlisting}
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.9\textwidth]{graphs/throughput_bitmap.png}
-  \label{fig:throughput_bitmap}
-\end{figure}
+
+\subsubsection*{Prevenzione dei \textit{Double free}}
+Un'analisi preliminare delle prestazioni del \texttt{BuddyAllocator} mostra che risulta significativamente più lento rispetto all'alternativa basata su bitmap. Questo dato conferma le aspettative teoriche di una maggiore complessità, ma l'entità della differenza osservata è superiore a quanto previsto e suggerisce la presenza di ulteriori fattori che penalizzano l'efficienza dell'implementazione.
+
+\begin{lstlisting}
+i,buddy
+p,16276,10
+I refs:        13,289,525
+I1  misses:         2,910
+LLi misses:         2,459
+I1  miss rate:       0.02%
+LLi miss rate:       0.02%
+
+D refs:         8,944,880  (7,197,682 rd   + 1,747,198 wr)
+D1  misses:     1,229,603  (1,217,474 rd   +    12,129 wr)
+LLd misses:         6,545  (    1,608 rd   +     4,937 wr)
+D1  miss rate:       13.7% (     16.9%     +       0.7%  )
+LLd miss rate:        0.1% (      0.0%     +       0.3%  )
+
+LL refs:        1,232,513  (1,220,384 rd   +    12,129 wr)
+LL misses:          9,004  (    4,067 rd   +     4,937 wr)
+LL miss rate:         0.0% (      0.0%     +       0.3%  )
+\end{lstlisting}
+\begin{itemize}
+  \item \textbf{I refs}: Fetch istruzioni; \textbf{I1/LLi misses}: Mancati accessi cache istruzioni (primo/ultimo livello); \textbf{I1/LLi miss rate}: Percentuale miss cache istruzioni.
+  \item \textbf{D refs}: Accessi dati (letture/scritture); \textbf{D1/LLd misses}: Mancati accessi cache dati (primo/ultimo livello, letture/scritture); \textbf{D1/LLd miss rate}: Percentuale miss cache dati.
+  \item \textbf{LL refs}: Accessi totali cache ultimo livello; \textbf{LL misses}: Mancati accessi totali; \textbf{LL miss rate}: Percentuale miss cache ultimo livello.
+\end{itemize}
+
+Come vediamo facilmente, il programma così formulato ha un altissimo numero di istruzioni che accedono alla memoria, e da un'analisi più approfondita scopriamo che ciò avviene per la maggior parte proprio all'interno della funzione \texttt{list\_find}. Questa funzione è chiamata unicamente all'interno dello \texttt{SlabAllocator}, in particolare come parte delle verifiche di correttezza del programma. 
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|X|c|c|c|}
+\hline
+\textbf{Funzione} & \textbf{Ir (\%)} & \textbf{Dr (\%)} & \textbf{Dw (\%)} \\
+\hline
+\texttt{list\_find} & 9,633,626 (72.49\%) & 6,018,037 (83.61\%) & 1,205,430 (68.99\%) \\
+\hline
+\end{tabularx}
+\caption{Profilazione della funzione \texttt{list\_find} in \texttt{double\_linked\_list.c}: Ir = \textit{Istruction, read}, Dr = \textit{Data, read}, Dw = \textit{Data, write}.}
+\end{table}
+
+All'interno del \texttt{BuddyAllocator} sono presenti due \texttt{SlabAllocator} per uso interno. Uno di essi in particolare, \texttt{node\_allocator}, si occupa di gestire la memoria necessaria per mantenere i \texttt{BuddyNode}: essi contengono le informazioni sui \textit{buddies} e sono quindi indispensabili. Quando la memoria viene rilasciata nel \texttt{BuddyAllocator}, se due \textit{buddies} sono liberi e pertanto riunificati, i \texttt{BuddyNodes} contenenti le informazioni su di essi vengono a loro volta riconsegnati alla \textit{free list} dello \texttt{SlabAllocator}. Quando esso riprende possesso di uno \textit{slab}, si assicura che esso non sia stato precedentemente rilasciato (evitando l'errore noto come \textit{double free}). La modalità attraverso cui compie questa verifica è la scansione della lista contenente tutti gli slab liberi, ma, poiché  adoperando il \textit{tool} questa soluzione è stata riconosciuta come molto costosa, in quanto il costo chiaramente è lineare al numero degli stessi. Il numero di istruzioni che accedono alla memoria diventa quindi altissimo: l'efficienza ne risente a causa dell'elevato numero di \textit{data cache miss}.
+
+\begin{lstlisting}
+  // Check if node is already in free list using list_find
+  if (list_find(slab->free_list, &slab_node->node)) {
+      #ifdef DEBUG
+      printf(RED "ERROR: Failed to free: slab node already in free list!\n" RESET);
+      #endif
+      return NULL;
+  }
+\end{lstlisting}
+
+Per evitare la scansione lineare, la soluzione applicata è l'utilizzo di una flag, \texttt{bool in\_free\_list}, che ci permette di verificare più rapidamente se il blocco sia stato già liberato e quindi aggiunto alla \texttt{free list}. Questo \textit{check} tuttavia è molto meno sicuro, e se il dato venisse corrotto permetterebbe il \textit{double free} di uno slab, che potrebbe dunque essere restituito due volte come risultato di una richiesta di memoria. 
+
+
+
+\subsubsection{Bitmap e cache}
+
 \begin{lstlisting}[language={}]
-I refs:        3,522,521
-I1  misses:        2,786
-LLi misses:        2,436
+i,bitmap
+p,16276,10
+
+I refs:        14,221,610
+I1  misses:         2,790
+LLi misses:         2,460
+I1  miss rate:       0.02%
+LLi miss rate:       0.02%
+
+D refs:         7,089,558  (4,813,930 rd   + 2,275,628 wr)
+D1  misses:         4,567  (    2,269 rd   +     2,298 wr)
+LLd misses:         3,405  (    1,616 rd   +     1,789 wr)
+D1  miss rate:        0.1% (      0.0%     +       0.1%  )
+LLd miss rate:        0.0% (      0.0%     +       0.1%  )
+
+LL refs:            7,357  (    5,059 rd   +     2,298 wr)
+LL misses:          5,865  (    4,076 rd   +     1,789 wr)
+LL miss rate:         0.0% (      0.0%     +       0.1%  )
+\end{lstlisting}
+
+
+\begin{lstlisting}[language={}]
+i,buddy
+p,16276,10
+
+I refs:        3,652,823
+I1  misses:        2,913
+LLi misses:        2,463
 I1  miss rate:      0.08%
 LLi miss rate:      0.07%
 
-D refs:        1,744,339  (1,234,079 rd   + 510,260 wr)
-D1  misses:        3,487  (    2,133 rd   +   1,354 wr)
-LLd misses:        2,620  (    1,500 rd   +   1,120 wr)
-D1  miss rate:       0.2% (      0.2%     +     0.3%  )
-LLd miss rate:       0.2% (      0.1%     +     0.2%  )
+D refs:        1,719,901  (1,178,874 rd   + 541,027 wr)
+D1  misses:        7,915  (    2,430 rd   +   5,485 wr)
+LLd misses:        6,545  (    1,608 rd   +   4,937 wr)
+D1  miss rate:       0.5% (      0.2%     +     1.0%  )
+LLd miss rate:       0.4% (      0.1%     +     0.9%  )
 
-LL refs:           6,273  (    4,919 rd   +   1,354 wr)
-LL misses:         5,056  (    3,936 rd   +   1,120 wr)
-LL miss rate:        0.1% (      0.1%     +     0.2%  )
+LL refs:          10,828  (    5,343 rd   +   5,485 wr)
+LL misses:         9,008  (    4,071 rd   +   4,937 wr)
+LL miss rate:        0.2% (      0.1%     +     0.9%  )
 \end{lstlisting}
 
 \pagebreak

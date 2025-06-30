@@ -12,7 +12,7 @@
 typedef struct {
     Node node;
     char* data;
-    int in_free_list;
+    bool in_free_list;
 } SlabNode;
 
 // Forward declaration
@@ -22,12 +22,12 @@ typedef struct SlabAllocator SlabAllocator;
 struct SlabAllocator {
     Allocator base;
     char* memory_start;
-    unsigned int memory_size;
+    size_t memory_size;
     size_t slab_size;   
     size_t user_size;
-    unsigned int num_slabs;
+    uint num_slabs;
     DoubleLinkedList* free_list;   
-    unsigned int free_list_size;
+    uint free_list_size;
 };
 
 // Core allocator interface
@@ -39,7 +39,7 @@ void *SlabAllocator_release(Allocator* alloc, ...);
 // Debug methods
 void SlabAllocator_print_state(SlabAllocator* a);
 void SlabAllocator_print_memory_map(SlabAllocator* a);
-void print_slab_info(SlabAllocator* a, unsigned int slab_index);
+void print_slab_info(SlabAllocator* a, uint slab_index);
 
 // Callable methods
 

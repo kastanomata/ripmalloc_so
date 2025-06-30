@@ -1,4 +1,4 @@
-\chapter{Implementazione}
+\chapter{Sviluppo}
 Il progetto contenuto nella repository è gestito in quattro cartelle principali. \textit{bin} e \textit{build} contengono i risultati del processo di compilazione, mentre il codice sorgente è contenuto in \textit{header} e \textit{src}. Il programma contiene anche delle basilari implementazioni delle strutture dati per esso necessarie: una semplice \textit{double linked list} e una \textit{bitmap}. La loro struttura è volutamente molto semplice per evitare costi di tempo aggiuntivi e non è d’interesse ai fini di questa analisi. Di ogni funzionalità viene accertato il comportamento desiderato attraverso una serie di test.
 
 Notiamo che tutte le implementazioni descritte successivamente condividono alcune caratteristiche, quali la possibilità di soddisfare unicamente richieste di memoria di dimensioni contenute nei parametri di creazione dell'allocatore. La dimensione dell’area di memoria dinamicamente gestita infatti non cambia nell’eventualità che venga fatta un’allocazione impossibile da soddisfare. L’allocatore non reclama ulteriore memoria dal sistema operativo neppure a seguito di richieste che potrebbero essere soddisfatte se memoria fosse rilasciata ad esso. Invece in entrambi i casi viene gestito l’errore ritornando al richiedente un valore invalido per segnalare l’insuccesso.
@@ -83,12 +83,12 @@ Lo \textit{slab allocator} è un gestore pensato per richieste di memoria di tag
 struct SlabAllocator {
     Allocator base;
     char* memory_start;
-    unsigned int memory_size;
+    uint memory_size;
     size_t slab_size;   
     size_t user_size;
     DoubleLinkedList* free_list;   
-    unsigned int free_list_size;
-    unsigned int num_slabs;
+    uint free_list_size;
+    uint num_slabs;
 };
 \end{lstlisting}
 

@@ -194,6 +194,7 @@ void *SlabAllocator_release(Allocator* alloc, ...) {
         #endif
         return NULL;
     }
+
     // Check if node is already in free list using a flag
     if (slab_node->in_free_list) {
         #ifdef DEBUG
@@ -201,15 +202,21 @@ void *SlabAllocator_release(Allocator* alloc, ...) {
         #endif
         return NULL;
     }
-    
+
+    // Check if node is already in free list using list_find
+    if (list_find(slab->free_list, &slab_node->node)) {
+        #ifdef DEBUG
+        printf(RED "ERROR: Failed to free: slab node already in free list!\n" RESET);
+        #endif
+        return NULL;
+    }
+
     // Clear the entire slab area before adding to free list
     // memset(slab_node, 0, slab->slab_size);
     // Add to free list
     slab_node->in_free_list = 1; // Mark as free
     list_push_front(slab->free_list, &slab_node->node);
     slab->free_list_size++;
-    
-    return (void*)1;
     
     return (void*)1;
 }
@@ -222,7 +229,7 @@ void SlabAllocator_print_state(SlabAllocator* a) {
            a->num_slabs);
     printf("\tStatus: ");
     // Print visual representation of used/free slots
-    for (unsigned int i = 0; i < a->num_slabs; i++) {
+    for (uint i = 0; i < a->num_slabs; i++) {
         if (i < a->free_list_size)
             printf("□"); // Free slot
         else
@@ -243,13 +250,13 @@ void SlabAllocator_print_memory_map(SlabAllocator* a) {
     printf("\tMemory range: %p - %p\n", (void*)a->memory_start, 
            (void*)(a->memory_start + a->memory_size));
     
-    for (unsigned int i = 0; i < a->num_slabs; i++) {
+    for (uint i = 0; i < a->num_slabs; i++) {
         print_slab_info(a, i);
     }
 }
 
 // Print each slab's status
-void print_slab_info(SlabAllocator* a, unsigned int slab_index) {
+void print_slab_info(SlabAllocator* a, uint slab_index) {
     char* slab_start = a->memory_start + (slab_index * a->slab_size);
     printf("\nSlab %u [%p]:\n", slab_index, (void*)slab_start);
     

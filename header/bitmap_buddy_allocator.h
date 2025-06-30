@@ -23,9 +23,9 @@ typedef struct {
 typedef struct {
     VariableBlockAllocator base; // 
     char* memory_start; // Managed memory area
-    int memory_size; // Size of managed memory
-    int num_levels; // Number of levels in the hierarchy
-    int min_block_size; // Minimum allocation size
+    size_t memory_size; // Size of managed memory
+    uint num_levels; // Number of levels in the hierarchy
+    size_t min_block_size; // Minimum allocation size
     Bitmap bitmap; // Bitmap tracking block status
 } BitmapBuddyAllocator;
 
@@ -78,6 +78,8 @@ inline int BitmapBuddyAllocator_free(BitmapBuddyAllocator* alloc, void* ptr) {
 
 // Debug/Info functions
 int BitmapBuddyAllocator_print_state(BitmapBuddyAllocator* alloc);
+
+__attribute__((unused))
 static void print_bitmap_status(BitmapBuddyAllocator* buddy) {
     printf("Bitmap Status:\n");
     for (int i = 0; i < buddy->bitmap.num_bits; i++) {

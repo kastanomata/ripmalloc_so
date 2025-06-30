@@ -1,5 +1,5 @@
 # type=BUDDY_ALLOCATOR
-# total_size=5120,max_levels=10
+# memory_size=5120,max_levels=10
 # instruction,<param1>,<param2>,...,failure,internal_fragmentation,sparse_free_space
 a,0,8,0,4,5100
 a,1,8,0,8,5080
@@ -127,4 +127,4 @@ f,1,0,4,5100
 f,0,0,0,5120
 a,0,1016,0,256,3840
 f,0,0,0,5120
-# elapsed_seconds=0.000529 user_seconds=0.000064 sys_seconds=0.000057
+# elapsed_seconds=0.000559 user_seconds=0.000046 sys_seconds=0.000047

@@ -195,7 +195,7 @@ void* BitmapBuddyAllocator_reserve(Allocator* alloc, ...) {
     // Find the smallest block whose usable size fits the request
     int level_new_block = buddy->num_levels;
     size_t block_size = buddy->min_block_size;
-    for (int i = 0; i <= buddy->num_levels; i++) {
+    for (uint i = 0; i <= buddy->num_levels; i++) {
         if (block_size >= size + BITMAP_METADATA_SIZE) {
             break;
         }
@@ -339,9 +339,9 @@ int BitmapBuddyAllocator_print_state(BitmapBuddyAllocator* buddy) {
     }
     
     printf("Bitmap Buddy Allocator State:\n");
-    printf("  Memory Size: %d bytes\n", buddy->memory_size);
+    printf("  Memory Size: %zu bytes\n", buddy->memory_size);
     printf("  Number of Levels: %d\n", buddy->num_levels);
-    printf("  Minimum Bucket Size: %d bytes\n", buddy->min_block_size);
+    printf("  Minimum Bucket Size: %zu bytes\n", buddy->min_block_size);
     
     print_bitmap_status(buddy);
     

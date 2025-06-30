@@ -5,7 +5,7 @@
 #include <string.h>
 
 typedef struct {
-    unsigned int *bits;   // Array holding bitmap data
+    uint *bits;   // Array holding bitmap data
     int num_bits;         // Total bits in the bitmap
     int num_words;        // Number of words allocated
 } Bitmap;
