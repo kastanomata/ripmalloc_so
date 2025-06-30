@@ -1,149 +1,78 @@
-import random, os, glob
+from pathlib import Path
+import random
 
-TARGET_LINE_COUNT = 1000
+allocator_type = "bitmap"
+init_line = f"i,{allocator_type}\n"
+memory_size = 16276
+num_levels = 10
+parameter_line = f"p,{memory_size},{num_levels}\n" 
+allocator_header = init_line + parameter_line
 
-def write_alloc(lines, idx, alloc_sizes, total_mem, alloc_type, size):
-    if alloc_sizes[idx] is not None or size + sum(s for s in alloc_sizes if s) > total_mem:
-        return False
-    lines.append(f"a,{idx}" + (f",{size}" if alloc_type!="slab" else ""))
-    alloc_sizes[idx] = size
-    return True
 
-def write_free(lines, idx, alloc_sizes):
-    if alloc_sizes[idx] is None:
-        return False
-    lines.append(f"f,{idx}")
-    alloc_sizes[idx] = None
-    return True
+# Calculate minimum bucket size based on memory size and num_levels
+min_bucket_size = memory_size // (2 ** (num_levels - 1))
+# Ensure minimum bucket size is at least 8
+min_bucket_size = max(16, min_bucket_size)
 
-def available_idxs(alloc_sizes, want_alloc):
-    return [i for i, s in enumerate(alloc_sizes) if (s is None) == want_alloc]
+# Generate base sizes as powers of two starting from min_bucket_size
+base_sizes = [min_bucket_size * (2 ** i) for i in range(int(num_levels*7/10))]
 
-def balance(lines, alloc_sizes, total_mem, alloc_type):
-    while len(lines) < TARGET_LINE_COUNT:
-        if random.random() < 0.5:
-            free = available_idxs(alloc_sizes, True)
-            if free:
-                write_alloc(lines, random.choice(free), alloc_sizes, total_mem, alloc_type, random.randint(16, total_mem//4))
-        else:
-            used = available_idxs(alloc_sizes, False)
-            if used:
-                write_free(lines, random.choice(used), alloc_sizes)
+# Reinitialize
+trace_lines = []
+allocated_indices = set()
+freed_indices = set()
+index = 0
+line_count = 0
+max_lines = 1000
 
-def ramp_pattern(lines, alloc_sizes, total_mem, alloc_type, max_slots):
-    """
-    Simulates a gradual increase in memory usage followed by partial releases,
-    testing allocator behavior under incremental load and fragmentation.
-    
-    Steps:
-    1. Gradually allocates blocks (20 steps, each adding `max_slots//20` allocations).
-    2. Occasionally frees a few blocks (2 per step) to simulate partial releases.
-    3. Balances allocations/frees randomly to reach `TARGET_LINE_COUNT`.
-    """
-    for step in range(20):  # 20 incremental steps
-        # Allocate a fraction of `max_slots` in each step
-        for _ in range(max_slots // 20):
-            free = available_idxs(alloc_sizes, True)
-            if not free: 
+# Generate randomized allocations with interleaved frees
+while line_count < max_lines - 100:  # reserve lines to ensure room for all frees
+    # Allocate a random number of allocations per iteration
+    num_allocs = random.randint(1, 5)
+    for _ in range(num_allocs):
+        if index not in allocated_indices or index in freed_indices:
+            base_size = base_sizes[index % len(base_sizes)]
+            proposed_size = base_size + random.randint(-base_size // 4, base_size // 4)
+            size = max(8, proposed_size)
+            trace_lines.append(f"a,{index},{size}")
+            allocated_indices.add(index)
+            if index in freed_indices:
+                freed_indices.remove(index)
+            line_count += 1
+            index += 1
+            if line_count >= max_lines - 100:
                 break
-            write_alloc(lines, random.choice(free), alloc_sizes, total_mem, alloc_type, random.randint(16, total_mem//4))
-        
-        # Free 2 random blocks per step
-        for _ in range(2):
-            used = available_idxs(alloc_sizes, False)
-            if used:
-                write_free(lines, random.choice(used), alloc_sizes)
-    
-    # Fill remaining lines with random alloc/free operations
-    balance(lines, alloc_sizes, total_mem, alloc_type)
+    # Adjust index so it doesn't increment twice per loop
+    index -= 1
+    available_to_free = len(allocated_indices - freed_indices)
+    if allocated_indices - freed_indices and available_to_free > 10:
+        # Increase number to free as line_count increases
+        base_free = 3
+        # Scale up to a max of 30 as line_count approaches max_lines
+        scale = min(1.0, line_count / (max_lines - 100))
+        max_free = int(base_free + scale * 27)  # 3 to 30
+        num_to_free = random.randint(base_free, min(max_free, available_to_free))
+        to_free = random.sample(sorted(allocated_indices - freed_indices), num_to_free)
+        for i in to_free:
+            trace_lines.append(f"f,{i}")
+            freed_indices.add(i)
+            line_count += 1
+            if line_count >= max_lines - 100:
+                break
+    index += 1
 
-def peak_pattern(lines, alloc_sizes, total_mem, alloc_type, max_slots):
-    """
-    Simulates a sudden spike in allocations (peak usage) followed by a sharp drop,
-    testing allocator's ability to handle high load and coalesce freed blocks.
-    
-    Steps:
-    1. Allocates as many blocks as possible (up to `max_slots`).
-    2. Randomly selects 25% of blocks to survive ("survivors").
-    3. Frees all other blocks, creating a sharp memory drop.
-    4. Balances allocations/frees to reach `TARGET_LINE_COUNT`.
-    """
-    # Allocate until no more slots are available
-    for _ in range(max_slots):
-        free = available_idxs(alloc_sizes, True)
-        if not free: 
-            break
-        write_alloc(lines, random.choice(free), alloc_sizes, total_mem, alloc_type, random.randint(16, total_mem//4))
-    
-    # Select 25% of blocks to keep ("survivors")
-    used = [i for i, s in enumerate(alloc_sizes) if s is not None]
-    survivors_count = max_slots // 4
-    k = min(len(used), survivors_count)
-    survivors = set(random.sample(used, k)) if k > 0 else set()
-    
-    # Free all non-survivor blocks
-    for i in used:
-        if i not in survivors:
-            write_free(lines, i, alloc_sizes)
-    
-    # Fill remaining lines with random alloc/free operations
-    balance(lines, alloc_sizes, total_mem, alloc_type)
+# Free all remaining allocated indices explicitly
+remaining_to_free = sorted(allocated_indices - freed_indices)
+for i in remaining_to_free:
+    trace_lines.append(f"f,{i}")
+    line_count += 1
+    if line_count >= max_lines:
+        break
 
-def plateau_pattern(lines, alloc_sizes, total_mem, alloc_type, max_slots):
-    """
-    Simulates sustained high memory usage with frequent alloc/free churn,
-    testing fragmentation and allocator performance under steady-state load.
-    
-    Steps:
-    1. Allocates as many blocks as possible (up to `max_slots`).
-    2. Performs 500 mixed alloc/free operations to simulate churn.
-    3. Balances allocations/frees to reach `TARGET_LINE_COUNT`.
-    """
-    # Allocate until no more slots are available
-    for _ in range(max_slots):
-        free = available_idxs(alloc_sizes, True)
-        if not free: 
-            break
-        write_alloc(lines, random.choice(free), alloc_sizes, total_mem, alloc_type, random.randint(16, total_mem//4))
-    
-    # Simulate churn: 500 alloc/free operations
-    for _ in range(500):
-        # Free a random block
-        used = available_idxs(alloc_sizes, False)
-        if used:
-            write_free(lines, random.choice(used), alloc_sizes)
-        
-        # Allocate a new block
-        free = available_idxs(alloc_sizes, True)
-        if free:
-            write_alloc(lines, random.choice(free), alloc_sizes, total_mem, alloc_type, random.randint(16, total_mem//4))
-    
-    # Fill remaining lines with random alloc/free operations
-    balance(lines, alloc_sizes, total_mem, alloc_type)
+# Combine header and trace
+full_trace = allocator_header + "\n".join(trace_lines) + "\n"
 
-def generate_file(path, pattern, alloc_type):
-    print(f"-> {pattern}/{alloc_type}")
-    lines = [f"i,{alloc_type}"]
-    if alloc_type == "slab":
-        slab_sz, n_slabs = 64, 1000
-        total_mem = slab_sz * n_slabs
-        lines.append(f"p,{slab_sz},{n_slabs}")
-        slots = n_slabs
-    else:
-        total_mem, levels = 2000, 4
-        lines.append(f"p,{total_mem},{levels}")
-        slots = 2 ** levels
-
-    alloc_sizes = [None] * slots
-    max_slots = slots // 2
-    {"ramp": ramp_pattern, "peak": peak_pattern, "plateau": plateau_pattern}[pattern](lines, alloc_sizes, total_mem, alloc_type, max_slots)
-
-    with open(path, "w") as f:
-        f.write("\n".join(lines))
-
-for f in glob.glob("./benchmarks/generated_*"):
-    os.remove(f)
-for pat in ["ramp", "peak", "plateau"]:
-    for at in ["buddy", "bitmap", "slab"]:
-        generate_file(f"./benchmarks/generated_{at}_{pat}.alloc", pat, at)
-print("Done.")
+# Save to file
+fixed_output_path = Path("./benchmarks/trace.alloc")
+fixed_output_path.parent.mkdir(parents=True, exist_ok=True)
+fixed_output_path.write_text(full_trace)

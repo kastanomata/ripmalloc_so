@@ -12,7 +12,7 @@ def parse_log_file(filepath):
         'params': {},
         'mem': {},
         'allocated': 0,
-        'total_size': 0
+        'memory_size': 0
     }
     total_alloc_requests = 0
     operation_count = 0
@@ -25,10 +25,10 @@ def parse_log_file(filepath):
             if not line or line.startswith('#'):
                 if line.startswith('# type='):
                     current_alloc['allocator'] = line.split('=')[1].strip()
-                elif line.startswith('# total_size='):
+                elif line.startswith('# memory_size='):
                     parts = line.split(',')
-                    current_alloc['total_size'] = int(parts[0].split('=')[1])
-                    current_alloc['params']['memory_size'] = current_alloc['total_size']
+                    current_alloc['memory_size'] = int(parts[0].split('=')[1])
+                    current_alloc['params']['memory_size'] = current_alloc['memory_size']
                     current_alloc['params']['max_levels'] = int(parts[1].split('=')[1])
                 continue
 
@@ -41,7 +41,7 @@ def parse_log_file(filepath):
                     continue
                 status = parts[3]
                 frag = int(parts[4])
-                if status == '1' and (current_alloc['total_size'] - current_alloc['allocated'] >= int(parts[2])):
+                if status == '1' and (current_alloc['memory_size'] - current_alloc['allocated'] >= int(parts[2])):
                     failure_indices.append(operation_count - 1)
                 if status != '0':
                     continue
@@ -78,7 +78,7 @@ def parse_log_file(filepath):
     # Return allocator name as first value
     return (
         current_alloc['allocator'],
-        allocations, frag_list, current_alloc['total_size'], total_alloc_requests,
+        allocations, frag_list, current_alloc['memory_size'], total_alloc_requests,
         failure_indices, elapsed_seconds, user_seconds, sys_seconds, operation_count
     )
 
@@ -90,13 +90,26 @@ def produce_graph():
         return
     for filename in os.listdir(benchmarks_dir):
         if filename.endswith('.log'):
+            log_path = os.path.join(benchmarks_dir, filename)
+            outname = filename.replace('.log', '.png')
+            outpath = join(graphs_dir, outname)
+            # Only ask to remake if .log is newer than .png or .png does not exist
+            remake = True
+            if os.path.exists(outpath):
+                log_mtime = os.path.getmtime(log_path)
+                png_mtime = os.path.getmtime(outpath)
+                if png_mtime >= log_mtime:
+                    remake = False
+            if not remake:
+                print(f"Skipping '{filename}' (PNG is up to date).")
+                continue
             try:
                 # Ask the user for each file
                 answer = input(f"Include statistics box below the graph for '{filename}'? [y/N]: ").strip().lower()
                 show_stats = (answer == 'y')
 
                 filepath = os.path.join(benchmarks_dir, filename)
-                allocator, allocations, frag_list, total_size, total_alloc_requests, failure_indices, elapsed_seconds, user_seconds, sys_seconds, operation_count = parse_log_file(filepath)
+                allocator, allocations, frag_list, memory_size, total_alloc_requests, failure_indices, elapsed_seconds, user_seconds, sys_seconds, operation_count = parse_log_file(filepath)
 
                 # Calculate statistics
                 highest_peak = max(allocations) if allocations else 0
@@ -149,8 +162,8 @@ def produce_graph():
                 # Plot allocated memory (primary axis)
                 ax1.plot(range(len(allocations)), allocations, marker='o', markersize=3, 
                         linestyle='-', linewidth=1, color='b', label='Allocated Memory')
-                ax1.axhline(y=total_size, color='r', linestyle='--', 
-                        label=f'Total Memory: {format_bytes(total_size)}')
+                ax1.axhline(y=memory_size, color='r', linestyle='--', 
+                        label=f'Total Memory: {format_bytes(memory_size)}')
                 ax1.set_title(f'Memory Allocation Pattern\n{filename}', pad=20)
                 ax1.set_xlabel('Operation Sequence')
                 ax1.set_ylabel('Memory Allocated (bytes)', color='b')

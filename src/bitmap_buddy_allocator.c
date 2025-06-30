@@ -5,7 +5,7 @@
 #include <stdarg.h>
 #include <sys/mman.h>
 
-extern BitmapBuddyAllocator* BitmapBuddyAllocator_create(BitmapBuddyAllocator* buddy, size_t total_size, int num_levels);
+extern BitmapBuddyAllocator* BitmapBuddyAllocator_create(BitmapBuddyAllocator* buddy, size_t memory_size, int num_levels);
 extern int BitmapBuddyAllocator_destroy(BitmapBuddyAllocator* buddy);
 extern void* BitmapBuddyAllocator_malloc(BitmapBuddyAllocator* buddy, size_t size);
 extern int BitmapBuddyAllocator_free(BitmapBuddyAllocator* buddy, void* ptr);
@@ -13,7 +13,7 @@ extern int BitmapBuddyAllocator_free(BitmapBuddyAllocator* buddy, void* ptr);
 void print_user_pointer(int bitmap_idx, int num_levels, BitmapBuddyAllocator* buddy) {
     int level = (int)floor(log2(bitmap_idx + 1));
     int user_idx = bitmap_idx - ((1 << level) - 1);
-    size_t usable_block_size = buddy->min_bucket_size << (buddy->num_levels - level);
+    size_t usable_block_size = buddy->min_block_size << (buddy->num_levels - level);
     size_t full_block_size   = usable_block_size + BITMAP_METADATA_SIZE;
     char*  user_ptr = buddy->memory_start
                     + user_idx * full_block_size
@@ -80,28 +80,24 @@ void* BitmapBuddyAllocator_init(Allocator* alloc, ...) {
     va_start(args, alloc);
     
     BitmapBuddyAllocator* buddy = (BitmapBuddyAllocator*)alloc;
-    size_t total_size = va_arg(args, size_t);
+    size_t memory_size = va_arg(args, size_t);
     int num_levels = va_arg(args, int);
     va_end(args);
     
     // Validate parameters
-    if (!buddy || total_size <= 0 || num_levels <= 0 || num_levels >= BITMAP_BUDDY_MAX_LEVELS) {
+    if (!buddy || memory_size <= 0 || num_levels <= 0 || num_levels >= BITMAP_BUDDY_MAX_LEVELS) {
         #ifdef DEBUG
         printf(RED "ERROR: Invalid allocator or invalid number of levels (%d)\n" RESET, num_levels);
         #endif
         return NULL;
     }
-
-    // Round down total_size to the largest power of two
-    size_t pow2 = 1UL << ((size_t)floor(log2((double)total_size)));
-    total_size = pow2;
     
     // Calculate bitmap memory requirements
     int num_bits = (1 << (num_levels + 1)) - 1;
     size_t bitmap_size = ((num_bits + 31) / 32) * sizeof(uint32_t);
     
     // Allocate memory for both buddy system and bitmap
-    size_t combined_size = total_size + bitmap_size;
+    size_t combined_size = memory_size + bitmap_size;
     char* combined_memory = mmap(NULL, combined_size, PROT_READ | PROT_WRITE, 
                                MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     if (combined_memory == MAP_FAILED) {
@@ -113,24 +109,24 @@ void* BitmapBuddyAllocator_init(Allocator* alloc, ...) {
     
     // Split the allocated memory into buddy memory and bitmap memory
     buddy->memory_start = combined_memory;
-    buddy->memory_size = total_size;
-    void* bitmap_memory = combined_memory + total_size;
+    buddy->memory_size = memory_size;
+    void* bitmap_memory = combined_memory + memory_size;
 
     // Initialize fields of VariableBlockAllocator
     ((VariableBlockAllocator *) alloc)->internal_fragmentation = 0;
-    ((VariableBlockAllocator *) alloc)->sparse_free_memory = total_size;
+    ((VariableBlockAllocator *) alloc)->sparse_free_memory = memory_size;
     
     // Initialize buddy allocator properties
-    size_t min_bucket_size = total_size >> num_levels;
-    while (min_bucket_size < (BITMAP_METADATA_SIZE + 1) && num_levels > 0) {
+    size_t min_block_size = memory_size >> num_levels;
+    while (min_block_size < (BITMAP_METADATA_SIZE + 1) && num_levels > 0) {
         num_levels--;
-        min_bucket_size = total_size >> num_levels;
+        min_block_size = memory_size >> num_levels;
     }
     buddy->num_levels = num_levels;
-    buddy->min_bucket_size = min_bucket_size;
+    buddy->min_block_size = min_block_size;
     #ifdef DEBUG
     printf("num_levels: %d\n", num_levels);
-    printf("min_bucket_size: %zu\n", min_bucket_size);
+    printf("min_block_size: %zu\n", min_block_size);
     #endif
     
     // Initialize bitmap
@@ -172,9 +168,9 @@ void* BitmapBuddyAllocator_cleanup(Allocator* alloc, ...) {
         // Calculate total allocated size (buddy memory + bitmap)
         int num_bits = (1 << (buddy->num_levels + 1)) - 1;
         size_t bitmap_size = ((num_bits + 31) / 32) * sizeof(uint32_t);
-        size_t total_size = buddy->memory_size + bitmap_size;
+        size_t memory_size = buddy->memory_size + bitmap_size;
         
-        munmap(buddy->memory_start, total_size);
+        munmap(buddy->memory_start, memory_size);
         buddy->memory_start = NULL;
     }
     
@@ -188,8 +184,8 @@ void* BitmapBuddyAllocator_reserve(Allocator* alloc, ...) {
     va_end(args);
 
     BitmapBuddyAllocator* buddy = (BitmapBuddyAllocator*)alloc;
-    size_t total_size = size + BITMAP_METADATA_SIZE;
-    if (!buddy || size == 0 || total_size > (size_t)buddy->memory_size) {
+    size_t memory_size = size + BITMAP_METADATA_SIZE;
+    if (!buddy || size == 0 || memory_size > (size_t)buddy->memory_size) {
         #ifdef DEBUG
         printf(RED "ERROR: NULL allocator or invalid allocation size !\n");
         #endif
@@ -198,7 +194,7 @@ void* BitmapBuddyAllocator_reserve(Allocator* alloc, ...) {
 
     // Find the smallest block whose usable size fits the request
     int level_new_block = buddy->num_levels;
-    size_t block_size = buddy->min_bucket_size;
+    size_t block_size = buddy->min_block_size;
     for (int i = 0; i <= buddy->num_levels; i++) {
         if (block_size >= size + BITMAP_METADATA_SIZE) {
             break;
@@ -305,7 +301,7 @@ void* BitmapBuddyAllocator_release(Allocator* alloc, ...) {
     #endif
     int size = meta->size;
     int level = levelIdx(idx_to_free);
-    int full_block_size = buddy->min_bucket_size << (buddy->num_levels - level);
+    int full_block_size = buddy->min_block_size << (buddy->num_levels - level);
 
     // Controlla se già libero (double free)
     if (idx_to_free == -1) {
@@ -345,7 +341,7 @@ int BitmapBuddyAllocator_print_state(BitmapBuddyAllocator* buddy) {
     printf("Bitmap Buddy Allocator State:\n");
     printf("  Memory Size: %d bytes\n", buddy->memory_size);
     printf("  Number of Levels: %d\n", buddy->num_levels);
-    printf("  Minimum Bucket Size: %d bytes\n", buddy->min_bucket_size);
+    printf("  Minimum Bucket Size: %d bytes\n", buddy->min_block_size);
     
     print_bitmap_status(buddy);
     

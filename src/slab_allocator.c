@@ -41,35 +41,35 @@ void *SlabAllocator_init(Allocator* alloc, ...) {
 
     // Calculate total memory needed including space for DoubleLinkedList
     size_t list_size = sizeof(DoubleLinkedList);
-    size_t total_size = slab->slab_size * n_slabs + list_size;
+    size_t memory_size = slab->slab_size * n_slabs + list_size;
     // Round up to page size
     size_t page_size = sysconf(_SC_PAGESIZE);
-    total_size = (total_size + page_size - 1) & ~(page_size - 1);
+    memory_size = (memory_size + page_size - 1) & ~(page_size - 1);
 
     // Allocate memory using mmap
-    slab->managed_memory = mmap(NULL, total_size, PROT_READ | PROT_WRITE,
+    slab->memory_start = mmap(NULL, memory_size, PROT_READ | PROT_WRITE,
                                MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-    if (slab->managed_memory == MAP_FAILED) {
+    if (slab->memory_start == MAP_FAILED) {
         #ifdef DEBUG
         printf(RED "ERROR: Failed to allocate managed memory!\n" RESET);
         #endif
         return NULL;
     }
 
-    slab->buffer_size = total_size;
+    slab->memory_size = memory_size;
     
     // Initialize free list at start of managed memory
-    slab->free_list = (DoubleLinkedList*)slab->managed_memory;
+    slab->free_list = (DoubleLinkedList*)slab->memory_start;
     if (!list_create(slab->free_list)) {
         #ifdef DEBUG
         printf(RED "ERROR: Failed to create free list!\n" RESET);
         #endif
-        munmap(slab->managed_memory, total_size);
+        munmap(slab->memory_start, memory_size);
         return NULL;
     }
 
     // Initialize free list with slabs
-    char* current = slab->managed_memory + list_size;
+    char* current = slab->memory_start + list_size;
     for (size_t i = 0; i < n_slabs; i++) {
         SlabNode* slab_node = (SlabNode*)current;
         // Clear the entire slab area
@@ -81,7 +81,7 @@ void *SlabAllocator_init(Allocator* alloc, ...) {
         current += slab->slab_size;
     }
     slab->free_list_size = n_slabs;
-    slab->free_list_size_max = n_slabs;
+    slab->num_slabs = n_slabs;
 
     // Store the requested size for user allocations
     slab->user_size = requested_size;
@@ -104,8 +104,8 @@ void *SlabAllocator_cleanup(Allocator* alloc, ...) {
     }
 
     SlabAllocator* slab = (SlabAllocator*)alloc;
-    if (slab->managed_memory) {
-        munmap(slab->managed_memory, slab->buffer_size);
+    if (slab->memory_start) {
+        munmap(slab->memory_start, slab->memory_size);
     }
     // memset(slab, 0, sizeof(SlabAllocator));
     return (void*)1;
@@ -171,13 +171,13 @@ void *SlabAllocator_release(Allocator* alloc, ...) {
     }
 
     // Validate pointer is within managed memory
-    if ((char*)ptr < (char*)slab->managed_memory || 
-        (char*)ptr >= (char*)slab->managed_memory + slab->buffer_size) {
+    if ((char*)ptr < (char*)slab->memory_start || 
+        (char*)ptr >= (char*)slab->memory_start + slab->memory_size) {
         #ifdef DEBUG
         printf(RED "ERROR: Failed to free: pointer outside managed memory range!\n" RESET);
         printf("\tPointer: %p, Memory range: %p - %p\n", 
-               ptr, slab->managed_memory, 
-               (char*)slab->managed_memory + slab->buffer_size);
+               ptr, slab->memory_start, 
+               (char*)slab->memory_start + slab->memory_size);
         #endif
         return NULL;
     }
@@ -218,11 +218,11 @@ void SlabAllocator_print_state(SlabAllocator* a) {
     printf("\tSlabAllocator Info:\n");
     printf("\tSlab Size: %zu\n", a->slab_size);
     printf("\tSlots: %u/%u used\n", 
-           a->free_list_size_max - a->free_list_size,
-           a->free_list_size_max);
+           a->num_slabs - a->free_list_size,
+           a->num_slabs);
     printf("\tStatus: ");
     // Print visual representation of used/free slots
-    for (unsigned int i = 0; i < a->free_list_size_max; i++) {
+    for (unsigned int i = 0; i < a->num_slabs; i++) {
         if (i < a->free_list_size)
             printf("□"); // Free slot
         else
@@ -233,24 +233,24 @@ void SlabAllocator_print_state(SlabAllocator* a) {
 
 void SlabAllocator_print_memory_map(SlabAllocator* a) {
     printf("\tSlabAllocator Visualization:\n");
-    if (!a || !a->managed_memory) {
+    if (!a || !a->memory_start) {
         #ifdef DEBUG
         printf(RED "ERROR: No memory to visualize\n" RESET);
         #endif
         return;
     }
 
-    printf("\tMemory range: %p - %p\n", (void*)a->managed_memory, 
-           (void*)(a->managed_memory + a->buffer_size));
+    printf("\tMemory range: %p - %p\n", (void*)a->memory_start, 
+           (void*)(a->memory_start + a->memory_size));
     
-    for (unsigned int i = 0; i < a->free_list_size_max; i++) {
+    for (unsigned int i = 0; i < a->num_slabs; i++) {
         print_slab_info(a, i);
     }
 }
 
 // Print each slab's status
 void print_slab_info(SlabAllocator* a, unsigned int slab_index) {
-    char* slab_start = a->managed_memory + (slab_index * a->slab_size);
+    char* slab_start = a->memory_start + (slab_index * a->slab_size);
     printf("\nSlab %u [%p]:\n", slab_index, (void*)slab_start);
     
     // Check if slab is in free list

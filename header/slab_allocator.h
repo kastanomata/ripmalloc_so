@@ -21,13 +21,13 @@ typedef struct SlabAllocator SlabAllocator;
 // SlabAllocator structure (extends Allocator)
 struct SlabAllocator {
     Allocator base;
-    char* managed_memory;
-    unsigned int buffer_size;
+    char* memory_start;
+    unsigned int memory_size;
     size_t slab_size;   
     size_t user_size;
+    unsigned int num_slabs;
     DoubleLinkedList* free_list;   
     unsigned int free_list_size;
-    unsigned int free_list_size_max;
 };
 
 // Core allocator interface

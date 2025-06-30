@@ -1,6 +1,6 @@
 #include <buddy_allocator.h>
 
-extern inline BuddyAllocator* BuddyAllocator_create(BuddyAllocator* alloc, size_t total_size, int num_levels);
+extern inline BuddyAllocator* BuddyAllocator_create(BuddyAllocator* alloc, size_t memory_size, int num_levels);
 extern inline int BuddyAllocator_destroy(BuddyAllocator* alloc);
 extern inline void* BuddyAllocator_malloc(BuddyAllocator* alloc, size_t size);
 extern inline int BuddyAllocator_free(BuddyAllocator* alloc, void* ptr);
@@ -95,10 +95,10 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
     va_list args;
     va_start(args, alloc);
     BuddyAllocator* buddy = (BuddyAllocator*)alloc;
-    size_t total_size = va_arg(args, size_t);
+    size_t memory_size = va_arg(args, size_t);
     int num_levels = va_arg(args, int) + 1; // +1 for the root level
     va_end(args);
-    if (!alloc || total_size <= 0 || num_levels <= 1 || num_levels >= BUDDY_MAX_LEVELS) {
+    if (!alloc || memory_size <= 0 || num_levels <= 1 || num_levels >= BUDDY_MAX_LEVELS) {
         #ifdef DEBUG
         printf(RED "ERROR: Invalid parameters in create!\n" RESET);
         #endif
@@ -113,14 +113,14 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
     }
 
     ((VariableBlockAllocator *) alloc)->internal_fragmentation = 0;
-    ((VariableBlockAllocator *) alloc)->sparse_free_memory = total_size;
+    ((VariableBlockAllocator *) alloc)->sparse_free_memory = memory_size;
 
     // Initialize buddy allocator properties
-    // Calculate minimum block size (min_bucket_size) and adjust num_levels if needed
-    size_t min_block_size = total_size >> (num_levels - 1);
+    // Calculate minimum block size (min_block_size) and adjust num_levels if needed
+    size_t min_block_size = memory_size >> (num_levels - 1);
     while (min_block_size < (BUDDY_METADATA_SIZE + 1) && num_levels > 1) {
         num_levels--;
-        min_block_size = total_size >> (num_levels - 1);
+        min_block_size = memory_size >> (num_levels - 1);
     }
     buddy->num_levels = num_levels;
     buddy->min_block_size = min_block_size;
@@ -129,7 +129,7 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
     size_t free_lists_size = sizeof(DoubleLinkedList*) * num_levels;
 
     // Initialize memory
-    void* mmap_ptr = mmap(NULL, total_size + free_lists_size, PROT_READ | PROT_WRITE, 
+    void* mmap_ptr = mmap(NULL, memory_size + free_lists_size, PROT_READ | PROT_WRITE, 
                              MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     if (mmap_ptr == MAP_FAILED) {
         #ifdef DEBUG
@@ -144,7 +144,7 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
     memset(buddy->free_lists, 0, free_lists_size);
     
     buddy->memory_start = (void*)((char*)mmap_ptr + free_lists_size);
-    buddy->total_size = total_size;
+    buddy->memory_size = memory_size;
 
     // Initialize list allocator
     SlabAllocator* list_allocator = SlabAllocator_create(&(buddy->list_allocator), sizeof(DoubleLinkedList), num_levels);
@@ -188,7 +188,7 @@ void* BuddyAllocator_init(Allocator* alloc, ...) {
     }
 
     // Initialize first node
-    first_node->size = total_size;
+    first_node->size = memory_size;
     first_node->data = buddy->memory_start;
     first_node->level = 0;
     first_node->is_free = 1;
@@ -224,7 +224,7 @@ void* BuddyAllocator_cleanup(Allocator* alloc, ...) {
 
     void* mmap_ptr = (void*)buddy->free_lists;
 
-    if (munmap(mmap_ptr, buddy->total_size) != 0) {
+    if (munmap(mmap_ptr, buddy->memory_size) != 0) {
         #ifdef DEBUG
         printf(RED "ERROR: Failed to unmap memory in destructor\n" RESET);
         #endif
@@ -274,7 +274,7 @@ void* BuddyAllocator_reserve(Allocator* alloc, ...) {
     }
     
     // Calculate the appropriate level for the requested adjusted_size
-    size_t block_size = buddy->total_size;
+    size_t block_size = buddy->memory_size;
     int level = 0;
     while (level < buddy->num_levels - 1 && block_size / 2 >= adjusted_size) {
         block_size /= 2;
@@ -284,7 +284,7 @@ void* BuddyAllocator_reserve(Allocator* alloc, ...) {
     if (block_size < adjusted_size) {
         #ifdef DEBUG
         printf(RED "ERROR: Requested adjusted_size too large (req: %zu, max: %zu)\n" RESET, 
-               adjusted_size, buddy->total_size);
+               adjusted_size, buddy->memory_size);
         #endif
         return NULL;
     }
@@ -379,7 +379,7 @@ void *BuddyAllocator_release(Allocator* alloc, ...) {
     }
     // Verify pointer is within allocator's memory range
     if ((char*)ptr < (char*)a->memory_start || 
-        (char*)ptr >= (char*)a->memory_start + a->total_size) {
+        (char*)ptr >= (char*)a->memory_start + a->memory_size) {
         #ifdef DEBUG
         printf(RED "ERROR: Pointer outside allocator memory range!\n" RESET);
         #endif
@@ -399,7 +399,7 @@ void *BuddyAllocator_release(Allocator* alloc, ...) {
     }
 
     if ((char*)node->data < (char*)a->memory_start || 
-        (char*)node->data >= (char*)a->memory_start + a->total_size) {
+        (char*)node->data >= (char*)a->memory_start + a->memory_size) {
         printf(RED "ERROR: Node outside allocator memory range!\n" RESET);
         return (void*)-1;
     }
@@ -421,7 +421,7 @@ void *BuddyAllocator_release(Allocator* alloc, ...) {
 
     // printf("FREE: freeing block of size %zu bytes, was a request for %zu\n", node->size, node->requested_size);
     // printf("Level freed at: %d, size of blocks at that level: %zu\n", 
-    //        node->level, a->total_size / (1 << node->level));
+    //        node->level, a->memory_size / (1 << node->level));
     // printf("Total internal frag is %zu bytes\n", 
     //        ((VariableBlockAllocator *) alloc)->internal_fragmentation);
 
@@ -450,14 +450,14 @@ void *BuddyAllocator_release(Allocator* alloc, ...) {
 
 int BuddyAllocator_print_state(BuddyAllocator* a) {
     printf("Buddy Allocator state:\n");
-    printf("\tTotal size: %zu bytes\n", a->total_size);
+    printf("\tTotal size: %zu bytes\n", a->memory_size);
     printf("\tNumber of levels: %d\n", a->num_levels);
     printf("\tMin block size: %zu bytes\n", a->min_block_size);
     printf("\tMemory start: %p\n", a->memory_start);
     SlabAllocator_print_state(&a->node_allocator);
     printf("\tFree lists:\n");
     for (int i = 0; i < a->num_levels; i++) {
-        printf("Level %d (block size %zu):\n", i, a->total_size / (1 << i));
+        printf("Level %d (block size %zu):\n", i, a->memory_size / (1 << i));
         
         Node* current = a->free_lists[i]->head;
         int blocks_in_level = 1 << i;

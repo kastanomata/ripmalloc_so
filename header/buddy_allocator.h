@@ -30,7 +30,7 @@ struct Buddies {
 typedef struct BuddyAllocator {
     VariableBlockAllocator base; // Base allocator interface
     void* memory_start; // Start of managed memory
-    size_t total_size; // Total size of managed memory
+    size_t memory_size; // Total size of managed memory
     size_t min_block_size; // Minimum block size (power of 2)
     int num_levels; // Number of levels in the system
     SlabAllocator list_allocator;
@@ -50,8 +50,8 @@ int BuddyAllocator_print_state(BuddyAllocator* a);
 // Callable methods
 
 // Create a new BuddyAllocator
-inline BuddyAllocator* BuddyAllocator_create(BuddyAllocator* a, size_t total_size, int num_levels) {       
-    if (!BuddyAllocator_init((Allocator*)a, total_size, num_levels)) {
+inline BuddyAllocator* BuddyAllocator_create(BuddyAllocator* a, size_t memory_size, int num_levels) {       
+    if (!BuddyAllocator_init((Allocator*)a, memory_size, num_levels)) {
         #ifdef DEBUG
         printf(RED "ERROR: Failed to initialize BuddyAllocator!\n" RESET);
         #endif

@@ -105,14 +105,14 @@ static int freeform_buddy_allocator() {
     printf("=== START FREEFORM BUDDY ALLOCATOR ===\n");
     BuddyAllocator buddy_allocator;
     
-    int total_size, max_levels;
+    int memory_size, max_levels;
     while (true) {
         printf("Enter total size for Buddy Allocator (in bytes): ");
-        scanf("%d", &total_size);
-        if (total_size > 0) {
+        scanf("%d", &memory_size);
+        if (memory_size > 0) {
             break;
-        } else if (total_size == 0) {
-           total_size = PAGESIZE; // Use system page size if 0 is entered
+        } else if (memory_size == 0) {
+           memory_size = PAGESIZE; // Use system page size if 0 is entered
            break;
         } else {
         printf("Invalid total size. Please enter a positive value.\n");
@@ -137,8 +137,8 @@ static int freeform_buddy_allocator() {
     size_t allocation_sizes[max_allocations];
     memset(allocations, 0, sizeof(allocations));
     memset(allocation_sizes, 0, sizeof(allocation_sizes));
-    BuddyAllocator_create(&buddy_allocator, total_size, max_levels);
-    printf("Buddy Allocator created with total size: %d bytes and max levels: %d\n", total_size, max_levels);
+    BuddyAllocator_create(&buddy_allocator, memory_size, max_levels);
+    printf("Buddy Allocator created with total size: %d bytes and max levels: %d\n", memory_size, max_levels);
     
     while (true) {
         char command[256];
@@ -225,14 +225,14 @@ static int freeform_bitmap_allocator() {
     printf("=== START FREEFORM BITMAP ALLOCATOR ===\n");
     BitmapBuddyAllocator bitmap_allocator;
     
-    int total_size, max_levels;
+    int memory_size, max_levels;
     while (true) {
         printf("Enter total size for Bitmap Allocator (in bytes): ");
-        scanf("%d", &total_size);
-        if (total_size > 0) {
+        scanf("%d", &memory_size);
+        if (memory_size > 0) {
             break;
-        } else if (total_size == 0) {
-           total_size = PAGESIZE; // Use system page size if 0 is entered
+        } else if (memory_size == 0) {
+           memory_size = PAGESIZE; // Use system page size if 0 is entered
            break;
         } else {
         printf("Invalid total size. Please enter a positive value.\n");
@@ -257,8 +257,8 @@ static int freeform_bitmap_allocator() {
     size_t allocation_sizes[max_allocations];
     memset(allocations, 0, sizeof(allocations));
     memset(allocation_sizes, 0, sizeof(allocation_sizes));
-    BitmapBuddyAllocator_create(&bitmap_allocator, total_size, max_levels);
-    printf("Bitmap Allocator created with total size: %d bytes and max levels: %d\n", total_size, max_levels);
+    BitmapBuddyAllocator_create(&bitmap_allocator, memory_size, max_levels);
+    printf("Bitmap Allocator created with total size: %d bytes and max levels: %d\n", memory_size, max_levels);
     
     while (true) {
         char command[256];

@@ -92,7 +92,7 @@ union AllocatorParameterData parse_allocator_create_parameters(FILE *file, struc
       #endif
       return data;
     }
-    data.buddy.total_size = strtoul(token, NULL, 10);
+    data.buddy.memory_size = strtoul(token, NULL, 10);
     
     token = strtok(NULL, ",");
     if (!token) {

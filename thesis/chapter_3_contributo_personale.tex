@@ -82,13 +82,13 @@ Lo \textit{slab allocator} è un gestore pensato per richieste di memoria di tag
 \begin{lstlisting}
 struct SlabAllocator {
     Allocator base;
-    char* managed_memory;
-    unsigned int buffer_size;
+    char* memory_start;
+    unsigned int memory_size;
     size_t slab_size;   
     size_t user_size;
     DoubleLinkedList* free_list;   
     unsigned int free_list_size;
-    unsigned int free_list_size_max;
+    unsigned int num_slabs;
 };
 \end{lstlisting}
 
@@ -198,7 +198,7 @@ I nodi sono salvati in una serie di free lists, corrispondenti ai vari livelli d
 typedef struct BuddyAllocator {
     VariableBlockAllocator base; // Base allocator interface
     void* memory_start; // Start of managed memory
-    size_t total_size; // Total size of managed memory
+    size_t memory_size; // Total size of managed memory
     size_t min_block_size; // Minimum block size (power of 2)
     int num_levels; // Number of levels in the system
     SlabAllocator list_allocator;
@@ -213,7 +213,7 @@ Nell’eventualità che entrambi i \textit{buddies} siano contemporaneamente non
 
 \begin{lstlisting}
 // inline has been omitted for brevity
-BuddyAllocator* BuddyAllocator_create(BuddyAllocator* a, size_t total_size, int num_levels);
+BuddyAllocator* BuddyAllocator_create(BuddyAllocator* a, size_t memory_size, int num_levels);
 int BuddyAllocator_destroy(BuddyAllocator* a);
 void* BuddyAllocator_malloc(BuddyAllocator* a, size_t size);
 int BuddyAllocator_free(BuddyAllocator* a, void* ptr);
@@ -260,7 +260,7 @@ typedef struct {
     char* memory_start; // Managed memory area
     int memory_size; // Size of managed memory
     int num_levels; // Number of levels in the hierarchy
-    int min_bucket_size; // Minimum allocation size
+    int min_block_size; // Minimum allocation size
     Bitmap bitmap; // Bitmap tracking block status
 } BitmapBuddyAllocator;
 \end{lstlisting}
@@ -269,7 +269,7 @@ Poiché il \textit{BitmapBuddyAllocator} è una variante del classico \textit{bu
 
 \begin{lstlisting}
 // inline has been omitted for brevity
-BitmapBuddyAllocator* BitmapBuddyAllocator_create(BitmapBuddyAllocator* a, size_t total_size, int num_levels);
+BitmapBuddyAllocator* BitmapBuddyAllocator_create(BitmapBuddyAllocator* a, size_t memory_size, int num_levels);
 int BitmapBuddyAllocator_destroy(BitmapBuddyAllocator* a);
 void* BitmapBuddyAllocator_malloc(BitmapBuddyAllocator* a, size_t size);
 int BitmapBuddyAllocator_free(BitmapBuddyAllocator* a, void* ptr);

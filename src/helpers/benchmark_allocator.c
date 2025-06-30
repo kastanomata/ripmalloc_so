@@ -222,32 +222,44 @@ int Allocator_benchmark_initialize(const char *file_name) {
                                       config.max_log_size - config.log_offset,
                                       "# slab_size=%zu,n_slabs=%zu\n",
                                       params.slab.slab_size, params.slab.n_slabs);
-            config.allocator = (Allocator*) &allocator;
             SlabAllocator_create((SlabAllocator *) &allocator, params.slab.slab_size, params.slab.n_slabs);
+            config.allocator = (Allocator*) &allocator;
+            // Print actual info
+            SlabAllocator *slab = (SlabAllocator *)&allocator;
+            printf("Actual SLAB_ALLOCATOR info: buslab_size=%zu, user_size: %zu, n_slabs=%zu",
+                   slab->slab_size, slab->user_size, slab->num_slabs);
             break;
         case BUDDY_ALLOCATOR:
+            printf("Running BUDDY_ALLOCATOR benchmark...\n");
             config.log_offset += snprintf((char *)config.log_data + config.log_offset,
                                 config.max_log_size - config.log_offset,
                                 "# type=BUDDY_ALLOCATOR\n");
             config.log_offset += snprintf((char *)config.log_data + config.log_offset,
                                         config.max_log_size - config.log_offset,
-                                        "# total_size=%zu,max_levels=%zu\n",
-                                        params.buddy.total_size, params.buddy.max_levels);
-            printf("Running BUDDY_ALLOCATOR benchmark...\n");
+                                        "# memory_size=%zu,max_levels=%zu\n",
+                                        params.buddy.memory_size, params.buddy.max_levels);
+            BuddyAllocator_create((BuddyAllocator *)&allocator, params.buddy.memory_size, params.buddy.max_levels);
             config.allocator = (Allocator*) &allocator;
-            BuddyAllocator_create((BuddyAllocator *)&allocator, params.buddy.total_size, params.buddy.max_levels);
+            // Print actual info
+            BuddyAllocator *buddy = (BuddyAllocator *)&allocator;
+            printf("Actual BUDDY_ALLOCATOR info: memory_size=%d, num_levels=%d, min_block_size=%d\n",
+                   buddy->memory_size, buddy->num_levels, buddy->min_block_size);
             break;
         case BITMAP_BUDDY_ALLOCATOR:
+            printf("Running BITMAP_BUDDY_ALLOCATOR benchmark...\n");
             config.log_offset += snprintf((char *)config.log_data + config.log_offset,
                         config.max_log_size - config.log_offset,
                         "# type=BITMAP_BUDDY_ALLOCATOR\n");
             config.log_offset += snprintf((char *)config.log_data + config.log_offset,
                                         config.max_log_size - config.log_offset,
-                                        "# total_size=%zu,max_levels=%zu\n",
-                                        params.buddy.total_size, params.buddy.max_levels);
-            printf("Running BITMAP_BUDDY_ALLOCATOR benchmark...\n");
+                                        "# memory_size=%zu,max_levels=%zu\n",
+                                        params.buddy.memory_size, params.buddy.max_levels);
+            BitmapBuddyAllocator_create((BitmapBuddyAllocator *)&allocator, params.buddy.memory_size, params.buddy.max_levels);
             config.allocator = (Allocator*) &allocator;
-            BitmapBuddyAllocator_create((BitmapBuddyAllocator *)&allocator, params.buddy.total_size, params.buddy.max_levels);
+            // Print actual info
+            BitmapBuddyAllocator *bitmap = (BitmapBuddyAllocator *)&allocator;
+            printf("Actual BITMAP_BUDDY_ALLOCATOR info: memory_size=%d, num_levels=%d, min_block_size=%d\n",
+                   bitmap->memory_size, bitmap->num_levels, bitmap->min_block_size);
             break;
         default:
             fprintf(stderr, "Unknown allocator type: %d\n", type);
@@ -266,7 +278,7 @@ int Allocator_benchmark_initialize(const char *file_name) {
     int n_pointers = 0;
     switch(config.type) {
         case SLAB_ALLOCATOR:
-            n_pointers = ((SlabAllocator *)config.allocator)->free_list_size_max;
+            n_pointers = ((SlabAllocator *)config.allocator)->num_slabs;
             break;
         case BUDDY_ALLOCATOR:
             BuddyAllocator* buddy = (BuddyAllocator *) config.allocator;

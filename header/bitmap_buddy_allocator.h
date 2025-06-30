@@ -25,7 +25,7 @@ typedef struct {
     char* memory_start; // Managed memory area
     int memory_size; // Size of managed memory
     int num_levels; // Number of levels in the hierarchy
-    int min_bucket_size; // Minimum allocation size
+    int min_block_size; // Minimum allocation size
     Bitmap bitmap; // Bitmap tracking block status
 } BitmapBuddyAllocator;
 
@@ -36,8 +36,8 @@ void* BitmapBuddyAllocator_reserve(Allocator* alloc, ...);
 void* BitmapBuddyAllocator_release(Allocator* alloc, ...);
 
 // Helper function to create the allocator
-inline BitmapBuddyAllocator* BitmapBuddyAllocator_create(BitmapBuddyAllocator* alloc, size_t total_size, int num_levels) {
-    if (!BitmapBuddyAllocator_init((Allocator*)alloc, total_size, num_levels)) {
+inline BitmapBuddyAllocator* BitmapBuddyAllocator_create(BitmapBuddyAllocator* alloc, size_t memory_size, int num_levels) {
+    if (!BitmapBuddyAllocator_init((Allocator*)alloc, memory_size, num_levels)) {
         #ifdef DEBUG
         printf(RED "Error: Failed to initialize BitmapBuddyAllocator\n" RESET);
         #endif

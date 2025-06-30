@@ -33,7 +33,7 @@ union AllocatorParameterData {
     size_t n_slabs;
   } slab;
   struct {
-    size_t total_size;
+    size_t memory_size;
     size_t max_levels;
   } buddy;
 };

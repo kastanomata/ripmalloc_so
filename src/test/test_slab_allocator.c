@@ -41,7 +41,7 @@ static int test_create_destroy() {
     assert(allocator.user_size == SLAB_SIZE);
     assert(allocator.free_list != NULL);
     assert(allocator.free_list_size == NUM_SLABS);
-    assert(allocator.free_list_size_max == NUM_SLABS);
+    assert(allocator.num_slabs == NUM_SLABS);
     
     // Clean up
     assert(SlabAllocator_destroy(&allocator) == 0);

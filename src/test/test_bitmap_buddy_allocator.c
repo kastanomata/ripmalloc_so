@@ -12,10 +12,10 @@ static int test_invalid_init() {
     assert(BitmapBuddyAllocator_create(&allocator, 0, NUM_LEVELS) == NULL);
     
     // Test with zero levels
-    assert(BitmapBuddyAllocator_create(&allocator, TOTAL_SIZE, 0) == NULL);
+    assert(BitmapBuddyAllocator_create(&allocator, MEMORY_SIZE, 0) == NULL);
     
     // Test with NULL allocator
-    assert(BitmapBuddyAllocator_create(NULL, TOTAL_SIZE, NUM_LEVELS) == NULL);
+    assert(BitmapBuddyAllocator_create(NULL, MEMORY_SIZE, NUM_LEVELS) == NULL);
     
     #ifdef VERBOSE
     printf("Invalid initialization test passed\n");
@@ -31,10 +31,10 @@ static int test_create_destroy() {
     #endif
     
     // Test successful creation
-    assert(BitmapBuddyAllocator_create(&allocator, TOTAL_SIZE, NUM_LEVELS) != NULL);
+    assert(BitmapBuddyAllocator_create(&allocator, MEMORY_SIZE, NUM_LEVELS) != NULL);
     
     // Verify initial state
-    assert(allocator.memory_size == TOTAL_SIZE);
+    assert(allocator.memory_size == MEMORY_SIZE);
     assert(allocator.num_levels == NUM_LEVELS);
     assert(allocator.memory_start != NULL);
     
@@ -58,10 +58,10 @@ static int test_single_allocation() {
     printf("Testing single allocation...\n");
     #endif
     
-    assert(BitmapBuddyAllocator_create(&allocator, TOTAL_SIZE, NUM_LEVELS) != NULL);
+    assert(BitmapBuddyAllocator_create(&allocator, MEMORY_SIZE, NUM_LEVELS) != NULL);
     
     // Allocate smallest block size
-    size_t alloc_size = allocator.min_bucket_size;
+    size_t alloc_size = allocator.min_block_size;
     #ifdef VERBOSE
     printf("Allocating block of size %zu\n", alloc_size);
     #endif
@@ -70,8 +70,8 @@ static int test_single_allocation() {
     ptr = BitmapBuddyAllocator_malloc(&allocator, 0);
     assert(ptr == NULL);
     
-    // Allocate more than TOTAL_SIZE BYTES
-    ptr = BitmapBuddyAllocator_malloc(&allocator, TOTAL_SIZE * 2);
+    // Allocate more than MEMORY_SIZE BYTES
+    ptr = BitmapBuddyAllocator_malloc(&allocator, MEMORY_SIZE * 2);
     assert(ptr == NULL);
     
     ptr = BitmapBuddyAllocator_malloc(&allocator, alloc_size);
@@ -105,8 +105,8 @@ static int test_multiple_allocations() {
     printf("Testing multiple allocations...\n");
     #endif
     
-    assert(BitmapBuddyAllocator_create(&allocator, TOTAL_SIZE, NUM_LEVELS) != NULL);
-    size_t alloc_size = allocator.min_bucket_size; // Account for metadata
+    assert(BitmapBuddyAllocator_create(&allocator, MEMORY_SIZE, NUM_LEVELS) != NULL);
+    size_t alloc_size = allocator.min_block_size; // Account for metadata
     
     #ifdef VERBOSE
     printf("Allocation size: %zu\n", alloc_size);
@@ -154,16 +154,16 @@ static int test_multiple_allocations() {
 }
 
 static int test_varied_sizes() {
-    int total_size = PAGESIZE;
-    int max_alloc_size = total_size - sizeof(void*);
-    int half_alloc_size = total_size / 2 - sizeof(void*);
-    int quarter_alloc_size = total_size / 4 - sizeof(void*);
-    int eight_alloc_size = total_size / 8 - sizeof(void*);
+    int memory_size = PAGESIZE;
+    int max_alloc_size = memory_size - sizeof(void*);
+    int half_alloc_size = memory_size / 2 - sizeof(void*);
+    int quarter_alloc_size = memory_size / 4 - sizeof(void*);
+    int eight_alloc_size = memory_size / 8 - sizeof(void*);
     void *ptrs[4]; // array of four pointers
     void *ptr;
     
     BitmapBuddyAllocator buddy;
-    BitmapBuddyAllocator_create(&buddy, total_size, DEF_LEVELS_NUMBER);
+    BitmapBuddyAllocator_create(&buddy, memory_size, DEF_LEVELS_NUMBER);
 
     #ifdef VERBOSE
     BitmapBuddyAllocator_print_state(&buddy);
@@ -208,7 +208,7 @@ static int test_varied_sizes() {
     BitmapBuddyAllocator_print_state(&buddy);
     printf("Allocated four blocks of memory\n");
     
-    print_memory_pattern(buddy.memory_start, total_size);
+    print_memory_pattern(buddy.memory_start, memory_size);
     printf("Memory pattern printed\n");
     #endif
     
@@ -229,8 +229,8 @@ static int test_buddy_merging() {
     printf("Testing buddy merging...\n");
     #endif
     
-    assert(BitmapBuddyAllocator_create(&allocator, TOTAL_SIZE, NUM_LEVELS) != NULL);
-    size_t small_size = allocator.min_bucket_size; // Smallest block size
+    assert(BitmapBuddyAllocator_create(&allocator, MEMORY_SIZE, NUM_LEVELS) != NULL);
+    size_t small_size = allocator.min_block_size; // Smallest block size
     size_t large_size = small_size * 2; // Size of two small blocks
     
     // Allocate two adjacent small blocks
@@ -265,13 +265,13 @@ static int test_invalid_releases() {
     printf("Testing invalid releases...\n");
     #endif
     
-    assert(BitmapBuddyAllocator_create(&allocator, TOTAL_SIZE, NUM_LEVELS) != NULL);
+    assert(BitmapBuddyAllocator_create(&allocator, MEMORY_SIZE, NUM_LEVELS) != NULL);
     
     // Try to release a NULL pointer
     assert(BitmapBuddyAllocator_free(&allocator, NULL) == -1);
     
     // Allocate a block and release it
-    void* ptr = BitmapBuddyAllocator_malloc(&allocator, allocator.min_bucket_size);
+    void* ptr = BitmapBuddyAllocator_malloc(&allocator, allocator.min_block_size);
     assert(ptr != NULL);
     
     // Release the block
@@ -306,10 +306,10 @@ int test_bitmap_buddy_allocator() {
     
     if (result != 0) {
         // Red color for failed tests
-        printf("\033[1;31mSome BitmapBuddyAllocator tests failed!\033[0m\n");
+        printf(RED "Some BitmapBuddyAllocator tests failed!\n" RESET);
     } else {
         // Green color for passed tests
-        printf("\033[1;32mAll BitmapBuddyAllocator tests passed!\033[0m\n");
+        printf(GREEN "All BitmapBuddyAllocator tests passed!\n" RESET);
     }
     printf("=== BitmapBuddyAllocator Tests Complete ===\n");
     

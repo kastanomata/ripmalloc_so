@@ -12,10 +12,10 @@ static int test_invalid_init() {
     assert(BuddyAllocator_create(&allocator, 0, NUM_LEVELS) == NULL);
     
     // Test with zero levels
-    assert(BuddyAllocator_create(&allocator, TOTAL_SIZE, 0) == NULL);
+    assert(BuddyAllocator_create(&allocator, MEMORY_SIZE, 0) == NULL);
     
     // Test with NULL allocator
-    assert(BuddyAllocator_create(NULL, TOTAL_SIZE, NUM_LEVELS) == NULL);
+    assert(BuddyAllocator_create(NULL, MEMORY_SIZE, NUM_LEVELS) == NULL);
     
     #ifdef VERBOSE
     printf("Invalid initialization test passed\n");
@@ -32,10 +32,10 @@ static int test_create_destroy() {
     #endif
     
     // Test successful creation
-    assert(BuddyAllocator_create(&allocator, TOTAL_SIZE, NUM_LEVELS) != NULL);
+    assert(BuddyAllocator_create(&allocator, MEMORY_SIZE, NUM_LEVELS) != NULL);
     
     // Verify initial state
-    assert(allocator.total_size == TOTAL_SIZE);
+    assert(allocator.memory_size == MEMORY_SIZE);
     assert(allocator.num_levels == NUM_LEVELS + 1); // + 1 for the larger block
     assert(allocator.memory_start != NULL);
     
@@ -65,15 +65,15 @@ static int test_single_allocation() {
     printf("Testing single allocation...\n");
     #endif
     
-    BuddyAllocator_create(&allocator, TOTAL_SIZE, NUM_LEVELS);
+    BuddyAllocator_create(&allocator, MEMORY_SIZE, NUM_LEVELS);
     assert(&allocator != NULL);
 
     // Allocate 0 bytes
     ptr = BuddyAllocator_malloc(&allocator, 0);
     assert(ptr == NULL);
     
-    // Allocate more than TOTAL_SIZE BYTES
-    ptr = BuddyAllocator_malloc(&allocator, TOTAL_SIZE * 2);
+    // Allocate more than MEMORY_SIZE BYTES
+    ptr = BuddyAllocator_malloc(&allocator, MEMORY_SIZE * 2);
     assert(ptr == NULL);
 
     // Allocate smallest block size
@@ -107,7 +107,7 @@ static int test_multiple_allocations() {
     #endif
 
     
-    assert(BuddyAllocator_create(&allocator, TOTAL_SIZE, NUM_LEVELS) != NULL);
+    assert(BuddyAllocator_create(&allocator, MEMORY_SIZE, NUM_LEVELS) != NULL);
     size_t alloc_size = allocator.min_block_size - sizeof(BuddyNode*); // Account for metadata
     
     #ifdef VERBOSE
@@ -152,16 +152,16 @@ static int test_multiple_allocations() {
 
 // Test allocation of different sizes
 static int test_varied_sizes() {
-    int total_size = PAGESIZE;
-    int max_alloc_size = total_size - sizeof(void*);
-    int half_alloc_size = total_size / 2 - sizeof(void*);
-    int quarter_alloc_size = total_size / 4 - sizeof(void*);
-    int eight_alloc_size = total_size / 8 - sizeof(void*);
+    int memory_size = PAGESIZE;
+    int max_alloc_size = memory_size - sizeof(void*);
+    int half_alloc_size = memory_size / 2 - sizeof(void*);
+    int quarter_alloc_size = memory_size / 4 - sizeof(void*);
+    int eight_alloc_size = memory_size / 8 - sizeof(void*);
     void *ptrs[4]; // array of four pointers
     void *ptr;
     
     BuddyAllocator buddy;
-    BuddyAllocator_create(&buddy, total_size, DEF_LEVELS_NUMBER);
+    BuddyAllocator_create(&buddy, memory_size, DEF_LEVELS_NUMBER);
 
     ptr = BuddyAllocator_malloc(&buddy, max_alloc_size);
     if (ptr == NULL) {
@@ -212,7 +212,7 @@ static int test_buddy_merging() {
     printf("Testing buddy merging...\n");
     #endif
     
-    assert(BuddyAllocator_create(&allocator, TOTAL_SIZE, NUM_LEVELS) != NULL);
+    assert(BuddyAllocator_create(&allocator, MEMORY_SIZE, NUM_LEVELS) != NULL);
     size_t small_size = allocator.min_block_size - BUDDY_METADATA_SIZE;
     size_t large_size = small_size * 2;
     
@@ -249,7 +249,7 @@ static int test_invalid_releases() {
     printf("Testing invalid releases...\n");
     #endif
     
-    assert(BuddyAllocator_create(&allocator, TOTAL_SIZE, NUM_LEVELS) != NULL);
+    assert(BuddyAllocator_create(&allocator, MEMORY_SIZE, NUM_LEVELS) != NULL);
     
     // Test NULL pointer release
     assert(BuddyAllocator_free(&allocator, NULL) == -1); // Should not crash
@@ -291,10 +291,10 @@ int test_buddy_allocator() {
     
     if (result != 0) {
         // Red color for failed tests
-        printf("\033[1;31mSome BuddyAllocator tests failed!\033[0m\n");
+        printf(RED "Some BuddyAllocator tests failed!\n" RESET);
     } else {
         // Green color for passed tests
-        printf("\033[1;32mAll BuddyAllocator tests passed!\033[0m\n");
+        printf(GREEN "All BuddyAllocator tests passed!\n" RESET);
     }
     printf("=== BuddyAllocator Tests Complete ===\n");
     
